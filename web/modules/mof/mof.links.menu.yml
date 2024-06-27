@@ -1,0 +1,22 @@
+entity.model.settings:
+  title: 'Model Openness Tool'
+  description: 'Configure model entity type.'
+  route_name:  entity.model.settings
+  parent: system.admin_structure
+
+entity.model.admin:
+  title: 'Admin'
+  description: 'Administer models'
+  route_name: entity.model.admin_collection
+  menu_name: main
+
+entity.model.collection:
+  title: 'Models'
+  description: 'List of models'
+  route_name: entity.model.collection
+  parent: system.admin_content
+
+mof.oauth2_login_logout:
+  title: 'Login'
+  menu_name: main
+  class: Drupal\mof\Plugin\Menu\Oauth2LoginLogoutMenuLink

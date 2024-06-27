@@ -1,0 +1,219 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Drupal\mof\Entity;
+
+use Drupal\Core\Entity\ContentEntityBase;
+use Drupal\Core\Entity\EntityTypeInterface;
+use Drupal\Core\Field\BaseFieldDefinition;
+use Drupal\mof\LicenseInterface;
+
+/**
+ * Defines the license entity type.
+ *
+ * @ContentEntityType(
+ *   id = "license",
+ *   label = @Translation("License"),
+ *   label_collection = @Translation("License administration"),
+ *   label_singular = @Translation("license"),
+ *   label_plural = @Translation("licenses"),
+ *   label_count = @PluralTranslation(
+ *     singular = "@count license",
+ *     plural = "@count licenses",
+ *   ),
+ *   handlers = {
+ *     "list_builder" = "Drupal\mof\LicenseListBuilder",
+ *     "access" = "Drupal\mof\Access\LicenseAccessHandler",
+ *     "form" = {
+ *       "default" = "Drupal\mof\Form\LicenseForm",
+ *       "delete" = "Drupal\Core\Entity\ContentEntityDeleteForm",
+ *       "delete-multiple-confirm" = "Drupal\Core\Entity\Form\DeleteMultipleForm",
+ *     },
+ *     "route_provider" = {
+ *       "html" = "Drupal\Core\Entity\Routing\AdminHtmlRouteProvider"
+ *     },
+ *   },
+ *   base_table = "license",
+ *   translatable = FALSE,
+ *   collection_permission = "administer licenses",
+ *   entity_keys = {
+ *     "id" = "id",
+ *     "label" = "name",
+ *     "uuid" = "uuid",
+ *   },
+ *   links = {
+ *     "collection" = "/admin/licenses",
+ *     "add-form" = "/admin/license/add",
+ *     "edit-form" = "/admin/license/{license}/edit",
+ *     "delete-form" = "/admin/license/{license}/delete",
+ *     "delete-multiple-form" = "/admin/content/license/delete-multiple",
+ *   }
+ * )
+ */
+final class License extends ContentEntityBase implements LicenseInterface {
+
+  /**
+   * Get license name.
+   */
+  public function getName(): string {
+    return $this->get('name')->value;
+  }
+
+  /**
+   * Get license id.
+   */
+  public function getLicenseId(): string {
+    return $this->get('license_id')->value;
+  }
+
+  /**
+   * Determine if license is OSI approved.
+   */
+  public function isOsiApproved(): bool {
+    return (bool)$this->get('osi_approved')->value;
+  }
+
+  /**
+   * Get license content type.
+   * `code` `document `data` are accepted values.
+   */
+  public function getContentType(): ?string {
+    return $this->get('content_type')->value ?? NULL;
+  }
+
+  /**
+   * Transform to an array that matches a license in
+   * the mof-licenses.json file.
+   */
+  public function toArray(): array {
+    return [
+      'name' => $this->getName(),
+      'licenseId' => $this->getLicenseId(),
+      'isOsiApproved' => $this->isOsiApproved(),
+      'ContentType' => $this->getContentType(),
+    ];
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function baseFieldDefinitions(EntityTypeInterface $entity_type): array {
+    $fields = parent::baseFieldDefinitions($entity_type);
+
+    $fields['name'] = BaseFieldDefinition::create('string')
+      ->setLabel(t('Name'))
+      ->setRequired(TRUE)
+      ->setDisplayOptions('form', [
+        'type' => 'string_textfield',
+        'weight' => -105,
+      ])
+      ->setDisplayConfigurable('form', TRUE)
+      ->setDisplayConfigurable('view', FALSE);
+
+    $fields['license_id'] = BaseFieldDefinition::create('string')
+      ->setLabel(t('License ID'))
+      ->setRequired(TRUE)
+      ->setSetting('max_length', 128)
+      ->setDisplayOptions('form', [
+        'type' => 'string_textfield',
+        'weight' => -105,
+      ])
+      ->setDisplayConfigurable('form', TRUE)
+      ->setDisplayConfigurable('view', FALSE);
+
+    $fields['reference'] = BaseFieldDefinition::create('uri')
+      ->setLabel(t('Reference'))
+      ->setRequired(TRUE)
+      ->setSettings([
+        'max_length' => 2048,
+        'text_processing' => 0,
+      ])
+      ->setDisplayOptions('form', [
+        'type' => 'string_textfield',
+        'settings' => ['placeholder' => 'https://spdx.org/...'],
+      ])
+      ->setDisplayConfigurable('form', TRUE)
+      ->setDisplayConfigurable('view', FALSE);
+
+    $fields['reference_number'] = BaseFieldDefinition::create('integer')
+      ->setLabel(t('Reference number'))
+      ->setRequired(TRUE)
+      ->setDisplayOptions('form', [
+        'type' => 'number',
+      ])
+      ->setDisplayConfigurable('form', TRUE)
+      ->setDisplayConfigurable('view', FALSE);
+
+    $fields['deprecated_license_id'] = BaseFieldDefinition::create('boolean')
+      ->setLabel(t('Is deprecated license ID'))
+      ->setDisplayOptions('form', [
+        'type' => 'boolean',
+      ])
+      ->setDisplayConfigurable('form', TRUE)
+      ->setDisplayConfigurable('view', FALSE);
+
+    $fields['osi_approved'] = BaseFieldDefinition::create('boolean')
+      ->setLabel(t('Is OSI approved'))
+      ->setDisplayOptions('form', [
+        'type' => 'boolean',
+      ])
+      ->setDisplayConfigurable('form', TRUE)
+      ->setDisplayConfigurable('view', FALSE);
+
+    $fields['fsf_libre'] = BaseFieldDefinition::create('boolean')
+      ->setLabel(t('Is FSF libre'))
+      ->setDisplayOptions('form', [
+        'type' => 'boolean',
+      ])
+      ->setDisplayConfigurable('form', TRUE)
+      ->setDisplayConfigurable('view', FALSE);
+
+    $fields['details_url'] = BaseFieldDefinition::create('uri')
+      ->setLabel(t('Details URL'))
+      ->setRequired(TRUE)
+      ->setSettings([
+        'max_length' => 2048,
+        'text_processing' => 0,
+      ])
+      ->setDisplayOptions('form', [
+        'type' => 'string_textfield',
+        'settings' => ['placeholder' => 'https://spdx.org/...'],
+      ])
+      ->setDisplayConfigurable('form', TRUE)
+      ->setDisplayConfigurable('view', FALSE);
+
+    $fields['see_also'] = BaseFieldDefinition::create('uri')
+      ->setLabel(t('See also'))
+      ->setRequired(FALSE)
+      ->setCardinality(-1)
+      ->setSettings([
+        'max_length' => 2048,
+        'text_processing' => 0,
+      ])
+      ->setDisplayOptions('form', [
+        'type' => 'string_textfield',
+        'settings' => ['placeholder' => 'https://...'],
+      ])
+      ->setDisplayConfigurable('form', TRUE)
+      ->setDisplayConfigurable('view', FALSE);
+
+    $fields['content_type'] = BaseFieldDefinition::create('list_string')
+      ->setLabel(t('Content type'))
+      ->setRequired(TRUE)
+      ->setSetting('allowed_values', [
+        'code' => t('Code'),
+        'document' => t('Documentation'),
+        'data' => t('Data'),
+      ])
+      ->setDisplayOptions('form', [
+        'type' => 'options_select',
+        'weight' => -60,
+      ])
+      ->setDisplayConfigurable('form', TRUE)
+      ->setDisplayConfigurable('view', FALSE);
+
+    return $fields;
+  }
+
+}

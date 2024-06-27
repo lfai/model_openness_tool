@@ -1,0 +1,49 @@
+.evaluation {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.evaluation > div {
+  flex: 0 1 auto;
+}
+
+.json-download {
+  text-decoration: none;
+}
+
+.json-download:hover {
+  text-decoration: underline;
+}
+
+.json-download:before {
+  content: '\f019';
+  font: var(--fa-font-solid);
+  display: none;
+}
+
+.json-download svg {
+  margin-right: 5px;
+  vertical-align: inherit;
+}
+
+h4 + svg {
+  display: block;
+  margin-bottom: 1rem;
+}
+
+.model-link {
+  display: inline-block;
+}
+
+.model-link svg,
+.model-link img,
+.model-link .icon {
+  width: 22px;
+  height: auto;
+  vertical-align: inherit;
+}
+
+.model-link .icon:nth-child(2) {
+  margin: 0 10px;
+}

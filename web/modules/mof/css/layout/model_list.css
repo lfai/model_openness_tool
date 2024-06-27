@@ -1,0 +1,70 @@
+table {
+  font-size: 14px;
+  table-layout: fixed;
+}
+
+table td.model-label {
+  word-break: break-all
+}
+
+table td.model-org {
+  word-break: break-word;
+}
+
+table .model-updated {
+  width: 145px;
+}
+
+table td.badge svg {
+  display: block;
+  margin: 6px 0;
+}
+
+table td.model-label .icon {
+  display: inline-block;
+  width: 22px;
+  height: auto;
+  margin-top: 10px;
+}
+
+table td.model-label svg {
+  height: auto;
+  vertical-align: inherit;
+}
+
+#edit-search .details-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+#edit-search .button,
+#edit-search .form-item {
+  margin: 0;
+}
+
+#edit-search .button:last-child {
+  margin-left: 2px;
+}
+
+@media screen and (min-width: 640px) {
+  table tr {
+    height: 99px;
+    min-height: 99px;
+  }
+}
+
+@media screen and (max-width: 640px) {
+  .model-link > div {
+    display: inline-block;
+    vertical-align: top;
+  }
+
+  table td.model-label .model-link > a.icon:nth-of-type(1) {
+    margin-left: 10px;
+  }
+
+  table td.model-label .model-link > a.icon {
+    margin-top: 0;
+  }
+}

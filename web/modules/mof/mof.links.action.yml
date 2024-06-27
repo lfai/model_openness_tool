@@ -1,0 +1,26 @@
+entity.model.admin_submit:
+  route_name: entity.model.admin_submit_form
+  title: 'Add model'
+  appears_on:
+    - entity.model.admin_collection
+
+entity.model.import:
+  route_name: entity.model.admin_import
+  title: 'Import models'
+  appears_on:
+    - entity.model.admin_collection
+
+entity.license.add:
+  route_name: entity.license.add_form
+  title: 'Add license'
+  appears_on:
+    - entity.license.collection
+
+entity.model.community_preferred:
+  route_name: entity.model.add_form
+  options:
+    query:
+      community:
+  title: 'Set Preferred Licenses'
+  appears_on:
+    - entity.model.add_form

@@ -1,0 +1,8 @@
+name: 'Model Openness Framework'
+type: module
+description: '@todo Add description.'
+package: '@todo Add package'
+core_version_requirement: ^10
+dependencies:
+  - drupal:options
+  - social_auth_github:social_auth_github

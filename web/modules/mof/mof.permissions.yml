@@ -1,0 +1,15 @@
+administer model:
+  title: 'Administer models'
+  restrict access: true
+
+administer licenses:
+  title: 'Administer licenses'
+  restrict access: true
+
+view model collection:
+  title: 'View model list'
+  description: 'Access model collection list'
+
+submit model:
+  title: 'Submit model'
+  description: 'Access to submit models for full evaluation'

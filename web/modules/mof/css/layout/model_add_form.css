@@ -1,0 +1,90 @@
+.component-wrapper {
+  margin: 1.3rem 0;
+}
+
+.component-wrapper span {
+  margin: 0;
+}
+
+.license-url {
+  padding: 1rem 0;
+}
+
+.license-path-wrapper label,
+.component-path-wrapper label {
+  display: inline-block;
+  width: 130px;
+}
+
+.license-input,
+.license-path,
+.component-path {
+  width: 250px;
+}
+
+.component-license-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  padding: .5rem 2.5rem;
+  position: relative;
+  border-top: 1px solid #ddc1c1;
+  border-bottom: 1px solid #ddc1c1;
+  color: #000;
+}
+
+.component-license-wrapper span {
+  width: 250px;
+}
+
+.component-license-wrapper .form-item {
+  margin-block: 0;
+}
+
+.license-details {
+  padding: 15px 0 15px 40px;
+  border-left: 1px solid #d1deea;
+}
+
+.license-details .form-item {
+  margin-block: 10px;
+}
+
+.claro-details .details-wrapper {
+  margin: 1rem;
+}
+
+.model-form .form-element {
+  line-height: normal;
+  min-height: auto;
+  font-size: 14px;
+  padding: 4px;
+}
+
+#details-wrap label.form-item__label {
+  display: inline-block;
+  vertical-align: top;
+  text-align: right;
+}
+
+#details-wrap .form-textarea-wrapper {
+  display: inline-block;
+}
+
+.local-actions {
+  float: right;
+}
+
+.license-input + .form-item__description {
+  margin-bottom: 0;
+}
+
+@media screen and (min-width: 429px) {
+  #edit-details .form-item__description {
+    margin-left: 155px;
+  }
+
+  #details-wrap label.form-item__label {
+    width: 150px;
+  }
+}

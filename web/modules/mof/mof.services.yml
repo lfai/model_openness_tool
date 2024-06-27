@@ -1,0 +1,38 @@
+services:
+
+  license_handler:
+    class: Drupal\mof\LicenseHandler
+    arguments:
+      - '@entity_type.manager'
+
+  model_evaluator:
+    class: Drupal\mof\ModelEvaluator
+    arguments:
+      - '@entity_type.manager'
+      - '@component.manager'
+      - '@license_handler'
+
+  model_serializer:
+    class: Drupal\mof\ModelSerializer
+    arguments:
+      - '@serializer'
+      - '@model_evaluator'
+      - '@component.manager'
+
+  component.manager:
+    class: Drupal\mof\ComponentManager
+    arguments:
+      - '@config.factory'
+
+  github:
+    class: Drupal\mof\GitHubService
+    arguments:
+      - '@http_client'
+      - '@current_user'
+      - '@entity_type.manager'
+      - '@logger.factory'
+
+  mof.event_subscriber:
+    class: Drupal\mof\EventSubscriber\GitHubSubscriber
+    tags:
+      - { name: 'event_subscriber' }

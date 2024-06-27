@@ -1,0 +1,46 @@
+model-evaluate:
+  version: VERSION
+  css:
+    layout:
+      css/layout/model_add_form.css: {}
+
+model-submit:
+  version: VERSION
+  css:
+    theme:
+      css/theme/model_submit.css: {}
+  js:
+    js/model_add_form.js: {}
+
+model-evaluation:
+  version: VERSION
+  css:
+    layout:
+      css/layout/model_evaluation.css: {}
+    theme:
+      css/theme/model_evaluation.css: {}
+
+model-list:
+  version: VERSION
+  css:
+    layout:
+      css/layout/model_list.css: {}
+  dependencies:
+    - mof/tablesaw
+
+model-badge:
+  version: VERSION
+  css:
+    layout:
+      css/layout/badge.css: {}
+  js:
+    js/badge.js: {}
+
+tablesaw:
+  version: 01814b2
+  css:
+    component:
+      /libraries/tablesaw/dist/tablesaw.css: {}
+  js:
+    /libraries/tablesaw/dist/tablesaw.js: {}
+    /libraries/tablesaw/dist/tablesaw-init.js: {}

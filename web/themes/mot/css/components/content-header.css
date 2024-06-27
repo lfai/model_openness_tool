@@ -1,0 +1,30 @@
+.content-header {
+  overflow: hidden;
+  padding: var(--space-l) 0;
+  background-color: var(--color-gray-050);
+}
+
+.content-header .header-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0 auto;
+  max-width: 1280px;
+  padding: 0 1em;
+}
+
+.content-header .header-wrapper .block-mot-sitebranding {
+  flex: 0 1;
+}
+
+.content-header .header-wrapper img {
+  width: 200px;
+  height: auto;
+}
+
+@media screen and (max-width: 428px) {
+  .content-header .header-wrapper {
+    justify-content: center;
+  }
+}

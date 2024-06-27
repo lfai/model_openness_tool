@@ -1,0 +1,116 @@
+entity.model.settings:
+  path: '/admin/structure/model'
+  defaults:
+    _form: \Drupal\mof\Form\ModelSettingsForm
+    _title: 'Model Openness Framework'
+  requirements:
+    _permission: 'administer model'
+
+mof.model.evaluate_form:
+  path: '/model/evaluate'
+  defaults:
+    _entity_form: model.evaluate
+    _title: 'Evaluate model'
+  requirements:
+    _access: 'TRUE'
+
+entity.model.admin_edit_form:
+  path: '/admin/model/{model}/edit'
+  defaults:
+    _entity_form: model.admin
+    _title_callback: \Drupal\mof\Controller\ModelController::pageTitle
+  requirements:
+    _permission: 'administer model'
+
+entity.model.admin_submit_form:
+  path: '/admin/model/add'
+  defaults:
+    _entity_form: model.admin
+    _title: 'Model administration'
+  requirements:
+    _permission: 'administer model'
+
+entity.model.admin_collection:
+  path: '/admin/models'
+  defaults:
+    _controller: \Drupal\mof\Controller\ModelController::collection
+    _title: 'Model administration'
+  requirements:
+    _permission: 'administer model'
+
+entity.model.json:
+  path: '/model/{model}/json'
+  defaults:
+    _controller: \Drupal\mof\Controller\ModelController::json
+    _title: 'Model JSON'
+  options:
+    parameters:
+      model:
+        type: entity:model
+  requirements:
+    _entity_access: model.view
+    _custom_access: \Drupal\mof\Controller\ModelController::pendingAccessCheck
+
+entity.model.admin_import:
+  path: '/admin/model/import'
+  defaults:
+    _form: \Drupal\mof\Form\ModelImportForm
+    _title: 'Import models'
+  requirements:
+    _permission: 'administer model'
+
+entity.model.report:
+  path: '/model/{model}/report'
+  defaults:
+    _controller: \Drupal\mof\Controller\ReportFormController::addForm
+    _title_callback: \Drupal\webform\Controller\WebformEntityController::title
+    webform: 'report'
+  options:
+    parameters:
+      webform:
+        type: entity:webform
+      model:
+        type: entity:model
+  requirements:
+    _entity_access: model.view
+    webform: 'report'
+
+entity.model.badge:
+  path: '/model/{model}/badges'
+  defaults:
+    _controller: \Drupal\mof\Controller\ModelController::badgePage
+    _title_callback: \Drupal\mof\Controller\ModelController::pageTitle
+  options:
+    parameters:
+      model:
+        type: entity:model
+  requirements:
+    _entity_access: model.view
+    _custom_access: \Drupal\mof\Controller\ModelController::pendingAccessCheck
+
+entity.model.set_status:
+  path: '/model/{model}/status/{status}'
+  defaults:
+    _controller: \Drupal\mof\Controller\ModelController::setStatus
+    _title: 'Approve model'
+  options:
+    parameters:
+      model:
+        type: entity:model
+  requirements:
+    _permission: 'administer model'
+    status: 'unapproved|approved|rejected'
+
+mof.model_badge:
+  path: '/model/{model}/badge/{class}'
+  defaults:
+    _controller: \Drupal\mof\Controller\ModelController::badge
+    _title: 'Model Badge'
+  options:
+    parameters:
+      model:
+        type: entity:model
+  requirements:
+    _entity_access: model.view
+    _custom_access: \Drupal\mof\Controller\ModelController::pendingAccessCheck
+    class: '1|2|3'

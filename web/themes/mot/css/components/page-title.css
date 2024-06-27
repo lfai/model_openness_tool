@@ -1,0 +1,11 @@
+/**
+ * @file
+ * Page title.
+ */
+
+.page-title {
+  display: inline-block;
+  margin: 0;
+  font-size: var(--font-size-h1);
+  -webkit-font-smoothing: antialiased;
+}

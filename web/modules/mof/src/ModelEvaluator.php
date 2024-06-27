@@ -1,0 +1,339 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Drupal\mof;
+
+use Drupal\mof\ModelInterface;
+use Drupal\mof\ComponentManagerInterface;
+use Drupal\mof\LicenseHandlerInterface;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\Core\StringTranslation\StringTranslationTrait;
+use Drupal\Core\StringTranslation\TranslatableMarkup;
+
+final class ModelEvaluator implements ModelEvaluatorInterface {
+
+  use StringTranslationTrait;
+
+  /** @var \Drupal\mof\Entity\Model. */
+  private $model;
+
+  /**
+   * Construct a ModelEvaluator instance.
+   */
+  public function __construct(
+    private EntityTypeManagerInterface $entityTypeManager,
+    private ComponentManagerInterface $componentManager,
+    private LicenseHandlerInterface $licenseHandler
+  ) {}
+
+  /**
+   * Set the model to evaluate.
+   */
+  public function setModel(ModelInterface $model): self {
+    $this->model = $model;
+    return $this;
+  }
+
+  /**
+   * Return the specified class label.
+   */
+  public function getClassLabel(int $class): TranslatableMarkup {
+    switch ($class) {
+    case 0:
+      return $this->t('Unclassified');
+
+    case 1:
+      return $this->t('Class I - Open Science');
+
+    case 2:
+      return $this->t('Class II - Open Tooling');
+
+    case 3:
+      return $this->t('Class III - Open Model');
+
+    case -1:
+      return $this->t('Pending evaluation');
+
+    default:
+      // @todo Implement ModelEvaluatorException.
+      throw new \Exception($this->t('Specify class 1, 2 or 3'));
+      return $this->t('Invalid class');
+    }
+  }
+
+  /**
+   * Build an evaluation report for the model.
+   *
+   * @return array
+   *   An array containing 'missing' and 'invalid' licenses for component ids.
+   */
+  public function evaluate(): array {
+    if (empty($this->model)) {
+      // @todo Implement ModelEvaluatorException.
+      throw new \Exception($this->t('Cannot evaluate. No model set.'));
+    }
+
+    $evals = [];
+
+    // Return an empty evaluation if model is pending.
+    if ($this->model->isPending()) {
+      return $evals;
+    }
+
+    $required = $this->getRequiredComponents();
+
+    for ($i = 3; $i >= 1; $i--) {
+      $components = [];
+
+      for ($j = $i; $j <= 3; $j++) {
+        $components = array_merge($components, $required[$j]);
+      }
+
+      $evals[$i] = [
+        'missing' => $this->getMissing($components),
+        'invalid' => $this->getInvalid($components),
+        'included' => $this->getIncluded($components),
+        'conditional' => $i === 3 ? $this->hasConditionalPass() : FALSE,
+      ];
+    }
+
+    return $evals;
+  }
+
+  /**
+   * Get the model's final classification.
+   */
+  public function getClassification(bool $label = TRUE): TranslatableMarkup|int {
+    $evals = $this->evaluate();
+    $class = 0;
+
+    if (empty($evals)) {
+      $class = -1;
+    }
+    else if (empty($evals[1]['missing']) && empty($evals[1]['invalid'])) {
+      $class = 1;
+    }
+    else if (empty($evals[2]['missing']) && empty($evals[2]['invalid'])) {
+      $class = 2;
+    }
+    else if ((empty($evals[3]['missing']) && empty($evals[3]['invalid'])) || $evals[3]['conditional']) {
+      $class = 3;
+    }
+
+    return $label ? $this->getClassLabel($class) : $class;
+  }
+
+  /**
+   * Generate badges for each classification.
+   *
+   * @todo Move badging related functions to its own class.
+   */
+  public function generateBadge(): array {
+    $build = [];
+
+    // Do not generate badges if model is pending evaluation.
+    if ($this->model->isPending()) {
+      return $build;
+    }
+
+    $evals = $this->evaluate();
+
+    for ($i = 3; $i >= 1; $i--) {
+      $progress = $this->getProgress($i);
+
+      if ($evals[$i]['conditional'] === TRUE) {
+        $status = $this->t('Conditional Pass');
+        $text_color = '#fff';
+        $background_color = '#4c1';
+      }
+      else if ($progress === 100.00) {
+        $status = $this->t('Pass');
+        $text_color = '#fff';
+        $background_color = '#4c1';
+      }
+      else if (!empty($evals[$i]['invalid'])) {
+        $status = $this->t('Fail');
+        $text_color = '#fff';
+        $background_color = '#c2241b';
+      }
+      else {
+        $status = $this->t('In progress (@progress%)', ['@progress' => round($progress)]);
+        $text_color = '#000';
+        $background_color = '#e9c503';
+      }
+
+      $build[$i] = [
+        '#theme' => 'badge',
+        '#status' => $status,
+        '#label' => $this->getClassLabel($i),
+        '#text_color' => $text_color,
+        '#background_color' => $background_color,
+        '#weight' => $i,
+      ];
+    }
+
+    return $build;
+  }
+
+  /**
+   * Get the model's total progress.
+   */
+  public function getTotalProgress(): float {
+    if ($this->model->isPending()) {
+      return -1;
+    }
+
+    $total = 0;
+    for ($i = 1; $i <= 3; $i++) {
+      $total += $this->getProgress($i);
+    }
+
+    return $total / 3;
+  }
+
+  /**
+   * Class 3 has a conditional pass if these components have an open source license.
+   *  - `Model parameters (Final)` (10)
+   */
+  private function hasConditionalPass(): bool {
+    $licenses = $this->model->getLicenses();
+    return isset($licenses[10]) && $this->licenseHandler->isOpenSource($licenses[10]['license']);
+  }
+
+  /**
+   * Returns a percentage indicating the models progress for specified class.
+   *
+   * @param int $class
+   *   Class 1, 2, or 3
+   *
+   * @return float
+   *   Progress percentage
+   */
+  private function getProgress(int $class): float {
+    $required = $this->getRequiredComponents();
+    $evaluate = $this->evaluate();
+
+    if (empty($evaluate)) {
+      return 0;
+    }
+
+    if ($class === 3 && $evaluate[3]['conditional'] === true) {
+      return 100;
+    }
+
+    $total = 0;
+    for ($i = 3; $i >= $class; $i--) {
+      $total += sizeof($required[$i]);
+    }
+
+    $intersect = array_intersect($evaluate[$class]['invalid'], $evaluate[$class]['included']);
+    $invalid = !empty($intersect) ? sizeof($evaluate[$class]['included']) : 0;
+    $invalid += sizeof($evaluate[$class]['missing']);
+
+    return ($total - $invalid) / $total * 100;
+  }
+
+  /**
+   * Return an array with required components keyed by class number.
+   */
+  private function getRequiredComponents(): array {
+    return [
+      3 => $this->componentManager->getRequired(3),
+      2 => $this->componentManager->getRequired(2),
+      1 => $this->componentManager->getRequired(1),
+    ];
+  }
+
+  /**
+   * Return a flattened array of excluded license IDs.
+   */
+  private function getExtraLicenses(): array {
+    $extra = $this->licenseHandler->getExtraOptions();
+    return array_column($extra, 'licenseId');
+  }
+
+  /**
+   * Filter a list of completed components.
+   * Remove any invalid components from the array.
+   */
+  private function filterCompleted(): array {
+    $excluded = $this->getExtraLicenses();
+    $completed = $this->model->getCompletedComponents();
+    $licenses = $this->model->getLicenses();
+
+    foreach ($this->model->getCompletedComponents() as $key => $cid) {
+      if (array_key_exists($cid, $licenses) && in_array($licenses[$cid]['license'], $excluded)) {
+        unset($completed[$key]);
+      }
+    }
+
+    return array_values($completed);
+  }
+
+  /**
+   * Check which components are included and valid.
+   *
+   * @param array $required Required components.
+   *
+   * @return array Included components with a valid license.
+   */
+  private function getIncluded(array $required): array {
+    return array_intersect($required, $this->filterCompleted());
+  }
+
+  /**
+   * Check which required components are missing/ no license selected.
+   *
+   * @param array $required Required components.
+   *
+   * @return array Incomplete/ missing components.
+   */
+  private function getMissing(array $required): array {
+    return array_diff($required, $this->filterCompleted());
+  }
+
+  /**
+   * Check if required components have a valid license.
+   *
+   * @param array $required Required components.
+   *
+   * @return array Invalid components.
+   */
+  private function getInvalid(array $required): array {
+    $invalid = [];
+    $licenses = $this->model->getLicenses();
+    $excluded = $this->getExtraLicenses();
+
+    // Remove `Component not included`
+    // It does not mean the component is invalid.
+    unset($excluded[2]);
+
+    foreach ($this->model->getCompletedComponents() as $cid) {
+      if (in_array($cid, $required)) {
+        $cid = (int)$cid;
+
+        // Special case for component 10: Model parameters (Final).
+        // Conditional passes are valid.
+        if ($cid === 10 && $this->hasConditionalPass()) {
+          continue;
+        }
+
+        // License is invalid if it's in $excluded.
+        if (in_array($licenses[$cid]['license'], $excluded)) {
+          $invalid[] = $cid;
+        }
+
+        // License is invalid if it doesn't belong to a component specific license.
+        $component_licenses = $this->componentManager->getComponent($cid)->getLicenses();
+        if (!in_array($licenses[$cid]['license'], array_column($component_licenses, 'licenseId'))) {
+          $invalid[] = $cid;
+        }
+      }
+    }
+
+    return $invalid;
+  }
+
+}
+

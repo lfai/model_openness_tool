@@ -1,0 +1,35 @@
+name: Model Openness Tool
+description: Model Openness Tool theme
+type: theme
+core_version_requirement: ^10
+base theme: claro
+logo: mof-horizontal-black.png
+
+regions:
+  header: Header
+  pre_content: Pre-content
+  highlighted: Highlighted
+  help: Help
+  content: Content
+  footer: Footer
+  page_top: Page top
+  page_bottom: Page bottom
+
+libraries:
+  - mot/global
+
+libraries-override:
+  claro/global-styling:
+    css:
+      base:
+        css/base/elements.css: css/base/elements.css
+      component:
+        css/components/content-header.css: css/components/content-header.css
+        css/components/tables.css: css/components/tables.css
+        css/components/page-title.css: css/components/page-title.css
+        css/components/messages.css: css/components/messages.css
+        css/classy/components/menu.css: css/components/menu.css
+  claro/system.admin:
+    css:
+      layout:
+        css/layout/system-admin--layout.css: css/layout/layout.css

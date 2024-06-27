@@ -1,0 +1,10 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - mof
+id: model_save_action
+label: 'Save model'
+type: model
+plugin: entity:save_action:model
+configuration: {  }

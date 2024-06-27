@@ -1,0 +1,50 @@
+ul.menu {
+  margin-left: 1em;
+  padding: 0;
+  list-style: none outside;
+  text-align: left;
+}
+
+[dir="rtl"] ul.menu {
+  margin-right: 1em;
+  margin-left: 0;
+  text-align: right;
+}
+
+.menu-item--expanded {
+  list-style-type: circle;
+  list-style-image: url(../../../../../misc/menu-expanded.png);
+}
+
+.menu-item--collapsed {
+  list-style-type: disc;
+  list-style-image: url(../../../../../misc/menu-collapsed.png);
+}
+
+[dir="rtl"] .menu-item--collapsed {
+  list-style-image: url(../../../../../misc/menu-collapsed-rtl.png);
+}
+
+.menu-item {
+  margin: 0;
+  padding-top: 0.2em;
+}
+
+ul.menu a.is-active {
+  color: #000;
+}
+
+.content-header .header-wrapper ul.menu li {
+  display: inline-block;
+  margin: 0 2rem;
+}
+
+@media screen and (max-width: 428px) {
+  #block-mot-main-menu {
+    display: none;
+  }
+
+  #block-mot-mobile-menu-trigger {
+    margin-top: 20px;
+  }
+}

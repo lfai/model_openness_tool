@@ -1,0 +1,13 @@
+.env
+/vendor/
+/patches/
+/web/*
+!/web/modules
+!/web/themes
+/web/modules/contrib
+/web/modules/README.txt
+/web/themes/README.txt
+!/web/modules/mof
+!/web/themes/mot
+.gitattributes
+.editorconfig

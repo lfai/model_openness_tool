@@ -1,0 +1,52 @@
+entity.model.settings:
+  title: 'Settings'
+  route_name: entity.model.settings
+  base_route: entity.model.settings
+
+entity.model.admin:
+  title: 'Admin'
+  route_name: entity.model.admin_edit_form
+  base_route: entity.model.canonical
+  weight: -10
+
+entity.model.view:
+  title: 'View'
+  route_name: entity.model.canonical
+  base_route: entity.model.canonical
+
+entity.model.badges:
+  title: 'Badges'
+  route_name: entity.model.badge
+  base_route: entity.model.canonical
+
+entity.model.report:
+  title: 'Report'
+  route_name: entity.model.report
+  base_route: entity.model.canonical
+
+entity.model.edit_form:
+  title: 'Edit'
+  route_name: entity.model.edit_form
+  base_route: entity.model.canonical
+
+entity.model.delete_form:
+  title: 'Delete'
+  route_name: entity.model.delete_form
+  base_route: entity.model.canonical
+  weight: 10
+
+entity.model.collection:
+  title: 'Models'
+  route_name: entity.model.collection
+  base_route: system.admin_content
+  weight: 10
+
+entity.model.admin_collection:
+  title: 'Models'
+  route_name: entity.model.admin_collection
+  base_route: entity.model.admin_collection
+
+entity.license.collection:
+  title: 'Licenses'
+  route_name: entity.license.collection
+  base_route: entity.model.admin_collection
