@@ -1,6 +1,5 @@
 .env
 /vendor/
-/patches/
 /web/*
 !/web/modules
 !/web/themes

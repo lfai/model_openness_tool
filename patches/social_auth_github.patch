@@ -1,0 +1,28 @@
+diff -ur web/modules/contrib/social_auth_github/src/GitHubAuthManager.php web/modules/contrib/social_auth_github.patched/src/GitHubAuthManager.php
+--- web/modules/contrib/social_auth_github/src/GitHubAuthManager.php	2022-07-15 11:25:25.000000000 -0400
++++ web/modules/contrib/social_auth_github.patched/src/GitHubAuthManager.php	2024-06-17 13:17:50.802129383 -0400
+@@ -4,11 +4,13 @@
+ 
+ use Drupal\Core\Config\ConfigFactory;
+ use Drupal\Core\Logger\LoggerChannelFactoryInterface;
++use Drupal\Core\Url;
+ use Drupal\social_auth\AuthManager\OAuth2Manager;
+ use Drupal\social_auth\User\SocialAuthUser;
+ use Drupal\social_auth\User\SocialAuthUserInterface;
+ use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
+ use Symfony\Component\HttpFoundation\RequestStack;
++use Symfony\Component\HttpFoundation\RedirectResponse;
+ 
+ /**
+  * Contains all the logic for GitHub OAuth2 authentication.
+@@ -46,6 +48,10 @@
+       $this->loggerFactory->get('social_auth_github')
+         ->error('There was an error during authentication. Exception: ' . $e->getMessage());
+     }
++    catch (\BadMethodCallException $e) {
++      $redirect = new RedirectResponse(Url::fromRoute('<front>')->toString());
++      $redirect->send();
++    }
+   }
+ 
+   /**

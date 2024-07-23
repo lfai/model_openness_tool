@@ -56,7 +56,7 @@
     "extra": {
         "patches": {
           "drupal/social_auth": {
-            "#3041561: Disable traditional user registration interface": "patches/1.patch"
+            "#3041561: Disable traditional user registration interface": "patches/3041561.patch"
           },
           "drupal/social_auth_github": {
             "Github cancel login fix": "patches/social_auth_github.patch"
