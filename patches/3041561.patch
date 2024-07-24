@@ -1,0 +1,54 @@
+diff --git a/src/Form/SocialAuthSettingsForm.php b/src/Form/SocialAuthSettingsForm.php
+index c84ce167090ee8da5f7ca0644db28d397c02539d..671ce3a6dbc9813901daa399c6431b26c3a10089 100755
+--- a/src/Form/SocialAuthSettingsForm.php
++++ b/src/Form/SocialAuthSettingsForm.php
+@@ -90,6 +90,18 @@ public function buildForm(array $form, FormStateInterface $form_state) {
+       ],
+     ];
+ 
++    $form['social_auth']['register_bypass'] = [
++      '#type' => 'checkbox',
++      '#title' => $this->t('Allow user registration even if not allowed in Drupal settings'),
++      '#default_value' => $social_auth_config->get('register_bypass'),
++    ];
++
++    $form['social_auth']['register_bypass_active'] = [
++      '#type' => 'checkbox',
++      '#title' => $this->t('Created user are active by default'),
++      '#default_value' => $social_auth_config->get('register_bypass_active'),
++    ];
++
+     $form['social_auth']['redirect_user_form'] = [
+       '#type' => 'checkbox',
+       '#title' => $this->t('Redirect new users to Drupal user form'),
+@@ -147,6 +159,8 @@ public function submitForm(array &$form, FormStateInterface $form_state) {
+     $this->config('social_auth.settings')
+       ->set('post_login', $values['post_login'])
+       ->set('user_allowed', $values['user_allowed'])
++      ->set('register_bypass', $values['register_bypass'])
++      ->set('register_bypass_active', $values['register_bypass_active'])
+       ->set('redirect_user_form', $values['redirect_user_form'])
+       ->set('disable_admin_login', $values['disable_admin_login'])
+       ->set('disabled_roles', $values['disabled_roles'])
+diff --git a/src/SettingsTrait.php b/src/SettingsTrait.php
+index dc5f9be485215dff17e84d64c5b5a4e4a03ccb14..c2e4698c9ad0dd22240eb312410a0169ceff4ada 100644
+--- a/src/SettingsTrait.php
++++ b/src/SettingsTrait.php
+@@ -42,7 +42,7 @@ trait SettingsTrait {
+   protected function isRegistrationDisabled() {
+     // Check if Drupal account registration settings is Administrators only
+     // OR if it is disabled in Social Auth Settings.
+-    return $this->configFactory->get('user.settings')->get('register') == 'admin_only'
++    return ($this->configFactory->get('user.settings')->get('register') == 'admin_only' && !$this->configFactory->get('social_auth.settings')->get('register_bypass'))
+       || $this->configFactory->get('social_auth.settings')->get('user_allowed') == 'login';
+   }
+ 
+@@ -124,7 +124,7 @@ protected function redirectToUserForm(UserInterface $drupal_user) {
+    */
+   protected function getNewUserStatus() {
+     $allowed = $this->configFactory->get('user.settings')->get('register');
+-    return (int) ($allowed === 'visitors');
++    return (int) ($allowed === 'visitors' || $this->configFactory->get('social_auth.settings')->get('register_bypass_active'));
+   }
+ 
+   /**
