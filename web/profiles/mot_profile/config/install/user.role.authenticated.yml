@@ -1,0 +1,21 @@
+uuid: 8a64d84e-56b8-4b2a-8b47-d108ec28fc73
+langcode: en
+status: true
+dependencies:
+  config:
+    - filter.format.webform_default
+  module:
+    - filter
+    - mof
+    - system
+_core:
+  default_config_hash: dJ0L2DNSj5q6XVZAGsuVDpJTh5UeYkIPwKrUOOpr8YI
+id: authenticated
+label: 'Authenticated user'
+weight: 1
+is_admin: false
+permissions:
+  - 'access content'
+  - 'submit model'
+  - 'use text format webform_default'
+  - 'view model collection'

@@ -1,0 +1,17 @@
+uuid: 6080a952-47b4-4673-83b6-b871823bda2b
+langcode: en
+status: true
+dependencies:
+  config:
+    - filter.format.full_html
+  module:
+    - filter
+    - mof
+id: admin
+label: Admin
+weight: 2
+is_admin: null
+permissions:
+  - 'administer licenses'
+  - 'administer model'
+  - 'use text format full_html'

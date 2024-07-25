@@ -1,0 +1,35 @@
+name: 'Model Openness Tool'
+type: profile
+description: 'Installation profile for model openness tool'
+core_version_requirement: ^10
+
+distribution:
+  name: 'Model Openness Tool'
+
+dependencies:
+  - drupal:block
+  - drupal:block_content
+  - drupal:breakpoint
+  - drupal:dblog
+  - drupal:field
+  - drupal:filter
+  - drupal:mysql
+  - drupal:system
+  - drupal:user
+  - drupal:file
+  - drupal:link
+  - drupal:options
+  - drupal:text
+  - drupal:serialization
+  - block_exclude_pages:block_exclude_pages
+  - cheeseburger_menu:cheeseburger_menu
+  - fontawesome:fontawesome
+  - social_api:social_api
+  - social_api:social_auth
+  - social_api:social_auth_github
+  - webform:webform
+  - webform:webform_submission_log
+  - mof:mof
+
+themes:
+  - mot

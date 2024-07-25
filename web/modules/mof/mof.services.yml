@@ -5,6 +5,12 @@ services:
     arguments:
       - '@entity_type.manager'
 
+  license_importer:
+    class: Drupal\mof\LicenseImporter
+    arguments:
+      - '@entity_type.manager'
+      - '@extension.list.module'
+
   model_evaluator:
     class: Drupal\mof\ModelEvaluator
     arguments:

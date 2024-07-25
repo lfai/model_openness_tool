@@ -1,0 +1,25 @@
+uuid: 431cd2f4-94c5-46b3-9a4f-678c92589a6c
+langcode: en
+status: true
+dependencies:
+  config:
+    - block.block.mot_mobile_menu
+  module:
+    - cheeseburger_menu
+  theme:
+    - mot
+id: mot_mobile_menu_trigger
+theme: mot
+region: header
+weight: 0
+provider: null
+plugin: cheeseburger_menu_trigger
+settings:
+  id: cheeseburger_menu_trigger
+  label: 'Cheeseburger menu trigger'
+  label_display: '0'
+  provider: cheeseburger_menu
+  block_to_trigger: mot_mobile_menu
+  breakpoints: {  }
+  custom_media_query: 'screen and (min-width:429px)'
+visibility: {  }

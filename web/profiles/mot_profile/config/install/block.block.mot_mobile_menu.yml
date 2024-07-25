@@ -1,0 +1,60 @@
+uuid: 867b3cd6-8239-4edd-8144-97731221e2a9
+langcode: en
+status: true
+dependencies:
+  config:
+    - system.menu.main
+  module:
+    - cheeseburger_menu
+  theme:
+    - mot
+id: mot_mobile_menu
+theme: mot
+region: header
+weight: 0
+provider: null
+plugin: cheeseburger_menu
+settings:
+  id: cheeseburger_menu
+  label: 'Cheeseburger menu'
+  label_display: '0'
+  provider: cheeseburger_menu
+  default_css: true
+  default_js: true
+  hidden: true
+  parent_menu_as_link: false
+  show_navigation: true
+  invoke_hooks: false
+  track_active_trail: true
+  left_side_background_color: '#f3f4f9'
+  left_side_background_opacity: '1'
+  left_side_text_color: '#ffffff'
+  left_side_text_opacity: '1'
+  right_side_background_color: '#ffffff'
+  right_side_background_opacity: '1'
+  right_side_text_color: '#000000'
+  right_side_text_opacity: '1'
+  trigger_color: '#0723b0'
+  trigger_opacity: '1'
+  trigger_background_color: '#f3f4f9'
+  trigger_background_opacity: '1'
+  scrollbar_color: '#b4f5fd'
+  scrollbar_opacity: '1'
+  menus:
+    main:
+      id: main
+      weight: -99
+      settings:
+        max_depth: 0
+        initial_visibility_level: 1
+        default_expanded: false
+        show_title_in_navigation: true
+        collapsible_title: false
+        title_default_expanded: true
+        show_title_above_menu: true
+        override_title: false
+        title_override: ''
+        show_links_in_navigation: false
+        icon: ''
+      menu_type: menu
+visibility: {  }
