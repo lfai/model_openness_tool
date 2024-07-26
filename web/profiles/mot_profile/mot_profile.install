@@ -1,0 +1,69 @@
+<?php declare(strict_types=1);
+
+use Drupal\block_content\Entity\BlockContent;
+use Drupal\block\Entity\Block;
+use Drupal\path_alias\Entity\PathAlias;
+
+/**
+ * Implements hook_install().
+ *
+ * Perform the following post-installation:
+ * - Set 'mot' as default theme
+ * - Import licenses from mof module
+ * - Create path alias for contact form
+ * - Create disclaimer text block
+ *
+ */
+function mot_profile_install() {
+  // Set default theme.
+  \Drupal::configFactory()
+    ->getEditable('system.theme')
+    ->set('default', 'mot')
+    ->save();
+
+  // Import licenses.
+  \Drupal::service('license_importer')->import();
+
+  // Create /contact URL alias to webform.
+  PathAlias::create([
+    'path' => '/webform/contact',
+    'alias' => '/contact',
+  ])
+  ->save();
+
+  // Create disclaimer block.
+  $disclaimer = BlockContent::create([
+    'type' => 'basic',
+    'info' => 'Disclaimer',
+    'body' => [
+      'value' => 'This is beta software and may contain inaccurate information. If you experience errors with the tool or discover inaccurate information, please use the “report” feature in the model details to report inaccuracies or for site issues please <a href="/contact">contact us</a>.',
+      'format' => 'full_html',
+    ],
+  ]);
+
+  $disclaimer->save();
+
+  // Assign disclaimer block to help region.
+  Block::create([
+    'id' => 'mot_disclaimer',
+    'theme' => 'mot',
+    'region' => 'help',
+    'plugin' => 'block_content:' . $disclaimer->uuid(),
+    'settings' => [
+      'label' => 'Disclaimer',
+      'label_display' => 'visible',
+      'provider' => 'block_content',
+      'status' => true,
+      'info' => '',
+      'view_mode' => 'full',
+    ],
+    'visibility' => [
+      'request_path' => [
+        'id' => 'request_path',
+        'negate' => false,
+        'pages' => "/models\r\n/model/*\r\n!/model/*/*\r\n!/model/evaluate\r\n!/model/submit",
+      ],
+    ],
+  ])
+  ->save();
+}

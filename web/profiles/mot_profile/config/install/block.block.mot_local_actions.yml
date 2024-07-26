@@ -1,0 +1,20 @@
+uuid: e5613b56-b262-4d69-b496-7eff98cdf164
+langcode: en
+status: true
+dependencies:
+  theme:
+    - mot
+_core:
+  default_config_hash: CdXfDmRgAvms7EQovxxWPdYi0GitxeRbVtScYK16ZH0
+id: mot_local_actions
+theme: mot
+region: content
+weight: -4
+provider: null
+plugin: local_actions_block
+settings:
+  id: local_actions_block
+  label: 'Primary admin actions'
+  label_display: '0'
+  provider: core
+visibility: {  }

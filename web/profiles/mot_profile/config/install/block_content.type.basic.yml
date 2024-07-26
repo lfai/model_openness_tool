@@ -1,0 +1,8 @@
+uuid: 719c4a40-977b-4889-9964-e2857418d23c
+langcode: en
+status: true
+dependencies: {  }
+id: basic
+label: Basic
+revision: 0
+description: 'Basic block with HTML or plain-text'

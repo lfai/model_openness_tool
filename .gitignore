@@ -3,10 +3,17 @@
 /web/*
 !/web/modules
 !/web/themes
+!/web/profiles
 /web/modules/contrib
 /web/modules/README.txt
 /web/themes/README.txt
+/web/profiles/README.txt
 !/web/modules/mof
 !/web/themes/mot
+/web/sites/*
+/web/sites/default/*
+!/web/sites
+!/web/sites/default
+!/web/sites/default/settings.php
 .gitattributes
 .editorconfig

@@ -53,6 +53,11 @@
     "autoload": {
       "files": ["load.environment.php"]
     },
+    "scripts": {
+      "post-install-cmd": [
+        "php scripts/install-tablesaw.php"
+      ]
+    },
     "extra": {
         "patches": {
           "drupal/social_auth": {

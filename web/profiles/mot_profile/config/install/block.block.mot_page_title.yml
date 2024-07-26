@@ -1,0 +1,20 @@
+uuid: 160fac42-6f1e-494d-9eba-1f1ef157ea0a
+langcode: en
+status: true
+dependencies:
+  theme:
+    - mot
+_core:
+  default_config_hash: fNwDdW063tk_ktzSWzZVeQS9wzvLooVO280BQ9WrsIs
+id: mot_page_title
+theme: mot
+region: pre_content
+weight: -5
+provider: null
+plugin: page_title_block
+settings:
+  id: page_title_block
+  label: 'Page title'
+  label_display: '0'
+  provider: core
+visibility: {  }

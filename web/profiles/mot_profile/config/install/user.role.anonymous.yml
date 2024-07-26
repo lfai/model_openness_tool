@@ -1,0 +1,16 @@
+uuid: d7662231-7c0a-42da-b5b7-3c8879810eb3
+langcode: en
+status: true
+dependencies:
+  module:
+    - mof
+    - system
+_core:
+  default_config_hash: j5zLMOdJBqC0bMvSdth5UebkprJB8g_2FXHqhfpJzow
+id: anonymous
+label: 'Anonymous user'
+weight: 0
+is_admin: false
+permissions:
+  - 'access content'
+  - 'view model collection'

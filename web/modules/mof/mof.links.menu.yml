@@ -4,11 +4,33 @@ entity.model.settings:
   route_name:  entity.model.settings
   parent: system.admin_structure
 
+entity.model.models:
+  title: 'Models'
+  description: 'List models'
+  route_name: entity.model.collection
+  menu_name: main
+  weight: 0
+
+entity.model.evaluate_model:
+  title: 'Evaluate Model'
+  description: 'Evaluate your model'
+  route_name: mof.model.evaluate_form
+  menu_name: main
+  weight: 3
+
+entity.model.submit_model:
+  title: 'Submit Model'
+  description: 'Submit your model'
+  route_name: entity.model.add_form
+  menu_name: main
+  weight: 6
+
 entity.model.admin:
   title: 'Admin'
   description: 'Administer models'
   route_name: entity.model.admin_collection
   menu_name: main
+  weight: 10
 
 entity.model.collection:
   title: 'Models'
@@ -20,3 +42,4 @@ mof.oauth2_login_logout:
   title: 'Login'
   menu_name: main
   class: Drupal\mof\Plugin\Menu\Oauth2LoginLogoutMenuLink
+  weight: 20
