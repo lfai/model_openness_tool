@@ -5,6 +5,8 @@ core_version_requirement: ^10
 
 distribution:
   name: 'Model Openness Tool'
+  install:
+    finish_url: /models
 
 dependencies:
   - drupal:block
@@ -20,6 +22,7 @@ dependencies:
   - drupal:link
   - drupal:options
   - drupal:text
+  - drupal:path
   - drupal:serialization
   - block_exclude_pages:block_exclude_pages
   - cheeseburger_menu:cheeseburger_menu

@@ -2,6 +2,7 @@
 
 use Drupal\block_content\Entity\BlockContent;
 use Drupal\block\Entity\Block;
+use Drupal\path_alias\Entity\PathAlias;
 
 /**
  * Implements hook_install().
@@ -9,11 +10,11 @@ use Drupal\block\Entity\Block;
  * Perform the following post-installation:
  * - Set 'mot' as default theme
  * - Import licenses from mof module
+ * - Create path alias for contact form
  * - Create disclaimer text block
  *
  */
 function mot_profile_install() {
-
   // Set default theme.
   \Drupal::configFactory()
     ->getEditable('system.theme')
@@ -22,6 +23,13 @@ function mot_profile_install() {
 
   // Import licenses.
   \Drupal::service('license_importer')->import();
+
+  // Create /contact URL alias to webform.
+  PathAlias::create([
+    'path' => '/webform/contact',
+    'alias' => '/contact',
+  ])
+  ->save();
 
   // Create disclaimer block.
   $disclaimer = BlockContent::create([
@@ -35,7 +43,8 @@ function mot_profile_install() {
 
   $disclaimer->save();
 
-  $block = Block::create([
+  // Assign disclaimer block to help region.
+  Block::create([
     'id' => 'mot_disclaimer',
     'theme' => 'mot',
     'region' => 'help',
@@ -55,8 +64,6 @@ function mot_profile_install() {
         'pages' => "/models\r\n/model/*\r\n!/model/*/*\r\n!/model/evaluate\r\n!/model/submit",
       ],
     ],
-  ]);
-
-  $block->save();
-
+  ])
+  ->save();
 }

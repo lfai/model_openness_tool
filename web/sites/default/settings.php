@@ -2,19 +2,21 @@
 
 // phpcs:ignoreFile
 
-                                                                                
 $databases = [];
 $databases['default']['default'] = [
   'database' => $_ENV['DB_NAME'],
   'username' => $_ENV['DB_USER'],
   'password' => $_ENV['DB_PASS'],
+  'prefix' => '',
   'host' => $_ENV['DB_HOST'],
   'port' => $_ENV['DB_PORT'],
+  'isolation_level' => 'READ COMMITTED',
   'driver' => 'mysql',
-  'prefix' => '',
-  'collation' => 'utf8mb4_general_ci',
+  'namespace' => 'Drupal\\mysql\\Driver\\Database\\mysql',
+  'autoload' => 'core/modules/mysql/src/Driver/Database/mysql/',
 ];
 
+$settings['hash_salt'] = $_ENV['HASH_SALT'];
 $settings['config_sync_directory'] = '../config/sync';
 $settings['update_free_access'] = FALSE;
 $settings['container_yamls'][] = $app_root . '/' . $site_path . '/services.yml';
@@ -25,4 +27,3 @@ $settings['file_scan_ignore_directories'] = [
   'node_modules',
   'bower_components',
 ];
-
