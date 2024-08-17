@@ -140,7 +140,7 @@ class ModelViewBuilder extends EntityViewBuilder {
     }
 
     if ($evaluation[3]['conditional']) {
-      $this->messenger->addMessage($this->t('This model has a Class III conditional pass because it has an open source license for Model Parameters (Final)'));
+      $this->messenger->addMessage($this->t('This model conditionally meets Class III because it has an open source license for Model Parameters (Final)'));
     }
 
     $build['#attached']['library'][] = 'mof/model-evaluation';
