@@ -1,20 +1,51 @@
+## Prerequisites
+
+The MOT is built on [Drupal](https://www.drupal.org). You need to have [PHP](https://www.php.net) and [composer](https://getcomposer.org/) installed.
+
+
 ## Clone the repository
 
-```
+```shell
 git clone <repo-url> mot
 cd mot
 ```
 
 ## Install dependencies
 
-```
+```shell
 composer install
 ```
 
-## Create .env file
+## Local development environment
+
+The production environment uses an external database which requires special settings but for development purposes you can simply use the built-in default Drupal sql.lite setup which is enough to test code changes locally.
+
+Here are some simple steps to get you started:
+
+Create an empty `.env` file:
+```shell
+touch .env
+```
+
+Delete the production setup:
+```shell
+rm -rf web/sites/default/files web/sites/default/settings.php
+```
+
+Start MOT:
+```shell
+php web/core/scripts/drupal quick-start
+```
+
+A browser window should open with the MOT website. The database is empty though.
+
+*IMPORTANT NOTE*: When submitting PRs from this setup be careful not to include the `web/sites/default/settings.php` file.
+
+## Advanced/Production Settings
+
+### Create .env file
 
 Define these environment variables in the .env file:
-
 ```
 DB_HOST=
 DB_USER=
@@ -34,7 +65,7 @@ HASH_SALT=
 - `HASH_SALT`: A unique, random string used for securing passwords and other sensitive data in Drupal. This should be a long and complex string.
 
 
-## Configure webserver
+### Configure webserver
 
 Ensure the document root is pointed to the `mot/web` directory.
 
@@ -54,7 +85,7 @@ Below is an example of what an Apache virtual host configuration may look like:
 </VirtualHost>
 ```
 
-## Install Drupal/ MOT
+### Install Drupal/ MOT
 
 Visit the site in your browser (e.g., `http://mot.local`) to complete the MOT installation process.
 
