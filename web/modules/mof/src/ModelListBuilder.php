@@ -191,18 +191,4 @@ final class ModelListBuilder extends EntityListBuilder {
     return $query;
   }
 
-  /**
-   * Count of total model entites.
-   *
-   * @return int Number of model entities.
-   */
-  protected function getEntityCount(): int {
-    return $this
-      ->getStorage()
-      ->getQuery()
-      ->accessCheck(TRUE)
-      ->count()
-      ->execute();
-  }
-
 }

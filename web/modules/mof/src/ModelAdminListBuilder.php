@@ -102,18 +102,4 @@ class ModelAdminListBuilder extends EntityListBuilder {
     return ($url = $this->getPageRedirectUrl()) != NULL ? $this->redirectPage($url) : parent::render();
   }
 
-  /**
-   * Count of total model entites.
-   *
-   * @return int Number of model entities.
-   */
-  protected function getEntityCount(): int {
-    return $this
-      ->getStorage()
-      ->getQuery()
-      ->accessCheck(TRUE)
-      ->count()
-      ->execute();
-  }
-
 }

@@ -23,14 +23,9 @@ trait PageLimitTrait {
    * Returns a Url with new page number if there are not enough
    * entities to display on the current page. Returns NULL otherwise.
    *
-   * @throws \Exception If parent class doesn't implement getEntityCount().
    * @return \Drupal\Core\Url|null
    */
   public function getPageRedirectUrl(): ?Url {
-    if (!method_exists($this, 'getEntityCount')) {
-      throw new \Exception('getEntityCount() method does not exist');
-    }
-
     $request = \Drupal::service('request_stack')->getCurrentRequest();
 
     $this->setPageLimit();
@@ -55,6 +50,20 @@ trait PageLimitTrait {
    */
   public function redirectPage(Url $url): RedirectResponse {
     return new RedirectResponse($url->toString());
+  }
+
+  /**
+   * Count of total entites.
+   *
+   * @return int Number of entities.
+   */
+  protected function getEntityCount(): int {
+    return $this
+      ->getStorage()
+      ->getQuery()
+      ->accessCheck(TRUE)
+      ->count()
+      ->execute();
   }
 
 }

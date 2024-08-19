@@ -71,19 +71,5 @@ final class LicenseListBuilder extends EntityListBuilder {
     return ($url = $this->getPageRedirectUrl()) != NULL ? $this->redirectPage($url) : parent::render();
   }
 
-  /**
-   * Count of total license entites.
-   *
-   * @return int Number of license entities.
-   */
-  protected function getEntityCount(): int {
-    return $this
-      ->getStorage()
-      ->getQuery()
-      ->accessCheck(TRUE)
-      ->count()
-      ->execute();
-  }
-
 }
 
