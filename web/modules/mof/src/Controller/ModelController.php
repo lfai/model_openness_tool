@@ -134,7 +134,7 @@ final class ModelController extends ControllerBase {
   /**
    * List model collection for admins.
    */
-  public function collection(): array {
+  public function collection(): array|RedirectResponse {
     return $this->entityTypeManager()->getHandler('model', 'admin_list_builder')->render();
   }
 
