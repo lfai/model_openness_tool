@@ -7,6 +7,7 @@ namespace Drupal\mof;
 use Drupal\Core\Entity\EntityListBuilder;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\Query\QueryInterface;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 
 /**
  * Provides a list controller for the license entity type.
@@ -62,5 +63,13 @@ final class LicenseListBuilder extends EntityListBuilder {
 
     return $query;
   }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function render(): array|RedirectResponse {
+    return ($url = $this->getPageRedirectUrl()) != NULL ? $this->redirectPage($url) : parent::render();
+  }
+
 }
 

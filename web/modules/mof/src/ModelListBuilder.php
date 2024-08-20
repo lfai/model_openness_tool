@@ -10,9 +10,11 @@ use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityListBuilder;
 use Drupal\Core\Entity\Query\QueryInterface;
 use Drupal\Core\Form\FormBuilderInterface;
+use Drupal\Core\Url;
 use Drupal\mof\Entity\Model;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 
 /**
  * Provides a list controller for the model entity type.
@@ -62,7 +64,11 @@ final class ModelListBuilder extends EntityListBuilder {
   /**
    * {@inheritdoc}
    */
-  public function render(): array {
+  public function render(): array|RedirectResponse {
+    if (($url = $this->getPageRedirectUrl()) !== NULL) {
+      return $this->redirectPage($url);
+    }
+
     $build = parent::render();
     $build['#attached']['library'][] = 'mof/model-list';
     $build['search'] = $this->formBuilder->getForm('\Drupal\mof\Form\ModelSearchForm');
@@ -70,6 +76,7 @@ final class ModelListBuilder extends EntityListBuilder {
     $build['table']['#attributes']['class'][] = 'tablesaw';
     $build['table']['#attributes']['class'][] = 'tablesaw-stack';
     $build['table']['#attributes']['data-tablesaw-mode'] = 'stack';
+
     return $build;
   }
 

@@ -9,6 +9,7 @@ use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\Query\QueryInterface;
 use Drupal\Core\Url;
 use Drupal\mof\Entity\Model;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 
 class ModelAdminListBuilder extends EntityListBuilder {
 
@@ -92,6 +93,13 @@ class ModelAdminListBuilder extends EntityListBuilder {
       'updated' => ['data' => $entity->get('changed')->view(['label' => 'hidden'])],
       'approver' => $entity->getApprover() ? $entity->getApprover()->getDisplayName() : '',
     ] + parent::buildRow($entity);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function render(): array|RedirectResponse {
+    return ($url = $this->getPageRedirectUrl()) != NULL ? $this->redirectPage($url) : parent::render();
   }
 
 }
