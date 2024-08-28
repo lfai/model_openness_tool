@@ -29,9 +29,14 @@ trait PageLimitTrait {
     $request = \Drupal::service('request_stack')->getCurrentRequest();
 
     $this->setPageLimit();
-    $current_page = (int) $request->get('page', 0);
-    $max_page = ceil($this->getEntityCount() / $this->limit);
 
+    $model_count = $this->getEntityCount();
+    if ($model_count === 0) {
+      return NULL;
+    }
+
+    $current_page = (int) $request->get('page', 0);
+    $max_page = ceil($model_count / $this->limit);
     if ($current_page <= $max_page - 1) {
       return NULL;
     }
