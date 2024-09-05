@@ -127,9 +127,13 @@ final class ModelEvaluator implements ModelEvaluatorInterface {
   /**
    * Generate badges for each classification.
    *
+   * @param bool $mini
+   *   When true, only include earned badges (i.e., conditional or qualified)
+   *   with the highest qualified and lowest in progress.
+   *
    * @todo Move badging related functions to its own class.
    */
-  public function generateBadge(): array {
+  public function generateBadge(bool $mini = FALSE): array {
     $build = [];
 
     // Do not generate badges if model is pending evaluation.
@@ -138,32 +142,46 @@ final class ModelEvaluator implements ModelEvaluatorInterface {
     }
 
     $evals = $this->evaluate();
-
-    for ($i = 3; $i >= 1; $i--) {
+    $qualified = FALSE;
+    $in_progress = FALSE;
+    for ($i = 3, $j = 3; $i >= 1; $i--, $j--) {
       $progress = $this->getProgress($i);
 
       if ($evals[$i]['conditional'] === TRUE) {
-        $status = $this->t('Conditional Pass');
+        $status = $this->t('Conditional');
         $text_color = '#fff';
         $background_color = '#4c1';
       }
       else if ($progress === 100.00) {
-        $status = $this->t('Pass');
+        $status = $this->t('Qualified');
         $text_color = '#fff';
         $background_color = '#4c1';
+        if ($mini && $qualified) {
+          // replace previous one to only keep the highest one
+          $j++;
+        }
+        $qualified = TRUE;
       }
       else if (!empty($evals[$i]['invalid'])) {
-        $status = $this->t('Fail');
+        $status = $this->t('Not met');
         $text_color = '#fff';
-        $background_color = '#c2241b';
+        $background_color = '#9ba0a2';
+        if ($mini) {
+          // do not include classes that are not met
+          continue;
+        }
       }
       else {
+        if ($mini && $in_progress) {
+          continue;
+        }
         $status = $this->t('In progress (@progress%)', ['@progress' => round($progress)]);
-        $text_color = '#000';
-        $background_color = '#e9c503';
+        $text_color = '#fff';
+        $background_color = '#76b1c9';
+        $in_progress = TRUE;
       }
 
-      $build[$i] = [
+      $build[$j] = [
         '#theme' => 'badge',
         '#status' => $status,
         '#label' => $this->getClassLabel($i),

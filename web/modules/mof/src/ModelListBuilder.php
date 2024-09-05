@@ -152,7 +152,7 @@ final class ModelListBuilder extends EntityListBuilder {
     ];
 
     $row['badge'] = [
-      'data' => $this->modelEvaluator->setModel($entity)->generateBadge(),
+      'data' => $this->modelEvaluator->setModel($entity)->generateBadge(mini: TRUE),
       'class' => ['badge'],
       'data-tablesaw-no-labels' => '',
     ];
