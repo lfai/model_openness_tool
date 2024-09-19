@@ -12,6 +12,11 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
 
+    env:
+      DEPLOY_SERVER: ${{ secrets.DEPLOY_SERVER }}
+      DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+      DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -22,13 +27,9 @@ jobs:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
       - name: Add server to known hosts
-        run: ssh-keyscan -H ${{ secrets.DEPLOY_SERVER }} >> ~/.ssh/known_hosts
+        run: ssh-keyscan -H $DEPLOY_SERVER >> ~/.ssh/known_hosts
 
       - name: Deploy live
-        env:
-          DEPLOY_SERVER: ${{ secrets.DEPLOY_SERVER }}
-          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
-          DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
         run: |
           rsync -avz --delete \
             --exclude '.git' \
@@ -40,7 +41,8 @@ jobs:
 
       - name: Post-deploy tasks
         run: |
-          ssh $DEPLOY_USER@$DEPLOY_SERVER << 'EOF'
+          ssh $DEPLOY_USER@$DEPLOY_SERVER << EOF
+            echo "Deploying to $DEPLOY_PATH"
             cd $DEPLOY_PATH
             composer install --no-dev --optimize-autoloader
             ./vendor/bin/drush cr
