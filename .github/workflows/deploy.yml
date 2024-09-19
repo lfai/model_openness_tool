@@ -24,9 +24,6 @@ jobs:
       - name: Add server to known hosts
         run: ssh-keyscan -H ${{ secrets.DEPLOY_SERVER }} >> ~/.ssh/known_hosts
 
-      - name: Run composer
-        run: composer install --no-interaction --prefer-dist --no-dev
-
       - name: Deploy live
         env:
           DEPLOY_SERVER: ${{ secrets.DEPLOY_SERVER }}
@@ -45,6 +42,7 @@ jobs:
         run: |
           ssh $DEPLOY_USER@$DEPLOY_SERVER << 'EOF'
             cd $DEPLOY_PATH
+            composer install --no-dev --optimize-autoloader
             ./vendor/bin/drush cr
             ./vendor/bin/drush updb -y
           EOF
