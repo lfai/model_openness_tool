@@ -24,6 +24,9 @@ jobs:
       - name: Add server to known hosts
         run: ssh-keyscan -H ${{ secrets.DEPLOY_SERVER }} >> ~/.ssh/known_hosts
 
+      - name: Run composer
+        run: composer install --no-interaction --prefer-dist --no-dev
+
       - name: Deploy live
         env:
           DEPLOY_SERVER: ${{ secrets.DEPLOY_SERVER }}
@@ -35,6 +38,7 @@ jobs:
             --exclude '.github' \
             --exclude '.env' \
             --exclude 'tests' \
+            --exclude 'settings.php' \
             ./ $DEPLOY_USER@$DEPLOY_SERVER:$DEPLOY_PATH
 
       - name: Post-deploy tasks
