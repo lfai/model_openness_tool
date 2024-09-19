@@ -21,6 +21,9 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
+      - name: Add server to known hosts
+        run: ssh-keyscan -H ${{ secrets.DEPLOY_SERVER }} >> ~/.ssh/known_hosts
+
       - name: Deploy live
         env:
           DEPLOY_SERVER: ${{ secrets.DEPLOY_SERVER }}
