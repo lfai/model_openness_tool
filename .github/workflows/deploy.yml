@@ -37,6 +37,7 @@ jobs:
             --exclude '.env' \
             --exclude 'tests' \
             --exclude 'settings.php' \
+            --exclude 'config' \
             ./ $DEPLOY_USER@$DEPLOY_SERVER:$DEPLOY_PATH
 
       - name: Post-deploy tasks
