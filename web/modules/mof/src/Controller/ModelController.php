@@ -117,6 +117,21 @@ final class ModelController extends ControllerBase {
   }
 
   /**
+   * Return a yaml representation of the model.
+   */
+  public function yaml(ModelInterface $model): Response {
+    $yaml = $this->modelSerializer->toYaml($model);
+
+    $response = new Response();
+    $response->setContent($yaml);
+    $response->headers->set('Content-Type', 'application/json');
+    $response->headers->set('Content-Length', (string)strlen($yaml));
+    $response->headers->set('Content-Disposition', 'attachment; filename="mof.yml"');
+
+    return $response;
+  }
+
+  /**
    * Return a json file representation of the model.
    */
   public function json(ModelInterface $model): Response {

@@ -28,6 +28,7 @@
         "drupal/matomo": "^1.23",
         "drupal/recaptcha_v3": "^2.0",
         "drupal/social_auth_github": "^4.0",
+        "drupal/token": "^1.15",
         "drupal/webform": "^6.2",
         "drush/drush": "^12.5",
         "kint-php/kint": "^5.1",
@@ -122,5 +123,10 @@
                 "      composer remove drupal/core-project-message"
             ]
         }
+    },
+    "require-dev": {
+        "drupal/coder": "^8.3",
+        "drupal/core-dev": "^10.3",
+        "phpunit/phpunit": "^9.6"
     }
 }

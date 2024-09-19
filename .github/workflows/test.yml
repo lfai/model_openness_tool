@@ -1,0 +1,66 @@
+name: Test
+
+on:
+  push:
+    branches:
+      - deploy_test
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    services:
+      mariadb:
+        image: mariadb:latest
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: drupal
+          MYSQL_USER: drupal
+          MYSQL_PASSWORD: drupal
+        options: --health-cmd="healthcheck.sh --connect --innodb_initialized" --health-interval=10s --health-timeout=5s --health-retries=3
+        ports:
+          - 3306:3306
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: PHP setup
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: mbstring, pdo, mysql, gd, zip, intl, opcache, dom, sqlite3
+          coverage: none
+
+      - name: Install composer
+        run: |
+          curl -sS https://getcomposer.org/installer | php
+          sudo mv composer.phar /usr/local/bin/composer
+          composer --version
+
+      - name: Run composer
+        run: composer install --no-interaction --prefer-dist
+
+      - name: Create .env file
+        run: |
+          echo "DB_NAME=drupal" >> .env
+          echo "DB_USER=drupal" >> .env
+          echo "DB_PASS=drupal" >> .env
+          echo "DB_HOST=localhost" >> .env
+          echo "DB_PORT=3306" >> .env
+          echo "HASH_SALT=$(openssl rand -hex 16)" >> .env
+
+      - name: Set up Drupal
+        run: |
+          cp ./web/sites/default/default.settings.php ./web/sites/default/settings.php
+          cp ./web/sites/default/default.services.yml ./web/sites/default/services.yml
+          ./vendor/bin/drush site-install mot_profile --yes
+
+      - name: Run PHPUnit tests
+        run: |
+          php ./web/core/scripts/run-tests.sh \
+            --dburl mysql://drupal:drupal@127.0.0.1:3306/drupal \
+            --sqlite /tmp/drupal.sqlite Drupal,Core
+
+      #- name: Run PHP Coding Standards
+      #  run: ./vendor/bin/phpcs --standard=phpcs.xml.dist
