@@ -42,12 +42,12 @@ final class ModelSerializer {
       'release' => [
         'name' => $model->label(),
         'version' => $model->getVersion(),
-        'date' => date('Y-m-d', $model->getChangedTime()),
+        //'date' => date('Y-m-d', $model->getChangedTime()),
         'type' => $model->getType(),
         'architecture' => $model->getArchitecture(),
         'origin' => $model->getOrigin(),
         'producer' => $model->getOrganization(),
-        'contact' => $owner->id() > 1 ? $owner->getEmail() : '',
+        //'contact' => $owner->id() > 1 ? $owner->getEmail() : '',
       ],
     ];
 

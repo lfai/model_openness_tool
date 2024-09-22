@@ -4,6 +4,7 @@ namespace Drupal\mof;
 
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\mof\Entity\Model;
 use Drupal\mof\ModelInterface;
 
 final class ModelUpdater {
@@ -17,24 +18,25 @@ final class ModelUpdater {
     $this->modelStorage = $entityTypeManager->getStorage('model');
   }
 
-  public function exists(array $model_data): bool|ModelInterface {
+  public function exists(array $model_data): ?ModelInterface {
     $model = $this
       ->modelStorage
       ->loadByProperties(['label' => $model_data['name']]);
 
     if (empty($model)) {
-      return FALSE;
+      return NULL;
     }
 
     return reset($model);
   }
 
-  public function update(ModelInterface $model, array $model_data): void {
+  public function update(ModelInterface $model, array $model_data): int {
     foreach ($model_data as $field => $value) {
       // @todo Rename these fields on the entity(?)
       if ($field === 'name') $field = 'label';
       if ($field === 'producer') $field = 'organization';
       if ($field === 'contact') continue;
+      if ($field === 'date') continue;
 
       if ($field === 'components') {
         $license_data = $this->processLicenses($value);
@@ -46,12 +48,13 @@ final class ModelUpdater {
       }
     }
 
-    $model->save();
+    $model->setStatus(Model::STATUS_APPROVED);
+    return $model->save();
   }
 
-  public function create(array $model_data): void {
+  public function create(array $model_data): int {
     $model = $this->modelStorage->create();
-    $this->update($model, $model_data);
+    return $this->update($model, $model_data);
   }
 
   private function processLicenses(array $license_data): array {

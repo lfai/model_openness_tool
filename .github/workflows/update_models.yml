@@ -1,0 +1,64 @@
+name: Update models
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    types:
+      - closed
+    branches:
+      - main
+
+jobs:
+  update-models:
+    runs-on: ubuntu-latest
+
+    env:
+      DEPLOY_SERVER: ${{ secrets.DEPLOY_SERVER }}
+      DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+      DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Start ssh-agent and add key
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Add server to known hosts
+        run: ssh-keyscan -H $DEPLOY_SERVER >> ~/.ssh/known_hosts
+
+      - name: List models on push
+        if: github.event_name == 'push'
+        run: |
+          git fetch origin model_sync
+          git diff --name-only --diff-filter=AM ${{ github.event.before }} ${{ github.sha }} | grep '^models/.*\.yml$' > models.txt || true
+
+      - name: List models on PR merge
+        if: github.event_name == 'pull_request' && github.event.pull_request.merged == true
+        run: |
+          git fetch origin model_sync
+          git diff --name-only --diff-filter=AM origin/model_sync...${{ github.sha }} | grep '^models/.*\.yml$' > models.txt || true
+
+      - name: Set model sync trigger
+        id: model_check
+        run: echo "model_sync_trigger=$(if [ -s models.txt ]; then echo true; else echo false; fi)" >> $GITHUB_ENV
+
+      - name: Sync models
+        if: ${{ env.model_sync_trigger == 'true' }}
+        run: |
+            rsync -avz --files-from=models.txt ./ $DEPLOY_USER@$DEPLOY_SERVER:$DEPLOY_PATH/
+            ssh $DEPLOY_USER@$DEPLOY_SERVER << EOF
+              cd $DEPLOY_PATH
+              ./vendor/bin/drush scr scripts/sync_models.php
+              ./vendor/bin/drush cr
+            EOF
+
+      - name: No changes
+        if: ${{ env.model_sync_trigger == 'false' }}
+        run: echo "No model changes detected. Skipping"
