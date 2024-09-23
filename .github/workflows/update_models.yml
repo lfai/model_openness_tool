@@ -36,14 +36,14 @@ jobs:
       - name: List models on push
         if: github.event_name == 'push'
         run: |
-          git fetch origin model_sync
+          git fetch origin main
           git diff --name-only --diff-filter=AM ${{ github.event.before }} ${{ github.sha }} | grep '^models/.*\.yml$' > models.txt || true
 
       - name: List models on PR merge
         if: github.event_name == 'pull_request' && github.event.pull_request.merged == true
         run: |
-          git fetch origin model_sync
-          git diff --name-only --diff-filter=AM origin/model_sync...${{ github.sha }} | grep '^models/.*\.yml$' > models.txt || true
+          git fetch origin main
+          git diff --name-only --diff-filter=AM origin/main...${{ github.sha }} | grep '^models/.*\.yml$' > models.txt || true
 
       - name: Set model sync trigger
         id: model_check
