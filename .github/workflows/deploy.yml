@@ -6,10 +6,18 @@ on:
       - Test
     types:
       - completed
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Deploy to environment'
+        required: true
+        type: environment
+        default: 'Stage'
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    environment: ${{ inputs.environment || 'Production' }}
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
 
     env:
@@ -38,6 +46,7 @@ jobs:
             --exclude 'tests' \
             --exclude 'settings.php' \
             --exclude 'config' \
+
             ./ $DEPLOY_USER@$DEPLOY_SERVER:$DEPLOY_PATH
 
       - name: Post-deploy tasks

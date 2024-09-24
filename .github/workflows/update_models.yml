@@ -1,18 +1,23 @@
 name: Update models
 
 on:
-  push:
-    branches:
-      - main
   pull_request:
     types:
       - closed
     branches:
       - main
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Create or update models on environment'
+        required: true
+        type: environment
+        default: 'Stage'
 
 jobs:
   update-models:
     runs-on: ubuntu-latest
+    environment: ${{ inputs.environment || 'Production' }}
 
     env:
       DEPLOY_SERVER: ${{ secrets.DEPLOY_SERVER }}
@@ -32,12 +37,6 @@ jobs:
 
       - name: Add server to known hosts
         run: ssh-keyscan -H $DEPLOY_SERVER >> ~/.ssh/known_hosts
-
-      - name: List models on push
-        if: github.event_name == 'push'
-        run: |
-          git fetch origin main
-          git diff --name-only --diff-filter=AM ${{ github.event.before }} ${{ github.sha }} | grep '^models/.*\.yml$' > models.txt || true
 
       - name: List models on PR merge
         if: github.event_name == 'pull_request' && github.event.pull_request.merged == true
