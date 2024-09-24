@@ -14,6 +14,7 @@ use Drupal\mof\ModelEvaluatorInterface;
 use Drupal\mof\ComponentManagerInterface;
 use Drupal\mof\GitHubService;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpFoundation\Session\Session;
 
 /**
  * Form controller for the model entity.
@@ -32,6 +33,9 @@ abstract class ModelForm extends ContentEntityForm {
   /** @var \Drupal\mof\ComponentManager */
   protected ComponentManagerInterface $componentManager;
 
+  /** @var \Symfony\Component\HttpFoundation\Session\Session. */
+  protected Session $session;
+
   /**
    * {@inheritdoc}
    */
@@ -42,13 +46,15 @@ abstract class ModelForm extends ContentEntityForm {
     LicenseHandlerInterface $license_handler,
     ModelEvaluatorInterface $model_evaluator,
     GitHubService $github,
-    ComponentManagerInterface $component_manager
+    ComponentManagerInterface $component_manager,
+    Session $session
   ) {
     parent::__construct($entity_repository, $entity_type_bundle_info, $time);
     $this->licenseHandler = $license_handler;
     $this->modelEvaluator = $model_evaluator;
     $this->github = $github;
     $this->componentManager = $component_manager;
+    $this->session = $session;
   }
 
   /**
@@ -62,7 +68,8 @@ abstract class ModelForm extends ContentEntityForm {
       $container->get('license_handler'),
       $container->get('model_evaluator'),
       $container->get('github'),
-      $container->get('component.manager')
+      $container->get('component.manager'),
+      $container->get('session')
     );
   }
 
@@ -114,10 +121,11 @@ abstract class ModelForm extends ContentEntityForm {
       // Use the first content type for form placement.
       $group = is_array($component->contentType) ? $component->contentType[0] : $component->contentType;
 
-      // Set default license value if one is set or if community preferred is selected.
+      // Set default license value if we're editing an existing model.
       if (isset($model_licenses[$cid]['license'])) {
         $default_license = $model_licenses[$cid]['license'];
       }
+      // Set default licenses to community preferred if requested.
       else if ($this->getRequest()->query->get('community') !== NULL) {
         $this->messenger()->addMessage($this->t('Component licenses set to community preferred'));
         if ($group === 'code') {
@@ -130,6 +138,11 @@ abstract class ModelForm extends ContentEntityForm {
           $default_license = 'CC-BY-4.0';
         }
       }
+      // Set default licenses if user is coming from evaluate model form.
+      else if (($session_model = $this->session->get('model_data')) !== NULL) {
+        $default_license = $session_model['licenses'][$cid]['license'] ?? '';
+      }
+      // No default licenses to use.
       else {
         $default_license = '';
       }

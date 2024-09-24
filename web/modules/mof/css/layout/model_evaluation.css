@@ -1,3 +1,7 @@
+.button--action:not(:first-child) {
+  margin-left: 10px;
+}
+
 .evaluation {
   display: flex;
   flex-wrap: wrap;
