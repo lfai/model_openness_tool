@@ -15,10 +15,44 @@ on:
         default: 'Stage'
 
 jobs:
+  secrets-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check DEPLOY_SERVER
+        run: |
+          if [ -z "${{ secrets.DEPLOY_SERVER }}" ]; then
+            echo "Error: DEPLOY_SERVER not set."
+            exit 1
+          fi
+
+      - name: Check DEPLOY_USER
+        run: |
+          if [ -z "${{ secrets.DEPLOY_USER }}" ]; then
+            echo "Error: DEPLOY_USER not set."
+            exit 1
+          fi
+
+      - name: Check DEPLOY_PATH
+        run: |
+          if [ -z "${{ secrets.DEPLOY_PATH }}" ]; then
+            echo "Error: DEPLOY_PATH not set."
+            exit 1
+          fi
+
+      - name: Check SSH_PRIVATE_KEY
+        run: |
+          if [ -z "${{ secrets.SSH_PRIVATE_KEY }}" ]; then
+            echo "Error: SSH_PRIVATE_KEY not set."
+            exit 1
+          fi
+
   deploy:
     runs-on: ubuntu-latest
+    needs: secrets-check
     environment: ${{ inputs.environment || 'Production' }}
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    if: >-
+      ${{ (github.event.workflow_run.conclusion == 'success') ||
+          (github.event_name == 'workflow_dispatch') }}
 
     env:
       DEPLOY_SERVER: ${{ secrets.DEPLOY_SERVER }}
