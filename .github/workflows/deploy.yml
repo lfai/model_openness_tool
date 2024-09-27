@@ -17,32 +17,41 @@ on:
 jobs:
   secrets-check:
     runs-on: ubuntu-latest
+    environment: ${{ inputs.environment || 'Production' }}
     steps:
-      - name: Check DEPLOY_SERVER
+      - name: Check DEPLOY_HOST
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
         run: |
-          if [ -z "${{ secrets.DEPLOY_SERVER }}" ]; then
-            echo "Error: DEPLOY_SERVER not set."
+          if [ -z "$DEPLOY_HOST" ]; then
+            echo "DEPLOY_HOST is not set."
             exit 1
           fi
 
       - name: Check DEPLOY_USER
+        env:
+          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
         run: |
-          if [ -z "${{ secrets.DEPLOY_USER }}" ]; then
-            echo "Error: DEPLOY_USER not set."
+          if [ -z "$DEPLOY_USER" ]; then
+            echo "DEPLOY_USER is not set."
             exit 1
           fi
 
       - name: Check DEPLOY_PATH
+        env:
+          DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
         run: |
-          if [ -z "${{ secrets.DEPLOY_PATH }}" ]; then
-            echo "Error: DEPLOY_PATH not set."
+          if [ -z "$DEPLOY_PATH" ]; then
+            echo "DEPLOY_PATH is not set."
             exit 1
           fi
 
-      - name: Check SSH_PRIVATE_KEY
+      - name: Check DEPLOY_KEY
+        env:
+          DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}
         run: |
-          if [ -z "${{ secrets.SSH_PRIVATE_KEY }}" ]; then
-            echo "Error: SSH_PRIVATE_KEY not set."
+          if [ -z "$DEPLOY_KEY" ]; then
+            echo "DEPLOY_KEY is not set"
             exit 1
           fi
 
@@ -50,12 +59,11 @@ jobs:
     runs-on: ubuntu-latest
     needs: secrets-check
     environment: ${{ inputs.environment || 'Production' }}
-    if: >-
-      ${{ (github.event.workflow_run.conclusion == 'success') ||
-          (github.event_name == 'workflow_dispatch') }}
+    if: ${{ github.event.workflow_run.conclusion == 'success' ||
+            github.event_name == 'workflow_dispatch' }}
 
     env:
-      DEPLOY_SERVER: ${{ secrets.DEPLOY_SERVER }}
+      DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
       DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
       DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
 
@@ -66,14 +74,14 @@ jobs:
       - name: Start ssh-agent and add key
         uses: webfactory/ssh-agent@v0.9.0
         with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+          ssh-private-key: ${{ secrets.DEPLOY_KEY }}
 
       - name: Add server to known hosts
-        run: ssh-keyscan -H $DEPLOY_SERVER >> ~/.ssh/known_hosts
+        run: ssh-keyscan -H $DEPLOY_HOST >> ~/.ssh/known_hosts
 
       - name: Deploy live
         run: |
-          rsync -avz --delete \
+          rsync -az --delete \
             --exclude '.git' \
             --exclude '.github' \
             --exclude '.env' \
@@ -81,14 +89,14 @@ jobs:
             --exclude 'settings.php' \
             --exclude 'config' \
             --exclude 'models/' \
-            ./ $DEPLOY_USER@$DEPLOY_SERVER:$DEPLOY_PATH
+            ./ $DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH
 
       - name: Post-deploy tasks
         run: |
-          ssh $DEPLOY_USER@$DEPLOY_SERVER << EOF
+          ssh $DEPLOY_USER@$DEPLOY_HOST << EOF
             echo "Deploying to $DEPLOY_PATH"
             cd $DEPLOY_PATH
-            composer install --no-dev --optimize-autoloader
+            composer install --no-dev --no-progress --optimize-autoloader
             ./vendor/bin/drush cr
             ./vendor/bin/drush updb -y
           EOF

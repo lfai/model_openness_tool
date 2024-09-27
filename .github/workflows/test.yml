@@ -4,6 +4,13 @@ on:
   push:
     branches:
       - main
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Run tests in environment'
+        required: true
+        type: environment
+        default: 'Stage'
 
 jobs:
   test:
@@ -17,7 +24,11 @@ jobs:
           MYSQL_DATABASE: drupal
           MYSQL_USER: drupal
           MYSQL_PASSWORD: drupal
-        options: --health-cmd="healthcheck.sh --connect --innodb_initialized" --health-interval=10s --health-timeout=5s --health-retries=3
+        options: >-
+          --health-cmd="healthcheck.sh --connect --innodb_initialized"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
         ports:
           - 3306:3306
 
@@ -32,11 +43,33 @@ jobs:
           extensions: mbstring, pdo, mysql, gd, zip, intl, opcache, dom, sqlite3
           coverage: none
 
+      - name: Apache setup
+        env:
+          DOCROOT: ${{ github.workspace }}/web
+        run: |
+          apt update
+          apt install -y -o Dpkg::Options::="--force-confnew" apache2
+          echo "<VirtualHost *:80>
+            DocumentRoot $DOCROOT
+            <Directory $DOCROOT>
+              AllowOverride all
+              Require all granted
+              DirectoryIndex index.php
+            </Directory>
+          </VirtualHost>" | tee /etc/apache2/sites-available/000-default.conf
+          a2enconf php8.3-fpm
+          a2enmod proxy_fcgi
+          service apache2 start
+          chown -R www-data $DOCROOT
+
       - name: Install composer
         run: |
           curl -sS https://getcomposer.org/installer | php
           sudo mv composer.phar /usr/local/bin/composer
           composer --version
+
+      - name: Validate composer
+        run: composer validate
 
       - name: Run composer
         run: composer install --no-interaction --prefer-dist
@@ -46,7 +79,7 @@ jobs:
           echo "DB_NAME=drupal" >> .env
           echo "DB_USER=drupal" >> .env
           echo "DB_PASS=drupal" >> .env
-          echo "DB_HOST=localhost" >> .env
+          echo "DB_HOST=127.0.0.1" >> .env
           echo "DB_PORT=3306" >> .env
           echo "HASH_SALT=$(openssl rand -hex 16)" >> .env
 
@@ -58,9 +91,7 @@ jobs:
 
       - name: Run PHPUnit tests
         run: |
-          php ./web/core/scripts/run-tests.sh \
+          sudo -u www-data php ./web/core/scripts/run-tests.sh \
             --dburl mysql://drupal:drupal@127.0.0.1:3306/drupal \
-            --sqlite /tmp/drupal.sqlite Drupal,Core
-
-      #- name: Run PHP Coding Standards
-      #  run: ./vendor/bin/phpcs --standard=phpcs.xml.dist
+            --sqlite /tmp/drupal.sqlite \
+            --url http://localhost Drupal,Core,Bootstrap,Access

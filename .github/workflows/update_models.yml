@@ -17,32 +17,41 @@ on:
 jobs:
   secrets-check:
     runs-on: ubuntu-latest
+    environment: ${{ inputs.environment || 'Production' }}
     steps:
-      - name: Check DEPLOY_SERVER
+      - name: Check DEPLOY_HOST
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
         run: |
-          if [ -z "${{ secrets.DEPLOY_SERVER }}" ]; then
-            echo "Error: DEPLOY_SERVER not set."
+          if [ -z "$DEPLOY_HOST" ]; then
+            echo "DEPLOY_HOST is not set."
             exit 1
           fi
 
       - name: Check DEPLOY_USER
+        env:
+          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
         run: |
-          if [ -z "${{ secrets.DEPLOY_USER }}" ]; then
-            echo "Error: DEPLOY_USER not set."
+          if [ -z "$DEPLOY_USER" ]; then
+            echo "DEPLOY_USER is not set."
             exit 1
           fi
 
       - name: Check DEPLOY_PATH
+        env:
+          DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
         run: |
-          if [ -z "${{ secrets.DEPLOY_PATH }}" ]; then
-            echo "Error: DEPLOY_PATH not set."
+          if [ -z "$DEPLOY_PATH" ]; then
+            echo "DEPLOY_PATH is not set."
             exit 1
           fi
 
-      - name: Check SSH_PRIVATE_KEY
+      - name: Check DEPLOY_KEY
+        env:
+          DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}
         run: |
-          if [ -z "${{ secrets.SSH_PRIVATE_KEY }}" ]; then
-            echo "Error: SSH_PRIVATE_KEY not set."
+          if [ -z "$DEPLOY_KEY" ]; then
+            echo "DEPLOY_KEY is not set"
             exit 1
           fi
 
@@ -52,7 +61,7 @@ jobs:
     environment: ${{ inputs.environment || 'Production' }}
 
     env:
-      DEPLOY_SERVER: ${{ secrets.DEPLOY_SERVER }}
+      DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
       DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
       DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
 
@@ -65,15 +74,14 @@ jobs:
       - name: Start ssh-agent and add key
         uses: webfactory/ssh-agent@v0.9.0
         with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+          ssh-private-key: ${{ secrets.DEPLOY_KEY }}
 
       - name: Add server to known hosts
-        run: ssh-keyscan -H $DEPLOY_SERVER >> ~/.ssh/known_hosts
+        run: ssh-keyscan -H $DEPLOY_HOST >> ~/.ssh/known_hosts
 
       - name: List models on PR merge
-        if: >-
-          github.event_name == 'pull_request' &&
-          github.event.pull_request.merged == true
+        if: ${{ github.event_name == 'pull_request' &&
+                github.event.pull_request.merged == true }}
         run: |
           git fetch origin main
           git diff \
@@ -85,30 +93,32 @@ jobs:
         if: github.event_name == 'workflow_dispatch'
         run: |
           git fetch origin main
-          ls -1 models/*.yml > models.txt
+          mkdir tmp
+          rsync -az \
+            --include="*.yml-" \
+            --exclude="*" \
+            $DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH/models/ ./tmp/
+          find tmp -name '*.yml-' -exec sh -c 'mv "$1" "${1%.yml-}.yml"' _ {} \;
+          diff -q tmp/ models/ | awk '{ print $4 }' > models.txt
+          rm -rf tmp
 
       - name: Set model sync trigger
         id: model_check
         run: |
-          echo "model_sync_trigger=$(
-            if [ -s models.txt ]; then
-              echo true;
-            else
-              echo false;
-            fi
-          )" >> $GITHUB_ENV
+          echo "sync=$([ -s models.txt ] && echo true || echo false)" >> $GITHUB_ENV
 
       - name: Sync models
-        if: ${{ env.model_sync_trigger == 'true' }}
+        if: ${{ env.sync == 'true' }}
         run: |
-            rsync -avz --files-from=models.txt \
-              ./ $DEPLOY_USER@$DEPLOY_SERVER:$DEPLOY_PATH/
-            ssh $DEPLOY_USER@$DEPLOY_SERVER << EOF
+            rsync -az \
+              --files-from=models.txt \
+              ./ $DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH/
+            ssh $DEPLOY_USER@$DEPLOY_HOST << EOF
               cd $DEPLOY_PATH
               ./vendor/bin/drush scr scripts/sync_models.php
               ./vendor/bin/drush cr
             EOF
 
       - name: No changes
-        if: ${{ env.model_sync_trigger == 'false' }}
+        if: ${{ env.sync == 'false' }}
         run: echo "No model changes detected. Skipping"
