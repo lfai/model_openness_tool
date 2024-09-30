@@ -92,14 +92,17 @@ jobs:
       - name: List models on workflow_dispatch
         if: github.event_name == 'workflow_dispatch'
         run: |
-          git fetch origin main
+          git fetch origin ${{ github.ref_name }}
           mkdir tmp
           rsync -az \
             --include="*.yml-" \
             --exclude="*" \
             $DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH/models/ ./tmp/
           find tmp -name '*.yml-' -exec sh -c 'mv "$1" "${1%.yml-}.yml"' _ {} \;
-          diff -q tmp/ models/ | awk '{ print $4 }' > models.txt
+          git diff \
+            --no-index \
+            --name-only tmp/ models/ | \
+            grep -v '/dev/null' > models.txt || true
           rm -rf tmp
 
       - name: Set model sync trigger
