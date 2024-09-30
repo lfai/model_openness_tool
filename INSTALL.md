@@ -53,6 +53,7 @@ DB_PASS=
 DB_NAME=
 DB_PORT=
 HASH_SALT=
+TRUSTED_HOST=
 ```
 
 ### Environment variables:
@@ -63,6 +64,7 @@ HASH_SALT=
 - `DB_NAME`: The name of your database.
 - `DB_PORT`: The port number your database server is listening on (default is usually `3306` for MySQL).
 - `HASH_SALT`: A unique, random string used for securing passwords and other sensitive data in Drupal. This should be a long and complex string.
+- `TRUSTED_HOST`: The host used to access the MOT; e.g. `mot\.isitopen\.ai`
 
 
 ### Configure webserver

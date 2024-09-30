@@ -27,3 +27,7 @@ $settings['file_scan_ignore_directories'] = [
   'node_modules',
   'bower_components',
 ];
+
+$settings['trusted_host_patterns'] = [
+  '^' . $_ENV['TRUSTED_HOST'] . '$',
+];
