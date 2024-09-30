@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d91fc2c499398a67da1d43d3572e26a7",
+    "content-hash": "b0e1f1bd81b224ae74d5b926b1ce0d91",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -1638,12 +1638,12 @@
                     "homepage": "https://www.drupal.org/user/3708761"
                 },
                 {
-                    "name": "DavorHorvacki",
-                    "homepage": "https://www.drupal.org/user/3566953"
-                },
-                {
                     "name": "gnikolovski",
                     "homepage": "https://www.drupal.org/user/3451979"
+                },
+                {
+                    "name": "holo96",
+                    "homepage": "https://www.drupal.org/user/3566953"
                 },
                 {
                     "name": "jvince",
@@ -2094,7 +2094,7 @@
             "extra": {
                 "drupal": {
                     "version": "4.1.1",
-                    "datestamp": "1682701896",
+                    "datestamp": "1722958666",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -2681,7 +2681,7 @@
                     "role": "Contributor"
                 },
                 {
-                    "name": "Liam Morland",
+                    "name": "liam morland",
                     "homepage": "https://www.drupal.org/user/493050"
                 },
                 {

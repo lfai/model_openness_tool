@@ -47,8 +47,9 @@ jobs:
         env:
           DOCROOT: ${{ github.workspace }}/web
         run: |
-          apt update
-          apt install -y -o Dpkg::Options::="--force-confnew" apache2
+          sudo usermod -aG docker www-data
+          sudo apt update
+          sudo apt install -y -o Dpkg::Options::="--force-confnew" apache2
           echo "<VirtualHost *:80>
             DocumentRoot $DOCROOT
             <Directory $DOCROOT>
@@ -56,23 +57,26 @@ jobs:
               Require all granted
               DirectoryIndex index.php
             </Directory>
-          </VirtualHost>" | tee /etc/apache2/sites-available/000-default.conf
-          a2enconf php8.3-fpm
-          a2enmod proxy_fcgi
-          service apache2 start
-          chown -R www-data $DOCROOT
+            <FilesMatch \".+\.ph(?:ar|p|tml)$\">
+              SetHandler \"proxy:unix:/run/php/php8.3-fpm.sock|fcgi://localhost\"
+            </FilesMatch>
+          </VirtualHost>" | sudo tee /etc/apache2/sites-available/000-default.conf
+          sudo a2enmod proxy_fcgi rewrite
+          sudo service apache2 stop
+          sudo service php8.3-fpm stop
+          sudo service apache2 start
+          sudo service php8.3-fpm start
 
       - name: Install composer
         run: |
           curl -sS https://getcomposer.org/installer | php
           sudo mv composer.phar /usr/local/bin/composer
-          composer --version
 
       - name: Validate composer
         run: composer validate
 
       - name: Run composer
-        run: composer install --no-interaction --prefer-dist
+        run: composer install --no-interaction --no-progress --prefer-dist
 
       - name: Create .env file
         run: |
@@ -91,7 +95,7 @@ jobs:
 
       - name: Run PHPUnit tests
         run: |
-          sudo -u www-data php ./web/core/scripts/run-tests.sh \
+          php ./web/core/scripts/run-tests.sh \
             --dburl mysql://drupal:drupal@127.0.0.1:3306/drupal \
             --sqlite /tmp/drupal.sqlite \
             --url http://localhost Drupal,Core,Bootstrap,Access
