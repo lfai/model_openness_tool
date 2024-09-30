@@ -86,7 +86,6 @@ jobs:
             --exclude '.github' \
             --exclude '.env' \
             --exclude 'tests' \
-            --exclude 'settings.php' \
             --exclude 'config' \
             --exclude 'models/' \
             ./ $DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH
