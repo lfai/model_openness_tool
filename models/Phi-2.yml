@@ -5,10 +5,12 @@ framework:
 release:
   name: Phi-2
   version: 2.7B
-  type: null
-  architecture: Decoder-only
-  origin: null
+  date: '2024-10-03'
+  type: ''
+  architecture: decoder
+  origin: ''
   producer: Microsoft
+  contact: ''
   components:
     -
       name: 'Model architecture'

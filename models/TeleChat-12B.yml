@@ -5,10 +5,12 @@ framework:
 release:
   name: TeleChat-12B
   version: 12B
-  type: null
-  architecture: Decoder-only
-  origin: null
+  date: '2024-10-03'
+  type: ''
+  architecture: decoder
+  origin: ''
   producer: Telecom
+  contact: ''
   components:
     -
       name: 'Model architecture'

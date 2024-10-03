@@ -1,26 +1,34 @@
 <?php declare(strict_types=1);
 
-use \Drupal\Component\Serialization\Yaml;
-use \Drupal\Component\Serialization\Exception\InvalidDataTypeException;
+use Symfony\Component\Yaml\Yaml;
+use Symfony\Component\Yaml\Exception\ParseException;
 
-$path = \Drupal::root() . '/../models';
-$updater = \Drupal::service('model_updater');
+$path = \Drupal::root();
+$model_path = $path . '/../models';
+$schema_path = $path . '/../schema';
 
-if (is_dir($path)) {
+if (is_dir($model_path)) {
   try {
-    $it = new \DirectoryIterator($path);
+    $updater = \Drupal::service('model_updater');
+    $validator = \Drupal::service('model_validator');
+    $schema = json_decode(file_get_contents($schema_path . '/mof_schema.json'));
 
+    $it = new \DirectoryIterator($model_path);
     foreach ($it as $file) {
       if ($file->isDot()) continue;
       if (!$file->isFile()) continue;
       if ($file->getExtension() !== 'yml') continue;
 
+      print "Processing {$file->getFilename()}...\n";
+
       $filepath = $file->getPathname();
-      $model = file_get_contents($filepath);
-      $model = Yaml::decode($model)['release'];
 
-      print "Processing model {$model['name']}\n";
+      if (!$validator->validate($filepath, $schema)) {
+        print "Model failed validation.\n";
+        continue;
+      }
 
+      $model = Yaml::parseFile($filepath)['release'];
       if (($entity = $updater->exists($model)) !== NULL) {
         $rc = $updater->update($entity, $model);
       }
@@ -43,7 +51,10 @@ if (is_dir($path)) {
   catch (\UnexpectedValueException $e) {
     print 'Failed opening models directory: ' . $e->getMessage();
   }
-  catch (InvalidDataTypeException $e) {
+  catch (\ValueError $e) {
+    print "Invalid value: " . $e->getMessage();
+  }
+  catch (ParseException $e) {
     print 'Invalid YAML format: ' . $e->getMessage();
   }
 }

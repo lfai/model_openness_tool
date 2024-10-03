@@ -5,10 +5,12 @@ framework:
 release:
   name: GPT-4o
   version: Undisclosed
-  type: 'Language Model'
-  architecture: Undisclosed
-  origin: null
+  date: '2024-10-03'
+  type: language
+  architecture: undisclosed
+  origin: ''
   producer: OpenAI
+  contact: ''
   components:
     -
       name: 'Model architecture'

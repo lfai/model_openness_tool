@@ -5,10 +5,12 @@ framework:
 release:
   name: SHAI
   version: 14B
-  type: null
-  architecture: Decoder-only
-  origin: null
+  date: '2024-10-03'
+  type: ''
+  architecture: decoder
+  origin: ''
   producer: 'China Asset Management Co.'
+  contact: ''
   components:
     -
       name: 'Model architecture'

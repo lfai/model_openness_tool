@@ -5,10 +5,12 @@ framework:
 release:
   name: Griffin
   version: 14B
-  type: 'Language Model'
-  architecture: 'Hybrid Transformer / RNN'
-  origin: null
-  producer: null
+  date: '2024-10-03'
+  type: language
+  architecture: ''
+  origin: ''
+  producer: ''
+  contact: ''
   components:
     -
       name: 'Model architecture'

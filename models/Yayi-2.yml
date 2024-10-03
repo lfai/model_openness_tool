@@ -5,10 +5,12 @@ framework:
 release:
   name: Yayi-2
   version: 30B
-  type: null
-  architecture: Decoder-only
+  date: '2024-10-03'
+  type: ''
+  architecture: decoder
   origin: 'Other License'
   producer: 'Wenge Research'
+  contact: ''
   components:
     -
       name: 'Model architecture'

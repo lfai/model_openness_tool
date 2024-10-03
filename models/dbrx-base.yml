@@ -5,10 +5,12 @@ framework:
 release:
   name: dbrx-base
   version: '132B '
-  type: 'Language Model'
-  architecture: Decoder-only
+  date: '2024-10-03'
+  type: language
+  architecture: decoder
   origin: dbrx-base
   producer: Databricks
+  contact: ''
   components:
     -
       name: 'Model architecture'

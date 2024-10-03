@@ -5,10 +5,12 @@ framework:
 release:
   name: Claude-2
   version: Undisclosed
-  type: 'Language Model'
-  architecture: Undisclosed
+  date: '2024-10-03'
+  type: language
+  architecture: undisclosed
   origin: Claude-1
   producer: Anthropic
+  contact: ''
   components:
     -
       name: 'Model architecture'

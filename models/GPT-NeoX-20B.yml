@@ -5,10 +5,12 @@ framework:
 release:
   name: GPT-NeoX-20B
   version: 20B
-  type: 'Language Model'
-  architecture: 'Transformer (Decoder-only)'
+  date: '2024-10-03'
+  type: language
+  architecture: 'transformer decoder'
   origin: 'GPT Megatron'
   producer: EleutherAI
+  contact: ''
   components:
     -
       name: 'Model architecture'

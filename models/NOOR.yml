@@ -5,10 +5,12 @@ framework:
 release:
   name: NOOR
   version: 13B
-  type: null
-  architecture: Decoder-only
-  origin: null
+  date: '2024-10-03'
+  type: ''
+  architecture: decoder
+  origin: ''
   producer: 'Technology Innovation Institute, LightOn'
+  contact: ''
   components:
     -
       name: 'Model architecture'

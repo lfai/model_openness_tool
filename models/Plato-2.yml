@@ -5,10 +5,12 @@ framework:
 release:
   name: Plato-2
   version: 1.6B
-  type: null
-  architecture: 'Decoder-only PrefixLM'
-  origin: null
+  date: '2024-10-03'
+  type: ''
+  architecture: ''
+  origin: ''
   producer: Baidu
+  contact: ''
   components:
     -
       name: 'Model architecture'

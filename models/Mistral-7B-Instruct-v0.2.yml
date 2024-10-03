@@ -5,10 +5,12 @@ framework:
 release:
   name: Mistral-7B-Instruct-v0.2
   version: 7B
-  type: 'Language Model'
-  architecture: Decoder-only
+  date: '2024-10-03'
+  type: language
+  architecture: decoder
   origin: Mistral
   producer: Mistral
+  contact: ''
   components:
     -
       name: 'Model architecture'

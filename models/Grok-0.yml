@@ -5,10 +5,12 @@ framework:
 release:
   name: Grok-0
   version: 33B
-  type: 'Language Model'
-  architecture: Undisclosed
-  origin: null
+  date: '2024-10-03'
+  type: language
+  architecture: undisclosed
+  origin: ''
   producer: xAI
+  contact: ''
   components:
     -
       name: 'Model architecture'

@@ -4,11 +4,13 @@ framework:
   date: '2024-12-15'
 release:
   name: OpenVoice
-  version: null
-  type: 'speech model'
-  architecture: null
+  version: ''
+  date: '2024-10-03'
+  type: ''
+  architecture: ''
   origin: OpenVoice
   producer: MyShell
+  contact: ''
   components:
     -
       name: 'Model architecture'

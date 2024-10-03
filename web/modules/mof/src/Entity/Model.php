@@ -378,12 +378,17 @@ final class Model extends RevisionableContentEntityBase implements ModelInterfac
       ->setRequired(TRUE)
       ->setSetting('allowed_values', [
         'transformer' => t('Transformer'),
+        'transformer decoder' => t('Transformer (Decoder-only)'),
+        'transformer encoder-decoder' => t('Transformer (Encoder-Decoder)'),
+        'decoder' => t('Decoder-only'),
+        'encoder' => t('Encoder-only'),
         'diffusion' => t('Diffusion'),
         'RNN' => t('RNN'),
         'CNN' => t('CNN'),
         'LSTM' => t('LSTM'),
         'NeRF' => t('NeRF'),
         'hybrid' => t('Hybrid'),
+        'undisclosed' => t('Undisclosed'),
         'other' => t('Other'),
       ])
       ->setDisplayOptions('form', [
@@ -405,9 +410,9 @@ final class Model extends RevisionableContentEntityBase implements ModelInterfac
       ->setDescription(t('The training treatment, includes pre-training, fine-tuning, RLHF or other training techniques.'))
       ->setRequired(TRUE)
       ->setSetting('allowed_values', [
-        'pre_trained' => t('Pre-trained'),
-        'instruct_fine_tuned' => t('Instruct fine-tuned'),
-        'chat_fine_tuned' => t('Chat fine-tuned'),
+        'pre-trained' => t('Pre-trained'),
+        'instruct fine-tuned' => t('Instruct fine-tuned'),
+        'chat fine-tuned' => t('Chat fine-tuned'),
       ])
       ->setDisplayOptions('form', [
         'type' => 'options_select',

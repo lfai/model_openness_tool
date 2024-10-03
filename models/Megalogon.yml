@@ -5,10 +5,12 @@ framework:
 release:
   name: Megalogon
   version: 7B
-  type: null
+  date: '2024-10-03'
+  type: ''
   architecture: RNN
-  origin: null
+  origin: ''
   producer: 'USC, Meta, CMU, and UCSD'
+  contact: ''
   components:
     -
       name: 'Model architecture'

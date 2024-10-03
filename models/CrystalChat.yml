@@ -5,10 +5,12 @@ framework:
 release:
   name: CrystalChat
   version: 7B
-  type: 'Language Model'
-  architecture: Decoder-only
+  date: '2024-10-03'
+  type: language
+  architecture: decoder
   origin: Crystal
   producer: LLM360
+  contact: ''
   components:
     -
       name: 'Model architecture'

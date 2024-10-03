@@ -5,10 +5,12 @@ framework:
 release:
   name: Eagle
   version: 3B
-  type: 'Language Model'
+  date: '2024-10-03'
+  type: language
   architecture: RNN
-  origin: null
+  origin: ''
   producer: 'EleutherAI and LF AI and Data'
+  contact: ''
   components:
     -
       name: 'Model architecture'

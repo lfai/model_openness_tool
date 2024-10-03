@@ -5,10 +5,12 @@ framework:
 release:
   name: Baichuan-2
   version: 13B
-  type: 'Language Model'
-  architecture: 'Transformer (Decoder-only)'
+  date: '2024-10-03'
+  type: language
+  architecture: 'transformer decoder'
   origin: Baichuan-2
   producer: 'Baichuan AI'
+  contact: ''
   components:
     -
       name: 'Model architecture'

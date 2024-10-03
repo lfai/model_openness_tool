@@ -5,10 +5,12 @@ framework:
 release:
   name: BlackMamba-2.8B
   version: 2.8B
-  type: 'Language Model'
-  architecture: 'State Space Model MoE'
-  origin: null
+  date: '2024-10-03'
+  type: language
+  architecture: ''
+  origin: ''
   producer: Zyphra
+  contact: ''
   components:
     -
       name: 'Model architecture'

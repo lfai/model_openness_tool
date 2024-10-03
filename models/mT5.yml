@@ -5,10 +5,12 @@ framework:
 release:
   name: mT5
   version: 13B
-  type: null
-  architecture: Encoder-Decoder
-  origin: null
+  date: '2024-10-03'
+  type: ''
+  architecture: ''
+  origin: ''
   producer: Google
+  contact: ''
   components:
     -
       name: 'Model architecture'

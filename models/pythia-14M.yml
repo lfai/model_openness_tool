@@ -5,10 +5,12 @@ framework:
 release:
   name: pythia-14M
   version: 14M
-  type: 'Language Model'
-  architecture: Transformer
-  origin: null
+  date: '2024-10-03'
+  type: language
+  architecture: transformer
+  origin: ''
   producer: EleutherAI
+  contact: ''
   components:
     -
       name: 'Model architecture'

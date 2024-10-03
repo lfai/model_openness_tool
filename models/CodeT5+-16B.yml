@@ -5,10 +5,12 @@ framework:
 release:
   name: CodeT5+-16B
   version: 16B
-  type: 'Code Model'
-  architecture: 'Transformer (Encoder-Decoder)'
-  origin: null
+  date: '2024-10-03'
+  type: code
+  architecture: 'transformer encoder-decoder'
+  origin: ''
   producer: Salesforce
+  contact: ''
   components:
     -
       name: 'Model architecture'
@@ -32,13 +34,13 @@ release:
       name: 'Inference code'
       description: 'Code used for running the model to make predictions'
       location: ''
-      license_name: 'License not specified'
+      license_name: BSD-3
       license_path: ''
     -
       name: 'Evaluation code'
       description: 'Code used for evaluating the model'
       location: ''
-      license_name: 'License not specified'
+      license_name: BSD-3
       license_path: ''
     -
       name: 'Supporting libraries and tools'
@@ -50,7 +52,7 @@ release:
       name: 'Model parameters (Final)'
       description: 'Trained model parameters, weights and biases'
       location: ''
-      license_name: BSD-3
+      license_name: 'License not specified'
       license_path: ''
     -
       name: 'Model parameters (Intermediate)'
@@ -74,7 +76,7 @@ release:
       name: 'Model metadata'
       description: 'Any model metadata including training configuration and optimizer states'
       location: ''
-      license_name: BSD-3
+      license_name: 'License not specified'
       license_path: ''
     -
       name: 'Sample model outputs'
@@ -98,7 +100,7 @@ release:
       name: 'Technical report'
       description: 'Technical report detailing capabilities and usage instructions for the model'
       location: ''
-      license_name: 'License not specified'
+      license_name: 'Component Not Included'
       license_path: ''
     -
       name: 'Research paper'

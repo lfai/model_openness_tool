@@ -5,10 +5,12 @@ framework:
 release:
   name: StellarX
   version: 4B
-  type: null
-  architecture: Decoder-only
-  origin: null
+  date: '2024-10-03'
+  type: ''
+  architecture: decoder
+  origin: ''
   producer: 'Arkane Industries'
+  contact: ''
   components:
     -
       name: 'Model architecture'

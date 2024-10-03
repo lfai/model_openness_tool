@@ -5,10 +5,12 @@ framework:
 release:
   name: Mamba
   version: 2.8B
-  type: null
-  architecture: 'State Space Model'
-  origin: null
+  date: '2024-10-03'
+  type: ''
+  architecture: ''
+  origin: ''
   producer: 'Carnegie Mellon University and Princeton'
+  contact: ''
   components:
     -
       name: 'Model architecture'

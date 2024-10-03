@@ -5,10 +5,12 @@ framework:
 release:
   name: GPT-3-Finnish
   version: 13B
-  type: 'Language Model'
-  architecture: 'Transformer (Decoder-only)'
+  date: '2024-10-03'
+  type: language
+  architecture: 'transformer decoder'
   origin: GPT
   producer: 'University of Turku'
+  contact: ''
   components:
     -
       name: 'Model architecture'

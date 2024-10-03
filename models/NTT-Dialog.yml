@@ -5,10 +5,12 @@ framework:
 release:
   name: NTT-Dialog
   version: 1.6B
-  type: null
-  architecture: Encoder-Decoder
-  origin: null
+  date: '2024-10-03'
+  type: ''
+  architecture: ''
+  origin: ''
   producer: NTT
+  contact: ''
   components:
     -
       name: 'Model architecture'

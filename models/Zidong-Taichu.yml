@@ -5,10 +5,12 @@ framework:
 release:
   name: Zidong-Taichu
   version: 100B
-  type: null
-  architecture: Undisclosed
-  origin: null
+  date: '2024-10-03'
+  type: ''
+  architecture: undisclosed
+  origin: ''
   producer: 'Chinese Academy of Sciences'
+  contact: ''
   components:
     -
       name: 'Model architecture'

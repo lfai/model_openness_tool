@@ -5,10 +5,12 @@ framework:
 release:
   name: Mistral-7B-v0.1
   version: 7B
-  type: null
-  architecture: Decoder-only
+  date: '2024-10-03'
+  type: ''
+  architecture: decoder
   origin: Mistral
   producer: Mistral
+  contact: ''
   components:
     -
       name: 'Model architecture'

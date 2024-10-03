@@ -5,10 +5,12 @@ framework:
 release:
   name: XVERSE
   version: 65B
-  type: null
-  architecture: Decoder-only
+  date: '2024-10-03'
+  type: ''
+  architecture: decoder
   origin: Apache-2.0
   producer: 'Shenzhen Yuanxiang Technology'
+  contact: ''
   components:
     -
       name: 'Model architecture'

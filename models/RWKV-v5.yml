@@ -5,10 +5,12 @@ framework:
 release:
   name: RWKV-v5
   version: 3B
-  type: null
+  date: '2024-10-03'
+  type: ''
   architecture: RNN
-  origin: null
+  origin: ''
   producer: RWKV
+  contact: ''
   components:
     -
       name: 'Model architecture'

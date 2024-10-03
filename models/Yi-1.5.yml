@@ -5,10 +5,12 @@ framework:
 release:
   name: Yi-1.5
   version: 34B
-  type: 'Language Model'
-  architecture: Decoder-only
+  date: '2024-10-03'
+  type: language
+  architecture: decoder
   origin: Apache-2.0
   producer: 01.AI
+  contact: ''
   components:
     -
       name: 'Model architecture'

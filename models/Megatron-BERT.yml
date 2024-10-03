@@ -5,10 +5,12 @@ framework:
 release:
   name: Megatron-BERT
   version: 3.9B
-  type: null
-  architecture: Encoder-only
-  origin: null
+  date: '2024-10-03'
+  type: ''
+  architecture: encoder
+  origin: ''
   producer: NVIDIA
+  contact: ''
   components:
     -
       name: 'Model architecture'

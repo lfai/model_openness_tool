@@ -5,10 +5,12 @@ framework:
 release:
   name: Codex
   version: Undisclosed
-  type: 'Code Model'
-  architecture: 'Transformer (Decoder-only)'
-  origin: null
+  date: '2024-10-03'
+  type: code
+  architecture: 'transformer decoder'
+  origin: ''
   producer: OpenAI
+  contact: ''
   components:
     -
       name: 'Model architecture'

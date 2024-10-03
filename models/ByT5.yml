@@ -5,10 +5,12 @@ framework:
 release:
   name: ByT5
   version: 13B
-  type: 'Language Model'
-  architecture: 'Transformer (Encoder-Decoder)'
-  origin: null
+  date: '2024-10-03'
+  type: language
+  architecture: 'transformer encoder-decoder'
+  origin: ''
   producer: Google
+  contact: ''
   components:
     -
       name: 'Model architecture'

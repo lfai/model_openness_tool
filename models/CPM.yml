@@ -5,10 +5,12 @@ framework:
 release:
   name: CPM
   version: 2.6B
-  type: 'Language Model'
-  architecture: Decoder-only
-  origin: null
+  date: '2024-10-03'
+  type: language
+  architecture: decoder
+  origin: ''
   producer: 'Tsinghua University'
+  contact: ''
   components:
     -
       name: 'Model architecture'

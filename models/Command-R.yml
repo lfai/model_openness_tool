@@ -5,10 +5,12 @@ framework:
 release:
   name: Command-R
   version: 35B
-  type: 'Language Model'
-  architecture: Undisclosed
-  origin: null
+  date: '2024-10-03'
+  type: language
+  architecture: undisclosed
+  origin: ''
   producer: Cohere
+  contact: ''
   components:
     -
       name: 'Model architecture'
@@ -44,13 +46,13 @@ release:
       name: 'Supporting libraries and tools'
       description: "Libraries and tools used in the model's development"
       location: ''
-      license_name: 'License not specified'
+      license_name: 'Component Not Included'
       license_path: ''
     -
       name: 'Model parameters (Final)'
       description: 'Trained model parameters, weights and biases'
       location: ''
-      license_name: CC-BY-NC-4.0
+      license_name: 'License not specified'
       license_path: ''
     -
       name: 'Model parameters (Intermediate)'
@@ -74,7 +76,7 @@ release:
       name: 'Model metadata'
       description: 'Any model metadata including training configuration and optimizer states'
       location: ''
-      license_name: CC-BY-NC-4.0
+      license_name: 'License not specified'
       license_path: ''
     -
       name: 'Sample model outputs'

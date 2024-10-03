@@ -5,10 +5,12 @@ framework:
 release:
   name: Jamba
   version: 2.8B
-  type: 'Language Model'
-  architecture: 'Hybrid Transformer / SSM MoE'
-  origin: null
+  date: '2024-10-03'
+  type: language
+  architecture: ''
+  origin: ''
   producer: AI21
+  contact: ''
   components:
     -
       name: 'Model architecture'

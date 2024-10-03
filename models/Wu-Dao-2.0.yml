@@ -5,10 +5,12 @@ framework:
 release:
   name: Wu-Dao-2.0
   version: 1.8T
-  type: null
-  architecture: 'Decoder-only MoE'
-  origin: null
+  date: '2024-10-03'
+  type: ''
+  architecture: ''
+  origin: ''
   producer: BAAI
+  contact: ''
   components:
     -
       name: 'Model architecture'

@@ -5,10 +5,12 @@ framework:
 release:
   name: StableLM-Japanese
   version: 7B
-  type: 'Auto-regressive Language Model'
-  architecture: 'NeoX transformer'
-  origin: null
+  date: '2024-10-03'
+  type: ''
+  architecture: ''
+  origin: ''
   producer: 'Stability AI'
+  contact: ''
   components:
     -
       name: 'Model architecture'

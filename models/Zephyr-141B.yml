@@ -5,10 +5,12 @@ framework:
 release:
   name: Zephyr-141B
   version: 141B
-  type: null
-  architecture: 'Decoder-only MoE'
+  date: '2024-10-03'
+  type: ''
+  architecture: ''
   origin: MIT
-  producer: null
+  producer: ''
+  contact: ''
   components:
     -
       name: 'Model architecture'

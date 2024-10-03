@@ -5,10 +5,12 @@ framework:
 release:
   name: YaLM
   version: 100B
-  type: 'Language Model'
-  architecture: Decoder-only
+  date: '2024-10-03'
+  type: language
+  architecture: decoder
   origin: Apache-2.0
   producer: Yandex
+  contact: ''
   components:
     -
       name: 'Model architecture'

@@ -5,10 +5,12 @@ framework:
 release:
   name: Granite-34B-Code-Instruct
   version: 34B
-  type: 'Code Model'
-  architecture: 'Transformer (Decoder-only)'
+  date: '2024-10-03'
+  type: code
+  architecture: 'transformer decoder'
   origin: Granite-34B-Code-Base
   producer: IBM
+  contact: ''
   components:
     -
       name: 'Model architecture'

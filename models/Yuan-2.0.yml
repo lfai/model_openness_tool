@@ -5,10 +5,12 @@ framework:
 release:
   name: Yuan-2.0
   version: 102.6B
-  type: null
-  architecture: Decoder-only
-  origin: null
+  date: '2024-10-03'
+  type: ''
+  architecture: decoder
+  origin: ''
   producer: 'Inspur AI Research'
+  contact: ''
   components:
     -
       name: 'Model architecture'

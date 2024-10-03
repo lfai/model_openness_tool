@@ -4,11 +4,13 @@ framework:
   date: '2024-12-15'
 release:
   name: Stable-Diffusion
-  version: null
-  type: 'Image Generation'
-  architecture: Diffusion
-  origin: null
+  version: ''
+  date: '2024-10-03'
+  type: ''
+  architecture: diffusion
+  origin: ''
   producer: 'Stability AI'
+  contact: ''
   components:
     -
       name: 'Model architecture'

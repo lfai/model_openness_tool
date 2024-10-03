@@ -5,10 +5,12 @@ framework:
 release:
   name: CodeGemma-7B-Instruct
   version: 7B
-  type: 'Code Model'
-  architecture: 'Transformer (Decoder-only)'
+  date: '2024-10-03'
+  type: code
+  architecture: 'transformer decoder'
   origin: Gemma
   producer: Google
+  contact: ''
   components:
     -
       name: 'Model architecture'

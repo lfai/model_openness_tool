@@ -5,10 +5,12 @@ framework:
 release:
   name: Stable-Diffusion-v1-3
   version: v1.3
-  type: 'Image Generation'
-  architecture: Diffusion
-  origin: null
+  date: '2024-10-03'
+  type: ''
+  architecture: diffusion
+  origin: ''
   producer: 'Stability AI'
+  contact: ''
   components:
     -
       name: 'Model architecture'

@@ -32,6 +32,7 @@
         "drupal/webform": "^6.2",
         "drush/drush": "^12.5",
         "kint-php/kint": "^5.1",
+        "opis/json-schema": "^2.3",
         "symfony/dotenv": "^7.0"
     },
     "conflict": {

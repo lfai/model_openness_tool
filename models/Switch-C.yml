@@ -5,10 +5,12 @@ framework:
 release:
   name: Switch-C
   version: 1.5T
-  type: null
-  architecture: 'Encoder-Decoder MoE'
-  origin: null
+  date: '2024-10-03'
+  type: ''
+  architecture: ''
+  origin: ''
   producer: Google
+  contact: ''
   components:
     -
       name: 'Model architecture'

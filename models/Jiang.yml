@@ -5,10 +5,12 @@ framework:
 release:
   name: Jiang
   version: 30B
-  type: 'Language Model'
-  architecture: 'Transformer (Decoder-only)'
-  origin: null
+  date: '2024-10-03'
+  type: language
+  architecture: 'transformer decoder'
+  origin: ''
   producer: KDF
+  contact: ''
   components:
     -
       name: 'Model architecture'

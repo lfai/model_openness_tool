@@ -5,10 +5,12 @@ framework:
 release:
   name: Megatron-Turing
   version: 530B
-  type: null
-  architecture: Decoder-only
-  origin: null
+  date: '2024-10-03'
+  type: ''
+  architecture: decoder
+  origin: ''
   producer: 'Microsoft, NVIDIA'
+  contact: ''
   components:
     -
       name: 'Model architecture'

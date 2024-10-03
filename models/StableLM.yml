@@ -5,10 +5,12 @@ framework:
 release:
   name: StableLM
   version: 7B
-  type: null
-  architecture: Decoder-only
-  origin: null
+  date: '2024-10-03'
+  type: ''
+  architecture: decoder
+  origin: ''
   producer: 'Stability AI'
+  contact: ''
   components:
     -
       name: 'Model architecture'

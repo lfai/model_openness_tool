@@ -5,10 +5,12 @@ framework:
 release:
   name: Qwen-72B
   version: 72B
-  type: null
-  architecture: Decoder-only
-  origin: null
+  date: '2024-10-03'
+  type: ''
+  architecture: decoder
+  origin: ''
   producer: Alibaba
+  contact: ''
   components:
     -
       name: 'Model architecture'

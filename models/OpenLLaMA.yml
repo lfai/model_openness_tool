@@ -5,10 +5,12 @@ framework:
 release:
   name: OpenLLaMA
   version: 3B
-  type: null
-  architecture: Decoder-only
-  origin: null
+  date: '2024-10-03'
+  type: ''
+  architecture: decoder
+  origin: ''
   producer: 'UC Berkeley'
+  contact: ''
   components:
     -
       name: 'Model architecture'

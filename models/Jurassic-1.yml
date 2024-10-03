@@ -5,10 +5,12 @@ framework:
 release:
   name: Jurassic-1
   version: 178B
-  type: 'Language Model'
-  architecture: 'Transformer (Decoder-only)'
-  origin: null
+  date: '2024-10-03'
+  type: language
+  architecture: 'transformer decoder'
+  origin: ''
   producer: 'AI21 Labs'
+  contact: ''
   components:
     -
       name: 'Model architecture'

@@ -5,10 +5,12 @@ framework:
 release:
   name: Palmyra
   version: 20B
-  type: null
-  architecture: Decoder-only
-  origin: null
+  date: '2024-10-03'
+  type: ''
+  architecture: decoder
+  origin: ''
   producer: Writer
+  contact: ''
   components:
     -
       name: 'Model architecture'

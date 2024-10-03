@@ -5,10 +5,12 @@ framework:
 release:
   name: XGLM
   version: 7.5B
-  type: 'multilingual autoregressive language model'
-  architecture: Decoder-only
+  date: '2024-10-03'
+  type: ''
+  architecture: decoder
   origin: MIT
   producer: 'FAIR (Fundamental Artificial Intelligence Research)'
+  contact: ''
   components:
     -
       name: 'Model architecture'

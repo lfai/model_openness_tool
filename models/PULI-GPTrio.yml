@@ -5,10 +5,12 @@ framework:
 release:
   name: PULI-GPTrio
   version: 7.7B
-  type: null
-  architecture: Decoder-only
-  origin: null
+  date: '2024-10-03'
+  type: ''
+  architecture: decoder
+  origin: ''
   producer: 'Hungarian Research Centre for Linguistics'
+  contact: ''
   components:
     -
       name: 'Model architecture'

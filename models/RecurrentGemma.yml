@@ -4,11 +4,13 @@ framework:
   date: '2024-12-15'
 release:
   name: RecurrentGemma
-  version: null
-  type: null
-  architecture: null
-  origin: null
-  producer: null
+  version: ''
+  date: '2024-10-03'
+  type: ''
+  architecture: ''
+  origin: ''
+  producer: ''
+  contact: ''
   components:
     -
       name: 'Model architecture'

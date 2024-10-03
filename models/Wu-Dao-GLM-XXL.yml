@@ -5,10 +5,12 @@ framework:
 release:
   name: Wu-Dao-GLM-XXL
   version: 10B
-  type: null
-  architecture: 'Encoder-Decoder (Autoregressive)'
-  origin: null
+  date: '2024-10-03'
+  type: ''
+  architecture: ''
+  origin: ''
   producer: BAAI
+  contact: ''
   components:
     -
       name: 'Model architecture'

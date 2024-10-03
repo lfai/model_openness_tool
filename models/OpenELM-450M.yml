@@ -5,10 +5,12 @@ framework:
 release:
   name: OpenELM-450M
   version: 450M
-  type: 'Language Model'
-  architecture: Transformer
+  date: '2024-10-03'
+  type: language
+  architecture: transformer
   origin: OpenELM-450M
   producer: Apple
+  contact: ''
   components:
     -
       name: 'Model architecture'

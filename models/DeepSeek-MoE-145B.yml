@@ -5,10 +5,12 @@ framework:
 release:
   name: DeepSeek-MoE-145B
   version: 145B
-  type: 'Language Model'
-  architecture: 'Transformer (Decoder-only MoE)'
-  origin: null
+  date: '2024-10-03'
+  type: language
+  architecture: ''
+  origin: DeepSeek-MoE-16B
   producer: 'DeepSeek AI'
+  contact: ''
   components:
     -
       name: 'Model architecture'

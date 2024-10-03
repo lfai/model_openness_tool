@@ -4,11 +4,13 @@ framework:
   date: '2024-12-15'
 release:
   name: OpenBMB
-  version: null
-  type: null
-  architecture: Decoder-only
-  origin: null
-  producer: null
+  version: ''
+  date: '2024-10-03'
+  type: ''
+  architecture: decoder
+  origin: ''
+  producer: ''
+  contact: ''
   components:
     -
       name: 'Model architecture'

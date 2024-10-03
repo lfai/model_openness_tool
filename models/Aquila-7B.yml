@@ -5,10 +5,12 @@ framework:
 release:
   name: Aquila-7B
   version: 7B
-  type: 'Language Model'
-  architecture: 'Transformer (Decoder-only)'
-  origin: null
+  date: '2024-10-03'
+  type: language
+  architecture: 'transformer decoder'
+  origin: ''
   producer: BAAI
+  contact: ''
   components:
     -
       name: 'Model architecture'

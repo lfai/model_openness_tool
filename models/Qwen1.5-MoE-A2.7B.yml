@@ -5,10 +5,12 @@ framework:
 release:
   name: Qwen1.5-MoE-A2.7B
   version: 7B
-  type: null
-  architecture: 'Decoder-only MoE'
-  origin: null
+  date: '2024-10-03'
+  type: ''
+  architecture: ''
+  origin: ''
   producer: Alibaba
+  contact: ''
   components:
     -
       name: 'Model architecture'

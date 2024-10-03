@@ -5,10 +5,12 @@ framework:
 release:
   name: SantaCoder
   version: 1.1B
-  type: null
-  architecture: 'Decoder-only (Autoregressive Span Corruption)'
-  origin: null
+  date: '2024-10-03'
+  type: ''
+  architecture: ''
+  origin: ''
   producer: 'BigCode Project'
+  contact: ''
   components:
     -
       name: 'Model architecture'

@@ -5,10 +5,12 @@ framework:
 release:
   name: CrystalCoder
   version: 7B
-  type: 'Code Model'
-  architecture: Decoder-only
+  date: '2024-10-03'
+  type: code
+  architecture: decoder
   origin: Crystal
   producer: LLM360
+  contact: ''
   components:
     -
       name: 'Model architecture'
