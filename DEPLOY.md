@@ -2,7 +2,7 @@
 
 ## Overview
 
-This document provides an overview of the deployment process for the app,
+This document provides an overview of the deployment process for the MOT app,
 including details about the test and deploy workflows,
 GitHub environment secrets, and deployment triggers.
 
@@ -61,5 +61,5 @@ going through the tests process or when deploying to the stage environment.
 
 ---
 
-**Last updated:** October 3, 2024
+**Last updated:** October 4, 2024
 

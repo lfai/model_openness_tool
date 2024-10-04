@@ -7,16 +7,18 @@ to ensure your model is validated and accepted.
 
 ## Prerequisites
 
-Before you start contributing, ensure you have the following installed and set up on your local machine:
+Before you start contributing, ensure you have the following installed and
+set up in your local environment:
 
 - **PHP**: Required to run the validation script.
 - **Composer**: Used to manage project dependencies.
 
-If you don’t already have PHP and Composer installed, you can find installation instructions on their respective websites:
+If you don’t already have PHP and Composer installed, you can find installation
+instructions on their respective websites:
 - [PHP Installation](https://www.php.net/manual/en/install.php)
 - [Composer Installation](https://getcomposer.org/doc/00-intro.md)
 
-Once you have these tools installed, you can proceed with the following steps.
+Once you have these tools installed, proceed with the following steps.
 
 ## Steps to Contribute a Model
 
@@ -31,7 +33,7 @@ Once you have these tools installed, you can proceed with the following steps.
 3. **Validate your model locally**
    - Before creating a Pull Request, validate your model locally to ensure it conforms to the project's rules.
    - Run the following command to validate your model:
-     ```bash
+     ```
 		 composer install
      php scripts/validate-model.php models/<your-model>.yml
      ```
