@@ -101,7 +101,7 @@ jobs:
           find tmp/ -maxdepth 1 -type f | while read -r file; do
             basefile=$(basename "$file")
             if [ -f "models/$basefile" ]; then
-              git diff --name-only --no-index "$file" "models/$basefile"
+              git diff --name-only --no-index "$file" "models/$basefile" || true
             fi
           done > models.txt
           rm -rf tmp
