@@ -13,22 +13,36 @@ if (is_dir($model_path)) {
     $validator = \Drupal::service('model_validator');
     $schema = json_decode(file_get_contents($schema_path . '/mof_schema.json'));
 
+    if (!is_dir($model_path . '/.processed')) {
+      if (!mkdir($model_path . '/.processed', 0755)) {
+        print 'Failed to create processed directory.' . PHP_EOL;
+      }
+    }
+
     $it = new \DirectoryIterator($model_path);
     foreach ($it as $file) {
       if ($file->isDot()) continue;
       if (!$file->isFile()) continue;
       if ($file->getExtension() !== 'yml') continue;
 
-      print "Processing {$file->getFilename()}...\n";
-
+      $filename = $file->getFilename();
       $filepath = $file->getPathname();
 
+      $yamlstr = file_get_contents($filepath);
+
+      if (file_exists($model_path . '/.processed/' . $filename)) {
+        $processed = file_get_contents($model_path . '/.processed/' . $filename);
+        if ($yamlstr === $processed) continue;
+      }
+
+      print "Processing {$filename}" . PHP_EOL;
+
       if (!$validator->validate($filepath, $schema)) {
-        print "Model failed validation.\n";
+        print 'Model failed validation.' . PHP_EOL;
         continue;
       }
 
-      $model = Yaml::parseFile($filepath)['release'];
+      $model = Yaml::parse($yamlstr)['release'];
       if (($entity = $updater->exists($model)) !== NULL) {
         $rc = $updater->update($entity, $model);
       }
@@ -38,13 +52,13 @@ if (is_dir($model_path)) {
 
       if ($rc === SAVED_NEW || $rc === SAVED_UPDATED) {
         if ($rc === SAVED_NEW) {
-          print "Created model {$model['name']}\n";
+          print "Created model {$model['name']}" . PHP_EOL;
         }
         else if ($rc === SAVED_UPDATED) {
-          print "Updated model {$model['name']}\n";
+          print "Updated model {$model['name']}" . PHP_EOL;
         }
 
-        rename($filepath, $filepath . '-');
+        copy($filepath, $model_path . '/.processed/' . $filename);
       }
     }
   }
