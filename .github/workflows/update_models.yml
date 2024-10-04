@@ -95,14 +95,15 @@ jobs:
           git fetch origin ${{ github.ref_name }}
           mkdir tmp
           rsync -az \
-            --include="*.yml-" \
+            --include="*.yml" \
             --exclude="*" \
             $DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH/models/ ./tmp/
-          find tmp -name '*.yml-' -exec sh -c 'mv "$1" "${1%.yml-}.yml"' _ {} \;
-          git diff \
-            --no-index \
-            --name-only tmp/ models/ | \
-            grep -v '/dev/null' > models.txt || true
+          find tmp/ -maxdepth 1 -type f | while read -r file; do
+            basefile=$(basename "$file")
+            if [ -f "models/$basefile" ]; then
+              git diff --name-only --no-index "$file" "models/$basefile"
+            fi
+          done > models.txt
           rm -rf tmp
 
       - name: Set model sync trigger
