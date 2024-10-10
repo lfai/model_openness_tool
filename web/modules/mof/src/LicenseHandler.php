@@ -59,8 +59,8 @@ final class LicenseHandler implements LicenseHandlerInterface {
       'name' => 'Other license',
       'licenseId' => 'Other license',
     ], [
-      'name' => 'No license specified',
-      'licenseId' => 'No license specified',
+      'name' => 'License not specified',
+      'licenseId' => 'License not specified',
     ], [
       'name' => 'Component not included',
       'licenseId' => 'Component not included',
