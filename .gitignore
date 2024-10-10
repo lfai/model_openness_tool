@@ -17,3 +17,4 @@
 !/web/sites/default/settings.php
 .gitattributes
 .editorconfig
+models/.processed

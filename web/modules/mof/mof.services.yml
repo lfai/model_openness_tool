@@ -25,6 +25,15 @@ services:
       - '@model_evaluator'
       - '@component.manager'
 
+  model_validator:
+    class: Drupal\mof\ModelValidator
+
+  model_updater:
+    class: Drupal\mof\ModelUpdater
+    arguments:
+      - '@entity_type.manager'
+      - '@component.manager'
+
   component.manager:
     class: Drupal\mof\ComponentManager
     arguments:

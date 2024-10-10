@@ -1,0 +1,132 @@
+{
+  "type": "object",
+  "properties": {
+    "framework": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "enum": ["Model Openness Framework"]
+        },
+        "version": {
+          "type": "string"
+        },
+        "date": {
+          "type": "string",
+          "format": "date"
+        }
+      },
+      "required": ["name", "version", "date"]
+    },
+    "release": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "version": {
+          "type": "string"
+        },
+        "date": {
+          "type": "string",
+          "format": "date"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "",
+            "language",
+            "vision",
+            "image",
+            "audio",
+            "video",
+            "3d",
+            "code",
+            "multimodal",
+            "other"
+          ]
+        },
+        "architecture": {
+          "type": "string",
+          "enum": [
+            "",
+            "transformer",
+            "transformer decoder",
+            "transformer encoder-decoder",
+            "decoder",
+            "encoder",
+            "diffusion",
+            "RNN",
+            "CNN",
+            "LSTM",
+            "NeRF",
+            "hybrid",
+            "undisclosed",
+            "other"
+          ]
+        },
+        "treatment": {
+          "type": "string",
+          "enum": [
+            "pre-trained",
+            "instruct fine-tuned",
+            "chat fine-tuned"
+          ]
+        },
+        "origin": {
+          "type": "string"
+        },
+        "producer": {
+          "type": "string"
+        },
+        "contact": {
+          "type": "string"
+        },
+        "components": {
+          "type": "array",
+          "minItems": 17,
+          "maxItems": 17,
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "description": {
+                "type": "string"
+              },
+              "location": {
+                "type": "string"
+              },
+              "license_name": {
+                "type": "string"
+              },
+              "license_path": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "name",
+              "description",
+              "location",
+              "license_name",
+              "license_path"
+            ]
+          }
+        }
+      },
+      "required": [
+        "name",
+        "version",
+        "date",
+        "architecture",
+        "origin",
+        "producer",
+        "contact",
+        "components"
+      ]
+    }
+  },
+  "required": ["framework", "release"]
+}

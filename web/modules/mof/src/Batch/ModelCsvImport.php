@@ -32,14 +32,13 @@ class ModelCsvImport {
       'description' => $data['Description'] ?: '-',
       'version' => $data['Version/Parameters'],
       'organization' => $data['Organization'],
-      'type' => $data['Model Type'],
-      'architecture' => $data['Architecture'],
-      'treatment' => $data['Training Treatment'],
+      'type' => self::getAllowedValueKey('type', $data['Model Type']) ?? '',
+      'architecture' => self::getAllowedValueKey('architecture', $data['Architecture']) ?? '',
+      'treatment' => self::getAllowedValueKey('treatment', $data['Training Treatment']) ?? '',
       'origin' => $data['Base Model'],
       'github' => self::getPathFromUrl($data['Github Repo URL']),
       'huggingface' => self::getPathFromUrl($data['HuggingFace Model URL']),
-      'approver' => self::setApprover($data['Researcher']),
-      'status' => 'approved',
+      'approver' => self::setApprover($data['Researcher']), 'status' => 'approved',
     ];
 
     $license_data = [
@@ -137,6 +136,54 @@ class ModelCsvImport {
     if ($entity->save() === 1) {
       $context['results']['imported']++;
     }
+  }
+
+  public static function getAllowedValueKey(string $field, string $label): ?string {
+    $label = strtolower($label);
+
+    switch ($field) {
+    case 'type':
+      $map = [
+        'language model' => 'language',
+        'vision model' => 'vision',
+        'image model' => 'image',
+        'audio model' => 'audio',
+        'video model' => 'video',
+        '3d model' => '3d',
+        'code model' => 'code',
+        'multimodal model' => 'multimodal',
+        'other model' => 'other',
+      ];
+      break;
+
+    case 'architecture':
+      $map = [
+        'transformer' => 'transformer',
+        'transformer (decoder-only)' => 'transformer decoder',
+        'transformer (encoder-only)' => 'transformer encoder',
+        'transformer (encoder-decoder)' => 'transformer encoder-decoder',
+        'decoder-only' => 'decoder',
+        'encoder-only' => 'encoder',
+        'undisclosed' => 'undisclosed',
+        'diffusion' => 'diffusion',
+        'rnn' => 'RNN',
+        'cnn' => 'CNN',
+        'lstm' => 'LSTM',
+        'nerf' => 'NeRF',
+        'hybrid' => 'hybrid',
+        'other' => 'other',
+      ];
+      break;
+
+    case 'treatment':
+      $map = [
+        'pre-trained' => 'pre-trained',
+        'instruct fine-tuned' => 'instruct fine-tuned',
+        'chat fine-tuned' => 'chat fine-tuned',
+      ];
+    }
+
+    return $map[$label] ?? NULL;
   }
 
   public static function getPathFromUrl(string $url): string {

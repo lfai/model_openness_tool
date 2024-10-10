@@ -1,0 +1,102 @@
+name: Test
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Run tests in environment'
+        required: true
+        type: environment
+        default: 'Stage'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    services:
+      mariadb:
+        image: mariadb:latest
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: drupal
+          MYSQL_USER: drupal
+          MYSQL_PASSWORD: drupal
+        options: >-
+          --health-cmd="healthcheck.sh --connect --innodb_initialized"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
+        ports:
+          - 3306:3306
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: PHP setup
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: mbstring, pdo, mysql, gd, zip, intl, opcache, dom, sqlite3
+          coverage: none
+
+      - name: Apache setup
+        env:
+          DOCROOT: ${{ github.workspace }}/web
+        run: |
+          sudo usermod -aG docker www-data
+          sudo apt update
+          sudo apt install -y -o Dpkg::Options::="--force-confnew" apache2
+          echo "<VirtualHost *:80>
+            DocumentRoot $DOCROOT
+            <Directory $DOCROOT>
+              AllowOverride all
+              Require all granted
+              DirectoryIndex index.php
+            </Directory>
+            <FilesMatch \".+\.ph(?:ar|p|tml)$\">
+              SetHandler \"proxy:unix:/run/php/php8.3-fpm.sock|fcgi://localhost\"
+            </FilesMatch>
+          </VirtualHost>" | sudo tee /etc/apache2/sites-available/000-default.conf
+          sudo a2enmod proxy_fcgi rewrite
+          sudo service apache2 stop
+          sudo service php8.3-fpm stop
+          sudo service apache2 start
+          sudo service php8.3-fpm start
+
+      - name: Install composer
+        run: |
+          curl -sS https://getcomposer.org/installer | php
+          sudo mv composer.phar /usr/local/bin/composer
+
+      - name: Validate composer
+        run: composer validate
+
+      - name: Run composer
+        run: composer install --no-interaction --no-progress --prefer-dist
+
+      - name: Create .env file
+        run: |
+          echo "DB_NAME=drupal" >> .env
+          echo "DB_USER=drupal" >> .env
+          echo "DB_PASS=drupal" >> .env
+          echo "DB_HOST=127.0.0.1" >> .env
+          echo "DB_PORT=3306" >> .env
+          echo "HASH_SALT=$(openssl rand -hex 16)" >> .env
+          echo "TRUSTED_HOST=localhost" >> .env
+
+      - name: Set up Drupal
+        run: |
+          cp ./web/sites/default/default.settings.php ./web/sites/default/settings.php
+          cp ./web/sites/default/default.services.yml ./web/sites/default/services.yml
+          ./vendor/bin/drush site-install mot_profile --yes
+
+      - name: Run PHPUnit tests
+        run: |
+          php ./web/core/scripts/run-tests.sh \
+            --dburl mysql://drupal:drupal@127.0.0.1:3306/drupal \
+            --sqlite /tmp/drupal.sqlite \
+            --url http://localhost Drupal,Core,Bootstrap,Access

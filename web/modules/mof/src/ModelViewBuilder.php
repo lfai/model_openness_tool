@@ -11,10 +11,13 @@ use Drupal\Core\Entity\EntityDisplayRepositoryInterface;
 use Drupal\Core\Messenger\MessengerInterface;
 use Drupal\Core\Language\LanguageManagerInterface;
 use Drupal\Core\Theme\Registry;
+use Drupal\Core\Url;
+use Drupal\Component\Utility\SortArray;
 use Drupal\mof\Entity\Model;
 use Drupal\mof\ModelEvaluatorInterface;
 use Drupal\mof\ComponentManagerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpFoundation\Session\Session;
 
 /**
  * ModelViewBuilder class.
@@ -30,6 +33,9 @@ class ModelViewBuilder extends EntityViewBuilder {
   /** @var \Drupal\Core\Messenger\MessengerInterface. */
   protected MessengerInterface $messenger;
 
+  /** @var \Symfony\Component\HttpFoundation\Session\Session. */
+  protected Session $session;
+
   /**
    * {@inheritdoc}
    */
@@ -41,7 +47,8 @@ class ModelViewBuilder extends EntityViewBuilder {
     EntityDisplayRepositoryInterface $entity_display_repository,
     ModelEvaluatorInterface $model_evaluator,
     ComponentManagerInterface $component_manager,
-    MessengerInterface $messenger
+    MessengerInterface $messenger,
+    Session $session
   ) {
     parent::__construct(
       $entity_type,
@@ -53,6 +60,7 @@ class ModelViewBuilder extends EntityViewBuilder {
     $this->modelEvaluator = $model_evaluator;
     $this->modelComponents = $component_manager->getComponents();
     $this->messenger = $messenger;
+    $this->session = $session;
   }
 
   /**
@@ -70,7 +78,8 @@ class ModelViewBuilder extends EntityViewBuilder {
       $container->get('entity_display.repository'),
       $container->get('model_evaluator'),
       $container->get('component.manager'),
-      $container->get('messenger')
+      $container->get('messenger'),
+      $container->get('session')
     );
   }
 
@@ -131,9 +140,12 @@ class ModelViewBuilder extends EntityViewBuilder {
         ],
         'badge' => $badges[$i],
         'evaluation' => [
-          'included' => $this->buildIncluded($evaluation[$i]['included']),
-          'missing' => $this->buildMissing($evaluation[$i]['missing']),
-          'invalid' => $this->buildInvalid($evaluation[$i]['invalid']),
+          'included' => $this
+            ->getComponentList($evaluation[$i]['included'], 'included'),
+          'missing' => $this
+            ->getComponentList($evaluation[$i]['missing'], 'missing'),
+          'invalid' => $this
+            ->getComponentList($evaluation[$i]['invalid'], 'invalid'),
           '#weight' => 10,
         ],
       ];
@@ -143,65 +155,67 @@ class ModelViewBuilder extends EntityViewBuilder {
       $this->messenger->addMessage($this->t('This model conditionally meets Class III because it has an open source license for Model Parameters (Final)'));
     }
 
+    if ($this->session->get('model_evaluation') === TRUE) {
+      $build['retry'] = [
+        '#type' => 'link',
+        '#title' => $this->t('Retry'),
+        '#url' => Url::fromRoute('mof.model.evaluate_form'),
+        '#weight' => -200,
+        '#attributes' => [
+          'class' => ['button', 'button--action', 'button--primary'],
+        ],
+      ];
+
+      $build['submit'] = [
+        '#type' => 'link',
+        '#title' => $this->t('Submit model'),
+        '#url' => Url::fromRoute('entity.model.add_form'),
+        '#weight' => -200,
+        '#attributes' => [
+          'class' => ['button', 'button--action', 'button--primary'],
+        ],
+      ];
+
+      $this->session->set('model_evaluation', FALSE);
+    }
+
     $build['#attached']['library'][] = 'mof/model-evaluation';
-    return parent::build($build);
-  }
+    $build += parent::build($build);
 
-  private function buildIncluded(array $included_components): array {
-    $build = [];
-
-    if (!empty($included_components)) {
-      $build = [
-        'included_components' => [
-          '#theme' => 'item_list',
-          '#title' => $this->t('Included'),
-        ],
-      ];
-    }
-
-    $components = array_filter($this->modelComponents, fn($c) => in_array($c->id, $included_components));
-    foreach ($components as $component) {
-      $build['included_components']['#items'][] = $component->name;
-    }
-
+    uasort($build, [SortArray::class, 'sortByWeightProperty']);
     return $build;
   }
 
-  private function buildInvalid(array $components): array {
+  /**
+   * Build a render array of completed, missing or invalid model components.
+   *
+   * @param array $components
+   *   Model components.
+   * @param string $status
+   *   A value of "missing" or "completed" or "invalid"
+   * @return array
+   *   A drupal render array of components.
+   */
+  private function getComponentList(array $components, string $status): array {
     $build = [];
 
-    $invalid = array_filter($this->modelComponents, fn($c) => in_array($c->id, $components));
-    if (!empty($invalid)) {
-      $build = [
-        'invalid_components' => [
-          '#theme' => 'item_list',
-          '#title' => $this->t('Invalid license'),
-        ],
-      ];
-
-      foreach ($invalid as $component) {
-        $build['invalid_components']['#items'][] = $component->name;
-      }
+    if (empty($components) && !in_array($status, ['missing', 'invalid', 'completed'])) {
+      return $build;
     }
 
-    return $build;
-  }
+    $build = [
+      "{$status}_components" => [
+        '#theme' => 'item_list',
+        '#title' => $this->t('@status components', ['@status' => ucfirst($status)]),
+      ],
+    ];
 
-  private function buildMissing(array $missing_components): array {
-    $build = [];
+    $components = array_filter(
+      $this->modelComponents,
+      fn($c) => in_array($c->id, $components));
 
-    if (!empty($missing_components)) {
-      $build = [
-        'missing_components' => [
-          '#theme' => 'item_list',
-          '#title' => $this->t('Missing components'),
-        ],
-      ];
-    }
-
-    $components = array_filter($this->modelComponents, fn($c) => in_array($c->id, $missing_components));
     foreach ($components as $component) {
-      $build['missing_components']['#items'][] = $component->name;
+      $build["{$status}_components"]['#items'][] = $component->name;
     }
 
     return $build;

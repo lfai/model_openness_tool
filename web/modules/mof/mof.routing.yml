@@ -51,6 +51,19 @@ entity.model.json:
     _entity_access: model.view
     _custom_access: \Drupal\mof\Controller\ModelController::pendingAccessCheck
 
+entity.model.yaml:
+  path: '/model/{model}/yaml'
+  defaults:
+    _controller: \Drupal\mof\Controller\ModelController::yaml
+    _title: 'Model YAML'
+  options:
+    parameters:
+      model:
+        type: entity:model
+  requirements:
+    _entity_access: model.view
+    _custom_access: \Drupal\mof\Controller\ModelController::pendingAccessCheck
+
 entity.model.admin_import:
   path: '/admin/model/import'
   defaults:

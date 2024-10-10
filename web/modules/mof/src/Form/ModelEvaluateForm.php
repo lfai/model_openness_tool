@@ -53,11 +53,30 @@ final class ModelEvaluateForm extends ModelForm {
   protected function actions(array $form, FormStateInterface $form_state) {
     $actions = parent::actions($form, $form_state);
     $actions['submit']['#value'] = $this->t('Evaluate');
+
+    if ($this->session->get('model_data') !== NULL) {
+      $actions['reset'] = [
+        '#type' => 'submit',
+        '#value' => $this->t('Start over'),
+        '#submit' => [[$this, 'resetForm']],
+      ];
+    }
+
     return $actions;
   }
 
+  /**
+   * {@inheritdoc}
+   */
   public function submitForm(array &$form, FormStateInterface $form_state): void {
     parent::submitForm($form, $form_state);
+    $this
+      ->session
+      ->set('model_evaluation', TRUE);
+    $this
+      ->session
+      ->set('model_data', $form_state
+      ->getValue('license_data'));
     $form_state
       ->setRebuild(TRUE);
     $form_state
@@ -74,6 +93,19 @@ final class ModelEvaluateForm extends ModelForm {
     // We do not save the model when using `evaluate model` form.
     // Models are only saved when using `submit model` form.
     return 0;
+  }
+
+  /**
+   * Clear session variables.
+   *
+   * @param array $form
+   *   An associative array containing the structure of the form.
+   * @param \Drupal\Core\Form\FormStateInterface $form_state
+   *   The current state of the form.
+   */
+  public function resetForm(array &$form, FormStateInterface $form_state): void {
+    $this->session->remove('model_evaluation');
+    $this->session->remove('model_data');
   }
 
 }

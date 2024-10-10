@@ -36,6 +36,14 @@ final class ComponentManager implements ComponentManagerInterface {
   }
 
   /**
+   * Get component by name.
+   */
+  public function getComponentByName(string $name): Component {
+    $key = array_search($name, array_column($this->components, 'name'));
+    return $this->components[$key];
+  }
+
+  /**
    * Get a single component by ID.
    */
   public function getComponent(int $component_id): Component {
