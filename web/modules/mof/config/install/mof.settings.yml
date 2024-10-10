@@ -6,8 +6,6 @@ components:
     tooltip: "The license used for the datasets, pretraining, fine-tuning, RLHF or otherwise (optional)"
     content_type: [data, code, document]
     class: 1
-    extra_licenses:
-      - Unlicensed
     weight: 30
     required: true
   -
@@ -98,8 +96,6 @@ components:
     tooltip: "The license used for evaluation results"
     content_type: document
     class: 3
-    extra_licenses:
-      - Unlicensed
     weight: 101
     required: true
   -
@@ -121,8 +117,6 @@ components:
     tooltip: "The license used for the model card"
     content_type: document
     class: 3
-    extra_licenses:
-      - Unlicensed
     weight: 70
     required: true
   -
@@ -132,8 +126,6 @@ components:
     tooltip: "The license used for the data card"
     content_type: document
     class: 3
-    extra_licenses:
-      - Unlicensed
     weight: 80
     required: true
   -
@@ -143,8 +135,6 @@ components:
     tooltip: "The license used for the technical report"
     content_type: document
     class: 3
-    extra_licenses:
-      - Unlicensed
     weight: 90
     required: true
   -
@@ -154,8 +144,6 @@ components:
     tooltip: "The license used for the research paper"
     content_type: document
     class: 1
-    extra_licenses:
-      - Unlicensed
     weight: 100
     required: true
   -

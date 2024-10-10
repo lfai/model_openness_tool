@@ -143,7 +143,7 @@ final class ModelSubmitForm extends ModelForm {
           '#states' => [
             'invisible' => [
               ':input[name="components['.$id.'][license]"]' => [
-                ['empty' => TRUE], 'or', ['value' => 'Component not included'], 'or', ['value' => 'No license specified']
+                ['empty' => TRUE], 'or', ['value' => 'Component not included'], 'or', ['value' => 'License not specified']
               ],
             ],
           ],
