@@ -103,7 +103,6 @@ final class ModelSubmitForm extends ModelForm {
             '#title' => $this->t('License path'),
             '#default_value' => $license_data[$id]['license_path'] ?? '',
             '#parents' => ['components', $id, 'license_path'],
-            '#required' => FALSE, // This doen't work :-(
             '#wrapper_attributes' => [
               'class' => ['license-path-wrapper'],
             ],
@@ -112,18 +111,12 @@ final class ModelSubmitForm extends ModelForm {
               'class' => ['license-path'],
               'autocomplete' => 'off',
             ],
-            '#states' => [
-              'optional' => [
-                ':input[name="components['.$id.'][license]"]' => ['empty' => TRUE],
-              ],
-            ],
           ],
           'component_path' => [
             '#type' => 'textfield',
             '#title' => $this->t('Component path'),
             '#default_value' => $license_data[$id]['component_path'] ?? '',
             '#parents' => ['components', $id, 'component_path'],
-            '#required' => FALSE, // This doen't work :-(
             '#wrapper_attributes' => [
               'class' => ['component-path-wrapper'],
             ],
@@ -131,11 +124,6 @@ final class ModelSubmitForm extends ModelForm {
               'list' => 'git-tree',
               'class' => ['component-path'],
               'autocomplete' => 'off',
-            ],
-            '#states' => [
-              'optional' => [
-                ':input[name="components['.$id.'][license]"]' => ['empty' => TRUE],
-              ],
             ],
           ],
           '#type' => 'container',
