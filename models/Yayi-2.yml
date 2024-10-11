@@ -22,7 +22,7 @@ release:
       name: 'Data preprocessing code'
       description: 'Code for data cleansing, normalization, and augmentation'
       location: ''
-      license_name: 'Component Not Included'
+      license_name: 'Component not included'
       license_path: ''
     -
       name: 'Training code'
@@ -94,7 +94,7 @@ release:
       name: 'Data card'
       description: 'Documentation for datasets including source, characteristics, and preprocessing details'
       location: ''
-      license_name: 'Component Not Included'
+      license_name: 'Component not included'
       license_path: ''
     -
       name: 'Technical report'

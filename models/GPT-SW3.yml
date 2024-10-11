@@ -46,7 +46,7 @@ release:
       name: 'Supporting libraries and tools'
       description: "Libraries and tools used in the model's development"
       location: ''
-      license_name: 'Component Not Included'
+      license_name: 'Component not included'
       license_path: ''
     -
       name: 'Model parameters (Final)'
