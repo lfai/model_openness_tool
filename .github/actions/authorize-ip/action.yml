@@ -1,0 +1,22 @@
+name: Authorize IP
+description: 'Add IP to AWS security group'
+
+inputs:
+  ip:
+    description: 'IP address to authorize'
+    required: true
+  sgid:
+    description: 'AWS security group id'
+    required: true
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Authorize IP address
+      shell: bash
+      run: |
+        aws ec2 authorize-security-group-ingress \
+          --group-id ${{ inputs.sgid }} \
+          --protocol tcp \
+          --port 22 \
+          --cidr ${{ inputs.ip }}/32

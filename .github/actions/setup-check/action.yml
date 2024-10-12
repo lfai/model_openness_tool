@@ -1,0 +1,59 @@
+name: Setup check
+description: 'Check if required secrets and environments are configured'
+
+inputs:
+  deploy_host:
+    description: 'Deploy host'
+    required: true
+  deploy_user:
+    description: 'Deploy user'
+    required: true
+  deploy_path:
+    description: 'Deploy path'
+    required: true
+  deploy_key:
+    description: 'Deploy key'
+    required: true
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Check DEPLOY_HOST
+      shell: bash
+      env:
+        INPUT_DEPLOY_HOST: ${{ inputs.deploy_host }}
+      run: |
+        if [ -z "${INPUT_DEPLOY_HOST}" ]; then
+          echo "DEPLOY_HOST is not set."
+          exit 1
+        fi
+
+    - name: Check DEPLOY_USER
+      shell: bash
+      env:
+        INPUT_DEPLOY_USER: ${{ inputs.deploy_user }}
+      run: |
+        if [ -z "${INPUT_DEPLOY_USER}" ]; then
+          echo "DEPLOY_USER is not set."
+          exit 1
+        fi
+
+    - name: Check DEPLOY_PATH
+      shell: bash
+      env:
+        INPUT_DEPLOY_PATH: ${{ inputs.DEPLOY_PATH }}
+      run: |
+        if [ -z "${INPUT_DEPLOY_PATH}" ]; then
+          echo "DEPLOY_PATH is not set."
+          exit 1
+        fi
+
+    - name: Check DEPLOY_KEY
+      shell: bash
+      env:
+        INPUT_DEPLOY_KEY: ${{ inputs.deploy_key }}
+      run: |
+        if [ -z "${INPUT_DEPLOY_KEY}" ]; then
+          echo "DEPLOY_KEY is not set."
+          exit 1
+        fi
