@@ -4,6 +4,12 @@ on:
   push:
     branches:
       - main
+    paths:
+      - 'web/**'
+      - 'patches/**'
+      - 'scripts/**'
+      - 'composer.json'
+      - 'composer.lock'
   workflow_dispatch:
     inputs:
       environment:
