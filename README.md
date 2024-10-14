@@ -11,22 +11,26 @@ Features
 ## Evaluating a Model
 
 * Prepare your model's artifacts according to the guidelines specified in the MOF.
-* Submit your model through the MOT interface, providing details and licenses for each component.
+* Submit your model through the 'Evaluate Model' function of the MOT interface, providing details and licenses for each component.
 * Receive feedback on the classification and suggestions for achieving higher openness levels.
+* At the end of the evaluation you have the option to submit the model for addition to the list of models displayed on the MOT.
+
+## Submitting a Model
+
+While it is recommended to start with the 'Evaluate Model' function of the MOT described above, you can use the "Submit Model' function to submit your model directly.
 
 ## Viewing Model Rankings
 
 Access the MOT's web interface to view a detailed list of all models submitted, their openness classification, and how they rank against each MOF class.
 
-## Contributing
+## Contributing new models or changes to existing models using GitHub
 
-Contributions to the Model Openness Tool are welcome! To contribute, please follow these steps:
+The MOT's web interface only allows user to modify model records they created. However, anyone can submit
+changes to other records through GitHub. New models can also be submitted for addition this way. For details on how to do that see the [CONTRIBUTING.md](CONTRIBUTING.md) file.
 
-* Fork the repository on GitHub.
-* Create a new branch for your feature or fix.
-* Submit a pull request with a detailed description of your changes.
-	
-See the [INSTALL.md](INSTALL.md) file for more information on how to setup your environment to run MOT.
+## Contributing to the MOT
+
+Contributions to the Model Openness Tool are welcome! To contribute to the software or the models, please see the [CONTRIBUTING.md](CONTRIBUTING.md) file.
 
 ## License
 
@@ -38,4 +42,4 @@ For support, feature requests, or bug reports, please file an issue through the 
 
 ## Acknowledgements
 
-This tool was developed in collaboration with the authors of the Model Openness Framework and the Linux Foundation. Special thanks to Matt White, Ibrahim Haddad, Cailean Osborne, Xiao-Yang Liu, Ahmed Abdelmonsef, and Sachin Mathew Varghese for their invaluable input and guidance.
+This tool was developed in collaboration with the authors of the Model Openness Framework and the Linux Foundation. Special thanks to Matt White, Ibrahim Haddad, Cailean Osborne, Xiao-Yang Liu, Ahmed Abdelmonsef, Sachin Mathew Varghese, and Arnaud J Le Hors for their invaluable input and guidance.
