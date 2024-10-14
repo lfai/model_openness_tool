@@ -1,11 +1,16 @@
-# Contributing Models to the MOT
+# Contributing to the MOT
 
-We welcome contributions to the MOT project in the form of models.
+We welcome contributions to the MOT project in the form of additions or changes to the models listed
+on the MOT website as well as bug fixes and improvements to the MOT website itself.
 
-If you'd like to contribute a model, please follow the steps below
-to ensure your model is validated and accepted.
+Thank you for contributing to the MOT.
 
-## Prerequisites
+## Contributing Models to the MOT
+
+If you'd like to contribute a new model or changes to an existing model via GitHub, please follow
+the steps below to ensure your model is validated and accepted.
+
+### Prerequisites
 
 Before you start contributing, ensure you have the following installed and
 set up in your local environment:
@@ -20,7 +25,7 @@ instructions on their respective websites:
 
 Once you have these tools installed, proceed with the following steps.
 
-## Steps to Contribute a Model
+### Steps to Contribute a Model
 
 1. **Fork the repository**
    - First, fork the main repository to your personal GitHub account. 
@@ -47,10 +52,19 @@ Once you have these tools installed, proceed with the following steps.
    - After submitting your PR, a maintainer will manually review and approve it.
    - Once the PR is merged, the GitHub workflow will automatically validate the model again and publish it, provided it passes validation.
 
-## Additional Notes
+### Additional Notes
 
 - Ensure that your model adheres to the schema defined in `schema/mof_schema.json`.
 - Running local validation before submitting a PR can save time and ensure quicker approval of your contribution.
 
-Thank you for contributing to the MOT.
+## Contributing to the MOT software
 
+To submit bug fixes and improvements to the MOT software please follow these steps:
+
+* Fork the repository on GitHub.
+* Create a new branch for your feature or fix.
+* Submit a pull request with a detailed description of your changes.
+
+Note that all changes to the code should carry a sign-off.
+
+See the [INSTALL.md](INSTALL.md) file for more information on how to setup your environment to run MOT.
