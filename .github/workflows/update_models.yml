@@ -1,11 +1,11 @@
 name: Update models
 
 on:
-  pull_request:
-    types:
-      - closed
+  push:
     branches:
       - main
+    paths:
+      - 'models/**'
   workflow_dispatch:
     inputs:
       environment:
@@ -79,9 +79,8 @@ jobs:
       - name: Add server to known hosts
         run: ssh-keyscan -H $DEPLOY_HOST >> ~/.ssh/known_hosts
 
-      - name: List models on PR merge
-        if: ${{ github.event_name == 'pull_request' &&
-                github.event.pull_request.merged == true }}
+      - name: Check for model changes on push
+        if: ${{ github.event_name == 'push' }}
         run: |
           git fetch origin main
           git diff \
@@ -89,8 +88,8 @@ jobs:
             --diff-filter=AM origin/main...${{ github.sha }} | \
             grep '^models/.*\.yml$' > models.txt || true
 
-      - name: List models on workflow_dispatch
-        if: github.event_name == 'workflow_dispatch'
+      - name: Check for model changes on workflow_dispatch
+        if: ${{ github.event_name == 'workflow_dispatch' }}
         run: |
           git fetch origin ${{ github.ref_name }}
           mkdir tmp
