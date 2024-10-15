@@ -77,6 +77,7 @@ use Drupal\user\EntityOwnerTrait;
  *     "admin-collection" = "/admin/models",
  *     "delete-multiple-form" = "/admin/content/model/delete-multiple",
  *     "json" = "/model/{model}/json",
+ *     "yaml" = "/model/{model}/yaml",
  *   },
  *   field_ui_base_route = "entity.model.settings",
  * )
