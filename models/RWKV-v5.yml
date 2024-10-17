@@ -22,7 +22,7 @@ release:
       name: 'Data preprocessing code'
       description: 'Code for data cleansing, normalization, and augmentation'
       location: ''
-      license_name: 'Component Not Included'
+      license_name: 'Component not included'
       license_path: ''
     -
       name: 'Training code'
@@ -46,7 +46,7 @@ release:
       name: 'Supporting libraries and tools'
       description: "Libraries and tools used in the model's development"
       location: ''
-      license_name: 'Component Not Included'
+      license_name: 'Component not included'
       license_path: ''
     -
       name: 'Model parameters (Final)'
@@ -88,19 +88,19 @@ release:
       name: 'Model card'
       description: 'Model details including performance metrics, intended use, and limitations'
       location: ''
-      license_name: 'Component Not Included'
+      license_name: 'Component not included'
       license_path: ''
     -
       name: 'Data card'
       description: 'Documentation for datasets including source, characteristics, and preprocessing details'
       location: ''
-      license_name: 'Component Not Included'
+      license_name: 'Component not included'
       license_path: ''
     -
       name: 'Technical report'
       description: 'Technical report detailing capabilities and usage instructions for the model'
       location: ''
-      license_name: 'Component Not Included'
+      license_name: 'Component not included'
       license_path: ''
     -
       name: 'Research paper'
@@ -112,5 +112,5 @@ release:
       name: 'Evaluation results'
       description: 'The results from evaluating the model'
       location: ''
-      license_name: 'Component Not Included'
+      license_name: 'Component not included'
       license_path: ''
