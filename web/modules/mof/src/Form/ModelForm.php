@@ -293,6 +293,7 @@ abstract class ModelForm extends ContentEntityForm {
     if ($type === 'code' || (is_int($type) && $this->componentManager->getComponent($type)->contentType === 'code')) {
       $licenses = array_unique([...$licenses, ...$this->licenseHandler->getOsiApproved()], SORT_REGULAR);
     }
+    uasort($licenses, fn($a, $b) => strcasecmp($a['name'],$b['name']));
 
     foreach ($licenses as $license) {
       $datalist['licenses'][] = [
