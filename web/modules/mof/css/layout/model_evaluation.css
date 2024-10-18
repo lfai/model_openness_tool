@@ -12,21 +12,22 @@
   flex: 0 1 auto;
 }
 
-.json-download {
+.json-download, .yaml-download  {
   text-decoration: none;
+  margin-right: 10px;
 }
 
-.json-download:hover {
+.json-download:hover, .yaml-download:hover {
   text-decoration: underline;
 }
 
-.json-download:before {
+.json-download:before, .yaml-download:before {
   content: '\f019';
   font: var(--fa-font-solid);
   display: none;
 }
 
-.json-download svg {
+.json-download svg, .yaml-download svg {
   margin-right: 5px;
   vertical-align: inherit;
 }

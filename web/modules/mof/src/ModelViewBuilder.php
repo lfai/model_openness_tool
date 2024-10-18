@@ -111,6 +111,14 @@ class ModelViewBuilder extends EntityViewBuilder {
         '#attributes' => ['class' => ['model-link', 'json-download']],
       ];
 
+      $build['yaml'] = [
+        '#type' => 'link',
+        '#title' => $this->t('Download YAML'),
+        '#url' => $build['#model']->toUrl('yaml'),
+        '#weight' => -140,
+        '#attributes' => ['class' => ['model-link', 'yaml-download']],
+      ];
+
       $build['icons'] = [
         '#theme' => 'model_link',
         '#github' => $build['#model']->getGithubSlug(),

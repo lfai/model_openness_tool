@@ -124,7 +124,7 @@ final class ModelController extends ControllerBase {
 
     $response = new Response();
     $response->setContent($yaml);
-    $response->headers->set('Content-Type', 'application/json');
+    $response->headers->set('Content-Type', 'application/yaml');
     $response->headers->set('Content-Length', (string)strlen($yaml));
     $response->headers->set('Content-Disposition', 'attachment; filename="mof.yml"');
 
