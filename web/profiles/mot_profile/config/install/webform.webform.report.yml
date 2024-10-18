@@ -22,7 +22,7 @@ elements: |-
   report:
     '#type': textarea
     '#title': Report
-    '#description': 'Provide details on model inaccuracies'
+    '#description': 'Provide details on model inaccuracies. Alternatively you can <a href="https://github.com/lfai/model_openness_tool">submit a Pull Request or open an Issue on GitHub</a>.'
     '#autocomplete': ''
     '#required': true
     '#required_error': 'Report is required'
