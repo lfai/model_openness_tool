@@ -286,6 +286,25 @@ final class Model extends RevisionableContentEntityBase implements ModelInterfac
       ->setDisplayConfigurable('form', TRUE)
       ->setDisplayConfigurable('view', FALSE);
 
+    $fields['organization'] = BaseFieldDefinition::create('string')
+      ->setRevisionable(TRUE)
+      ->setTranslatable(TRUE)
+      ->setLabel(t('Organization'))
+      ->setDescription(t('The organization that developed the model.'))
+      ->setRequired(TRUE)
+      ->setSetting('max_length', 255)
+      ->setDisplayOptions('form', [
+        'type' => 'string_textfield',
+        'weight' => -95,
+      ])
+      ->setDisplayConfigurable('form', TRUE)
+      ->setDisplayOptions('view', [
+        'label' => 'inline',
+        'type' => 'string',
+        'weight' => -95,
+      ])
+      ->setDisplayConfigurable('view', TRUE);
+
     $fields['description'] = BaseFieldDefinition::create('string_long')
       ->setRevisionable(TRUE)
       ->setTranslatable(TRUE)
@@ -302,7 +321,7 @@ final class Model extends RevisionableContentEntityBase implements ModelInterfac
         'weight' => -90,
       ])
       ->setDisplayConfigurable('view', TRUE)
-      ->setRequired(TRUE);
+      ->setRequired(FALSE);
 
     $fields['version'] = BaseFieldDefinition::create('string')
       ->setRevisionable(TRUE)
@@ -320,33 +339,14 @@ final class Model extends RevisionableContentEntityBase implements ModelInterfac
         'weight' => -80,
       ])
       ->setDisplayConfigurable('view', TRUE)
-      ->setRequired(TRUE);
-
-    $fields['organization'] = BaseFieldDefinition::create('string')
-      ->setRevisionable(TRUE)
-      ->setTranslatable(TRUE)
-      ->setLabel(t('Organization'))
-      ->setDescription(t('The organization that developed the model.'))
-      ->setRequired(TRUE)
-      ->setSetting('max_length', 255)
-      ->setDisplayOptions('form', [
-        'type' => 'string_textfield',
-        'weight' => -75,
-      ])
-      ->setDisplayConfigurable('form', TRUE)
-      ->setDisplayOptions('view', [
-        'label' => 'inline',
-        'type' => 'string',
-        'weight' => -75,
-      ])
-      ->setDisplayConfigurable('view', TRUE);
+      ->setRequired(FALSE);
 
     $fields['type'] = BaseFieldDefinition::create('list_string')
       ->setRevisionable(TRUE)
       ->setTranslatable(TRUE)
       ->setLabel(t('Type'))
       ->setDescription(t('Type of model, generally its modality.'))
-      ->setRequired(TRUE)
+      ->setRequired(FALSE)
       ->setSetting('allowed_values', [
         'language' => t('Language model'),
         'vision' => t('Vision model'),
@@ -375,7 +375,7 @@ final class Model extends RevisionableContentEntityBase implements ModelInterfac
       ->setTranslatable(TRUE)
       ->setLabel(t('Architecture'))
       ->setDescription(t('The model\'s architecture.'))
-      ->setRequired(TRUE)
+      ->setRequired(FALSE)
       ->setSetting('allowed_values', [
         'transformer' => t('Transformer'),
         'transformer decoder' => t('Transformer (Decoder-only)'),
@@ -408,7 +408,7 @@ final class Model extends RevisionableContentEntityBase implements ModelInterfac
       ->setTranslatable(TRUE)
       ->setLabel(t('Treatment'))
       ->setDescription(t('The training treatment, includes pre-training, fine-tuning, RLHF or other training techniques.'))
-      ->setRequired(TRUE)
+      ->setRequired(FALSE)
       ->setSetting('allowed_values', [
         'pre-trained' => t('Pre-trained'),
         'instruct fine-tuned' => t('Instruct fine-tuned'),
@@ -431,7 +431,7 @@ final class Model extends RevisionableContentEntityBase implements ModelInterfac
       ->setTranslatable(TRUE)
       ->setLabel(t('Base model'))
       ->setDescription(t('The pretrained version of the model which this model is based on, reference itself if this is the pre-trained model.'))
-      ->setRequired(TRUE)
+      ->setRequired(FALSE)
       ->setSetting('max_length', 255)
       ->setDisplayOptions('form', [
         'type' => 'string_textfield',
@@ -533,7 +533,7 @@ final class Model extends RevisionableContentEntityBase implements ModelInterfac
       ->setRevisionable(TRUE)
       ->setTranslatable(TRUE)
       ->setDescription(t('Model status'))
-      ->setRequired(TRUE)
+      ->setRequired(FALSE)
       ->setDefaultValue(static::STATUS_UNAPPROVED)
       ->setSetting('allowed_values', [
         static::STATUS_UNAPPROVED => t('Unapproved'),

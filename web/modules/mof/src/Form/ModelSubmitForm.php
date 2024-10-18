@@ -42,9 +42,9 @@ final class ModelSubmitForm extends ModelForm {
 
     $model_details = [
       'label',
+      'organization',
       'description',
       'version',
-      'organization',
       'type',
       'architecture',
       'treatment',
@@ -90,7 +90,7 @@ final class ModelSubmitForm extends ModelForm {
 
     // Open when ajax rebuilds the form.
     if ($form_state->isRebuilding()) {
-      $form['details']['#open'] = TRUE;
+      $form['details']['#open'] = FALSE;
     }
 
     // Add fields to capture license and component paths.
@@ -111,11 +111,6 @@ final class ModelSubmitForm extends ModelForm {
               'class' => ['license-path'],
               'autocomplete' => 'off',
             ],
-            '#states' => [
-              'optional' => [
-                ':input[name="components['.$id.'][license]"]' => ['empty' => TRUE],
-              ],
-            ],
           ],
           'component_path' => [
             '#type' => 'textfield',
@@ -129,11 +124,6 @@ final class ModelSubmitForm extends ModelForm {
               'list' => 'git-tree',
               'class' => ['component-path'],
               'autocomplete' => 'off',
-            ],
-            '#states' => [
-              'optional' => [
-                ':input[name="components['.$id.'][license]"]' => ['empty' => TRUE],
-              ],
             ],
           ],
           '#type' => 'container',
@@ -165,18 +155,6 @@ final class ModelSubmitForm extends ModelForm {
     }
 
     $extra = array_column($this->licenseHandler->getExtraOptions(), 'licenseId');
-
-    // Ensure a license and component path is entered.
-    foreach ($form_state->getValue('components') as $cid => $component) {
-      if ($component['license'] !== '' && !in_array($component['license'], $extra)) {
-        if (!trim($component['license_path'])) {
-          $form_state->setErrorByName("components][{$cid}][license_path", $this->t('License path is required.'));
-        }
-        if (!trim($component['component_path'])) {
-          $form_state->setErrorByName("components][{$cid}][component_path", $this->t('Component path is required.'));
-        }
-      }
-    }
 
     // Re-populate git repo tree datalist.
     if (($repo_name = $form_state->getValue('github')) && !empty($repo_name)) {
