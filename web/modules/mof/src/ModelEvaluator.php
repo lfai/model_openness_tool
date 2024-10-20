@@ -15,6 +15,10 @@ final class ModelEvaluator implements ModelEvaluatorInterface {
 
   use StringTranslationTrait;
 
+  // If any of these component IDs have a
+  // open source license then the model qualifies for class 3.
+  const CLASS_3_CIDS = [10, 11, 12, 13, 14];
+
   /** @var \Drupal\mof\Entity\Model. */
   private $model;
 
@@ -142,10 +146,11 @@ final class ModelEvaluator implements ModelEvaluatorInterface {
     }
 
     $evals = $this->evaluate();
-    $qualified = FALSE;
-    $in_progress = FALSE;
+    $qualified = $in_progress = FALSE;
+
     for ($i = 3, $j = 3; $i >= 1; $i--, $j--) {
       $progress = $this->getProgress($i);
+
       // under MOF 1.1 Conditional is a Pass
       if ($progress === 100.00 || $evals[$i]['conditional'] === TRUE) {
         $status = $this->t('Qualified');
@@ -208,40 +213,61 @@ final class ModelEvaluator implements ModelEvaluatorInterface {
   /**
    * Class 3 has a conditional pass if these components have an open source license but we will
    * inform the user that a type-appropriate license should be used.
+   *
    *  - `Model parameters (Final)` (10)
    *  - `Technical report` (11)
    *  - `Evaluation results` (12)
    *  - `Model card` (13)
    *  - `Data card` (14)
+   *
+   * @return array
+   *   An array of translatable strings.
    */
-  public function getConditionalMessage(): string {
+  public function getConditionalMessage(): array {
     $licenses = $this->model->getLicenses();
-    $msg = 'This model has an open source license on the following components, it should be using a type-appropriate license:';
-    if (isset($licenses[10]) && $this->licenseHandler->isOpenSource($licenses[10]['license'])) {
-      $msg = $msg . '<br>' . '- Model parameters (Final) of type data.';
+
+    $messages = [
+      $this->t('This model has an open source license on the following components, it should be using a type-appropriate license:'),
+    ];
+
+    $component_messages = [
+      $this->t('Model parameters (Final) of type data.'),
+      $this->t('Technical report of type documentation.'),
+      $this->t('Evaluation results of type documentation.'),
+      $this->t('Model card of type documentation.'),
+      $this->t('Data card of type documentation.'),
+    ];
+
+    foreach (array_combine(self::CLASS_3_CIDS, $component_messages) as $cid => $message) {
+      if (isset($licenses[$cid]) && $this->licenseHandler->isOpenSource($licenses[$cid]['license'])) {
+        $messages[] = $message;
+      }
     }
-    if (isset($licenses[11]) && $this->licenseHandler->isOpenSource($licenses[11]['license'])) {
-      $msg = $msg . '<br>' . '- Technical report of type documentation.';
-    }
-    if (isset($licenses[12]) && $this->licenseHandler->isOpenSource($licenses[12]['license'])) {
-      $msg = $msg . '<br>' . '- Evaluation results of type documentation.';
-    }
-    if (isset($licenses[13]) && $this->licenseHandler->isOpenSource($licenses[13]['license'])) {
-      $msg = $msg . '<br>' . '- Model card of type documentation.';
-    }
-    if (isset($licenses[14]) && $this->licenseHandler->isOpenSource($licenses[14]['license'])) {
-      $msg = $msg . '<br>' . '- Data card of type documentation.';
-    }
-    return $msg;
+
+    return $messages;
   }
 
+  /**
+   * Determine if a model has a conditional pass.
+   * @return bool
+   */
   private function hasConditionalPass(): bool {
     $licenses = $this->model->getLicenses();
-    return isset($licenses[10]) && $this->licenseHandler->isOpenSource($licenses[10]['license'])
-    || isset($licenses[11]) && $this->licenseHandler->isOpenSource($licenses[11]['license'])
-    || isset($licenses[12]) && $this->licenseHandler->isOpenSource($licenses[12]['license'])
-    || isset($licenses[13]) && $this->licenseHandler->isOpenSource($licenses[13]['license'])
-    || isset($licenses[14]) && $this->licenseHandler->isOpenSource($licenses[14]['license']);
+    $filtered = array_filter(self::CLASS_3_CIDS, fn($cid) => $this->isOpenSourceLicense($cid, $licenses));
+    return !empty($filtered);
+  }
+
+  /**
+   * Determine if a component is using an open source license.
+   *
+   * @param int $cid
+   *   Component ID.
+   * @param array $licenses
+   *   Licenses for each component.
+   * @return bool
+   */
+  private function isOpenSourceLicense(int $cid, array $licenses): bool {
+    return isset($licenses[$cid]) && $this->licenseHandler->isOpenSource($licenses[$cid]['license']);
   }
 
   /**
@@ -356,9 +382,9 @@ final class ModelEvaluator implements ModelEvaluatorInterface {
       if (in_array($cid, $required)) {
         $cid = (int)$cid;
 
-        // Special case for component 10: Model parameters (Final).
+        // Special case for class 3 components.
         // Conditional passes are valid.
-        if ($cid === 10 && $this->hasConditionalPass()) {
+        if (in_array($cid, self::CLASS_3_CIDS) && $this->hasConditionalPass()) {
           continue;
         }
 
