@@ -111,6 +111,14 @@ class ModelViewBuilder extends EntityViewBuilder {
         '#attributes' => ['class' => ['model-link', 'json-download']],
       ];
 
+      $build['yaml'] = [
+        '#type' => 'link',
+        '#title' => $this->t('Download YAML'),
+        '#url' => $build['#model']->toUrl('yaml'),
+        '#weight' => -140,
+        '#attributes' => ['class' => ['model-link', 'yaml-download']],
+      ];
+
       $build['icons'] = [
         '#theme' => 'model_link',
         '#github' => $build['#model']->getGithubSlug(),
@@ -152,7 +160,13 @@ class ModelViewBuilder extends EntityViewBuilder {
     }
 
     if ($evaluation[3]['conditional']) {
-      $this->messenger->addMessage($this->t('This model conditionally meets Class III because it has an open source license for Model Parameters (Final)'));
+      $list = ['#theme' => 'item_list', '#items' => []];
+
+      $message = $this->modelEvaluator->getConditionalMessage();
+      $this->messenger->addMessage(array_shift($message));
+
+      $list['#items'] = $message;
+      $this->messenger->addMessage($list);
     }
 
     if ($this->session->get('model_evaluation') === TRUE) {
