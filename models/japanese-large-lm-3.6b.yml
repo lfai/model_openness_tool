@@ -3,44 +3,44 @@ framework:
   version: '1.0'
   date: '2024-12-15'
 release:
-  name: PaLM-2
-  version: Undisclosed
+  name: japanese-large-lm-3.6b
+  version: 3.6B
   date: '2024-10-21'
-  type: ''
+  type: language
   architecture: decoder
-  origin: ''
-  producer: Google
+  origin: japanese-large-lm-3.6b
+  producer: 'Line Corporation'
   contact: ''
   components:
     -
       name: 'Model architecture'
       description: "Well commented code for the model's architecture"
       location: ''
-      license_name: 'License not specified'
+      license_name: 'Apache 2.0'
       license_path: ''
     -
       name: 'Data preprocessing code'
       description: 'Code for data cleansing, normalization, and augmentation'
       location: ''
-      license_name: 'License not specified'
+      license_name: 'Component not included'
       license_path: ''
     -
       name: 'Training code'
       description: 'Code used for training the model'
       location: ''
-      license_name: 'License not specified'
+      license_name: 'Component not included'
       license_path: ''
     -
       name: 'Inference code'
       description: 'Code used for running the model to make predictions'
       location: ''
-      license_name: 'License not specified'
+      license_name: 'Apache 2.0'
       license_path: ''
     -
       name: 'Evaluation code'
       description: 'Code used for evaluating the model'
       location: ''
-      license_name: 'License not specified'
+      license_name: 'Component not included'
       license_path: ''
     -
       name: 'Supporting libraries and tools'
@@ -58,19 +58,19 @@ release:
       name: 'Model parameters (Intermediate)'
       description: 'Trained model parameters, weights and biases'
       location: ''
-      license_name: 'License not specified'
+      license_name: 'Component not included'
       license_path: ''
     -
       name: Datasets
       description: 'Training, validation and testing datasets used for the model'
       location: ''
-      license_name: 'License not specified'
+      license_name: 'Component not included'
       license_path: ''
     -
       name: 'Evaluation data'
       description: 'Data used for evaluating the model'
       location: ''
-      license_name: 'License not specified'
+      license_name: 'Component not included'
       license_path: ''
     -
       name: 'Model metadata'
@@ -94,7 +94,7 @@ release:
       name: 'Data card'
       description: 'Documentation for datasets including source, characteristics, and preprocessing details'
       location: ''
-      license_name: 'License not specified'
+      license_name: 'Component not included'
       license_path: ''
     -
       name: 'Technical report'
