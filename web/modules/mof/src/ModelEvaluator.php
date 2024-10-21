@@ -224,23 +224,21 @@ final class ModelEvaluator implements ModelEvaluatorInterface {
    *   An array of translatable strings.
    */
   public function getConditionalMessage(): array {
-    $licenses = $this->model->getLicenses();
-
     $messages = [
       $this->t('This model has an open source license on the following components, it should be using a type-appropriate license:'),
     ];
 
     $component_messages = [
-      $this->t('Model parameters (Final) of type data.'),
-      $this->t('Technical report of type documentation.'),
-      $this->t('Evaluation results of type documentation.'),
-      $this->t('Model card of type documentation.'),
-      $this->t('Data card of type documentation.'),
+      10 => $this->t('Model parameters (Final) of type data.'),
+      11 => $this->t('Technical report of type documentation.'),
+      12 => $this->t('Evaluation results of type documentation.'),
+      13 => $this->t('Model card of type documentation.'),
+      14 => $this->t('Data card of type documentation.'),
     ];
 
-    foreach (array_combine(self::CLASS_3_CIDS, $component_messages) as $cid => $message) {
-      if (isset($licenses[$cid]) && $this->licenseHandler->isOpenSource($licenses[$cid]['license'])) {
-        $messages[] = $message;
+    foreach (self::CLASS_3_CIDS as $cid) {
+      if (isset($component_messages[$cid]) && $this->isOpenSourceLicense($cid)) {
+        $messages[] = $component_messages[$cid];
       }
     }
 
@@ -252,21 +250,18 @@ final class ModelEvaluator implements ModelEvaluatorInterface {
    * @return bool
    */
   private function hasConditionalPass(): bool {
-    $licenses = $this->model->getLicenses();
-    $filtered = array_filter(self::CLASS_3_CIDS, fn($cid) => $this->isOpenSourceLicense($cid, $licenses));
-    return !empty($filtered);
+    $pass = array_filter(self::CLASS_3_CIDS, fn($cid) => $this->isOpenSourceLicense($cid));
+    return !empty($pass);
   }
 
   /**
    * Determine if a component is using an open source license.
    *
-   * @param int $cid
-   *   Component ID.
-   * @param array $licenses
-   *   Licenses for each component.
+   * @param int $cid Component ID.
    * @return bool
    */
-  private function isOpenSourceLicense(int $cid, array $licenses): bool {
+  private function isOpenSourceLicense(int $cid): bool {
+    $licenses = $this->model->getLicenses();
     return isset($licenses[$cid]) && $this->licenseHandler->isOpenSource($licenses[$cid]['license']);
   }
 

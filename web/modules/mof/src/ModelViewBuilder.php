@@ -152,18 +152,12 @@ class ModelViewBuilder extends EntityViewBuilder {
     }
 
     if ($evaluation[3]['conditional']) {
-      $list = [
-        '#theme' => 'item_list',
-        '#items' => [],
-      ];
+      $list = ['#theme' => 'item_list', '#items' => []];
 
       $message = $this->modelEvaluator->getConditionalMessage();
       $this->messenger->addMessage(array_shift($message));
 
-      foreach ($message as $_message) {
-        $list['#items'][] = $_message;
-      }
-
+      $list['#items'] = $message;
       $this->messenger->addMessage($list);
     }
 
