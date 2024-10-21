@@ -49,5 +49,7 @@ foreach (\Drupal::entityTypeManager()
   if ($bytes === false) {
     throw new RuntimeException('Failed to write model file.');
   }
+
+  print 'Generated ' . realpath($path) . '/' . $model->label() . $ext . PHP_EOL;
 }
 
