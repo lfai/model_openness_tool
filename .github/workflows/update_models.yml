@@ -87,7 +87,7 @@ jobs:
             --include="*.yml" \
             --exclude="*" \
             $DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH/models/ ./tmp/
-          git diff --name-only --no-index --diff-filter=AM tmp models > models.txt || true
+          git diff --name-only --no-index --diff-filter=AM -M100% tmp models > models.txt || true
           rm -rf tmp
 
       - name: Set model sync trigger
