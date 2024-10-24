@@ -79,17 +79,7 @@ jobs:
       - name: Add server to known hosts
         run: ssh-keyscan -H $DEPLOY_HOST >> ~/.ssh/known_hosts
 
-      - name: Check for model changes on push
-        if: ${{ github.event_name == 'push' }}
-        run: |
-          git fetch origin main
-          git diff \
-            --name-only \
-            --diff-filter=AM origin/main...${{ github.sha }} | \
-            grep '^models/.*\.yml$' > models.txt || true
-
-      - name: Check for model changes on workflow_dispatch
-        if: ${{ github.event_name == 'workflow_dispatch' }}
+      - name: Check for model changes
         run: |
           git fetch origin ${{ github.ref_name }}
           mkdir tmp
@@ -97,25 +87,17 @@ jobs:
             --include="*.yml" \
             --exclude="*" \
             $DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH/models/ ./tmp/
-          find tmp/ -maxdepth 1 -type f | while read -r file; do
-            basefile=$(basename "$file")
-            if [ -f "models/$basefile" ]; then
-              git diff --name-only --no-index "$file" "models/$basefile" || true
-            fi
-          done > models.txt
+          git diff --name-only --no-index --diff-filter=AM -M100% tmp models > models.txt || true
           rm -rf tmp
 
       - name: Set model sync trigger
-        id: model_check
         run: |
           echo "sync=$([ -s models.txt ] && echo true || echo false)" >> $GITHUB_ENV
 
       - name: Sync models
         if: ${{ env.sync == 'true' }}
         run: |
-            rsync -az \
-              --files-from=models.txt \
-              ./ $DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH/
+            rsync -az --files-from=models.txt ./ $DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH/
             ssh $DEPLOY_USER@$DEPLOY_HOST << EOF
               cd $DEPLOY_PATH
               ./vendor/bin/drush scr scripts/sync_models.php
