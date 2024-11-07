@@ -107,7 +107,10 @@ final class ModelListBuilder extends EntityListBuilder {
         'specifier' => 'changed',
         'class' => ['model-updated'],
       ],
-      'badge' => $this->t('Badge'),
+      'badge' => [
+        'data' => $this->t('Badge'),
+        'class' => ['badge'],
+      ],
     ];
   }
 
