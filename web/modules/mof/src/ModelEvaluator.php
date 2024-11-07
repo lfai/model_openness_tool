@@ -48,13 +48,13 @@ final class ModelEvaluator implements ModelEvaluatorInterface {
       return $this->t('Unclassified');
 
     case 1:
-      return $this->t('Class I - Open Science');
+      return $this->t('Class I - Open Science Model');
 
     case 2:
-      return $this->t('Class II - Open Tooling');
+      return $this->t('Class II - Open Tooling Model');
 
     case 3:
-      return $this->t('Class III - Open Model');
+      return $this->t('Class III - Open Source Model');
 
     case -1:
       return $this->t('Pending evaluation');
