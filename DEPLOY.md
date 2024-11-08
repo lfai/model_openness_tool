@@ -13,7 +13,7 @@ To install and run MOT locally, see [INSTALL.md](INSTALL.md).
 ### 1. Test workflow
 
 - **Trigger:** 
-  - Automatically runs on a push to the `main` branch.
+  - Automatically runs on a push to the `main` branch (which happens when a PR is merged).
   - Can also be triggered manually using `workflow_dispatch`.
   
 - **Purpose:**
@@ -26,13 +26,16 @@ To install and run MOT locally, see [INSTALL.md](INSTALL.md).
 ### 2. Deploy workflow
 
 - **Trigger:**
-  - Automatically triggered by the success of the Tests workflow.
+  - Automatically triggered by the success of the Test workflow.
   - Can also be triggered manually using `workflow_dispatch`.
 
-- **Environments:** 
+- **Environments:**
   The deploy workflow operates in two environments:
   - **Stage**
   - **Production**
+
+  When ran automatically Deploy runs against the Stage environment. To deploy to production,
+  run the Deploy workflow manually with the Production environment.
 
 - **GitHub Secrets:**
   The following secrets are required to deploy to either Stage or Production environments:
@@ -47,9 +50,9 @@ To install and run MOT locally, see [INSTALL.md](INSTALL.md).
 
 ### Manual Invocation
 
-The Test and Deploy workflows can be invoked manually using the
-`workflow_dispatch` event. This can be useful when you need to deploy without
-going through the tests process or when deploying to the stage environment.
+The Test and Deploy workflows can be invoked manually using the `workflow_dispatch` event.
+This allows you to deploy to the production environment or to deploy without going through the
+tests process.
 
 ---
 
