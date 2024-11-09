@@ -1,5 +1,12 @@
 services:
 
+  mof.api.rate_limiter:
+    class: Drupal\mof\RateLimitMiddleware
+    arguments:
+      - '@cache.default'
+    tags:
+      - { name: http_middleware, priority: 400 }
+
   license_handler:
     class: Drupal\mof\LicenseHandler
     arguments:

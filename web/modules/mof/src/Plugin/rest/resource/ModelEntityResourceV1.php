@@ -213,7 +213,6 @@ final class ModelEntityResourceV1 extends ResourceBase {
     $json = json_decode($json, TRUE);
 
     $class = $evaluator->getClassification(FALSE);
-    $json['classification']['id'] = $model->id();
     $json['classification']['class'] = $class;
     $json['classification']['label'] = $evaluator->getClassLabel($class);
 
@@ -221,7 +220,7 @@ final class ModelEntityResourceV1 extends ResourceBase {
       $json['classification']['progress'][$i] = $evaluator->getProgress($i);
     }
 
-    return $json;
+    return ['id' => $model->id(), ...$json];
   }
 
   /**
