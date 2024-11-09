@@ -7,12 +7,14 @@ namespace Drupal\mof;
 use Drupal\mof\ModelInterface;
 use Drupal\mof\ComponentManagerInterface;
 use Drupal\Component\Serialization\Yaml;
+use Drupal\Component\Serialization\Exception\InvalidDataTypeException;
 use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Component\Serializer\Exception\UnsupportedFormatException;
 
 /**
  * ModelSerializer class.
  */
-final class ModelSerializer {
+final class ModelSerializer implements ModelSerializerInterface {
 
   /**
    * Construct a ModelSerializer instance.
@@ -24,14 +26,9 @@ final class ModelSerializer {
   ) {}
 
   /**
-   * Transform model to an array for serialization.
-   *
-   * @param \Drupal\mof\ModelInterface $model
-   *   The model to process.
-   * @return array
-   *   An array representing the model.
+   * {@inheritdoc}
    */
-  private function processModel(ModelInterface $model): array {
+  public function normalize(ModelInterface $model): array {
     $owner = $model->getOwner();
 
     $data = [
@@ -71,32 +68,31 @@ final class ModelSerializer {
   }
 
   /**
-   * Return a YAML representation of the model.
-   *
-   * @param \Drupal\mof\ModelInterface $model
-   *   The model to convert to YAML.
-   * @return string
-   *   A string representing the model in YAML format.
+   * {@inheritdoc}
    */
   public function toYaml(ModelInterface $model): string {
-    return Yaml::encode($this->processModel($model));
+    try {
+      return Yaml::encode($this->normalize($model));
+    }
+    catch (InvalidDataTypeException $e) {
+      // @todo Log exception.
+    }
   }
 
   /**
-   * Return a JSON representation of the model.
-   *
-   * @param \Drupal\mof\ModelInterface $model
-   *   The model to convert to JSON.
-   * @return string
-   *   A string representing the model in JSON format.
+   * {@inheritdoc}
    */
   public function toJson(ModelInterface $model): string {
-    return $this
-      ->serializer
-      ->serialize($this
-      ->processModel($model), 'json', [
-        'json_encode_options' => \JSON_PRETTY_PRINT | \JSON_UNESCAPED_SLASHES
-      ]);
+    try {
+      return $this
+        ->serializer
+        ->serialize($this->normalize($model), 'json', [
+          'json_encode_options' => \JSON_PRETTY_PRINT | \JSON_UNESCAPED_SLASHES
+        ]);
+    }
+    catch (UnsupportedFormatException $e) {
+      // @todo Log exception.
+    }
   }
 
 }

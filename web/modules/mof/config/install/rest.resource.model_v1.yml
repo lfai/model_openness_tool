@@ -1,0 +1,17 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - mof
+    - serialization
+    - user
+id: model_v1
+plugin_id: model_v1
+granularity: resource
+configuration:
+  methods:
+    - GET
+  formats:
+    - json
+  authentication:
+    - cookie

@@ -9,8 +9,9 @@ declare(strict_types=1);
 
 use Drupal\Core\Render\Element;
 use Drupal\Core\Entity\FieldableEntityInterface;
-use Drupal\Core\Field\FieldStorageDefinitionInterface;
 use Drupal\Core\Entity\ContentEntityInterface;
+use Drupal\Core\Field\FieldStorageDefinitionInterface;
+use Drupal\Core\Database\Query\AlterableInterface;
 use Drupal\user\UserInterface;
 
 /**
@@ -87,3 +88,19 @@ function mof_user_predelete(UserInterface $account): void {
   }
 }
 
+/**
+ * Implements hook_query_TAG_alter().
+ * Adds a model entity access check to model storage queries.
+ * Ensure the model is approved for non-admin users.
+ */
+function mof_query_model_access_alter(AlterableInterface $query) {
+  $user = \Drupal::currentUser();
+
+  if (!$user->hasRole('admin') && (int)$user->id() !== 1) {
+    $base_table = $query->getTables()['base_table']['alias'];
+    $query->leftJoin('model_field_data', 'mfd', "mfd.id = $base_table.id");
+    $query->condition('mfd.status', 'approved', '=');
+  }
+
+  return $query;
+}
