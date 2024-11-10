@@ -85,7 +85,7 @@ jobs:
             --exclude '.github' \
             --exclude '.env' \
             --exclude 'tests' \
-            --exclude 'config' \
+            --exclude 'config/sync' \
             --exclude 'models/' \
             --exclude 'web/sites/*/files' \
             --exclude 'web/libraries' \
@@ -97,8 +97,9 @@ jobs:
             echo "Deploying to $DEPLOY_PATH"
             cd $DEPLOY_PATH
             composer install --no-dev --no-progress --optimize-autoloader
-            ./vendor/bin/drush cr
             ./vendor/bin/drush updb -y
+            ./vendor/bin/drush cim --partial --source=modules/mof/config/install -y
+            ./vendor/bin/drush cr
           EOF
 
       - name: Revoke IP address
