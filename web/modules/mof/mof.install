@@ -7,7 +7,12 @@
  */
 function mof_update_10201() {
   // Enable REST and config management module.
-  \Drupal::service('module_installer')->install(['rest', 'config']);
+  \Drupal::service('module_installer')->install([
+    'rest',
+    'config',
+    'dynamic_page_cache',
+    'page_cache'
+  ]);
 
   // Enable MOT REST plugin.
   \Drupal::service('config.installer')->installDefaultConfig('module', 'mof');
