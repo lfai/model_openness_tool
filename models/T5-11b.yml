@@ -5,7 +5,7 @@ framework:
 release:
   name: T5-11b
   version: 11B
-  date: '2024-11-14'
+  date: '2024-11-15'
   type: ''
   architecture: ''
   origin: T5-11b

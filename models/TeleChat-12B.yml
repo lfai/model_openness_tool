@@ -5,7 +5,7 @@ framework:
 release:
   name: TeleChat-12B
   version: 12B
-  date: '2024-11-14'
+  date: '2024-11-15'
   type: language
   architecture: decoder
   origin: TeleChat-12B

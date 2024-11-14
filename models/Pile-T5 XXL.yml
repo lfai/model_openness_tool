@@ -5,7 +5,7 @@ framework:
 release:
   name: 'Pile-T5 XXL'
   version: 11B
-  date: '2024-11-14'
+  date: '2024-11-15'
   type: ''
   architecture: ''
   origin: 'Pile-T5 XXL'

@@ -5,7 +5,7 @@ framework:
 release:
   name: OPT
   version: 175B
-  date: '2024-11-14'
+  date: '2024-11-15'
   type: language
   architecture: decoder
   origin: ''

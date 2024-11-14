@@ -5,7 +5,7 @@ framework:
 release:
   name: Baichuan-1-13B
   version: 13B
-  date: '2024-11-14'
+  date: '2024-11-15'
   type: language
   architecture: 'transformer decoder'
   origin: Baichuan-1

@@ -5,7 +5,7 @@ framework:
 release:
   name: RWKV-v4-(Raven)
   version: 14B
-  date: '2024-11-14'
+  date: '2024-11-15'
   type: ''
   architecture: RNN
   origin: ''

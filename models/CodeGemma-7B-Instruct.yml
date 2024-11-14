@@ -5,7 +5,7 @@ framework:
 release:
   name: CodeGemma-7B-Instruct
   version: 7B
-  date: '2024-11-14'
+  date: '2024-11-15'
   type: code
   architecture: 'transformer decoder'
   origin: Gemma

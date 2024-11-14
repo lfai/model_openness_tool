@@ -5,7 +5,7 @@ framework:
 release:
   name: GPT-3
   version: 175B
-  date: '2024-11-14'
+  date: '2024-11-15'
   type: language
   architecture: 'transformer decoder'
   origin: ''

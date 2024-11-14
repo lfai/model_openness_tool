@@ -5,7 +5,7 @@ framework:
 release:
   name: MPT-7B
   version: 6.7B
-  date: '2024-11-14'
+  date: '2024-11-15'
   type: ''
   architecture: decoder
   origin: MPT-7B

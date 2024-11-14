@@ -5,7 +5,7 @@ framework:
 release:
   name: XGen
   version: 7B
-  date: '2024-11-14'
+  date: '2024-11-15'
   type: ''
   architecture: decoder
   origin: Apache-2.0

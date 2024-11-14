@@ -5,7 +5,7 @@ framework:
 release:
   name: Command-R
   version: 35B
-  date: '2024-11-14'
+  date: '2024-11-15'
   type: language
   architecture: undisclosed
   origin: ''

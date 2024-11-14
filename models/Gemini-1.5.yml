@@ -5,7 +5,7 @@ framework:
 release:
   name: Gemini-1.5
   version: Undisclosed
-  date: '2024-11-14'
+  date: '2024-11-15'
   type: language
   architecture: ''
   origin: ''
