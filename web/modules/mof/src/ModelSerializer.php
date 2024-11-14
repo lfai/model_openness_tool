@@ -49,6 +49,8 @@ final class ModelSerializer {
         'origin' => $model->getOrigin() ?? '',
         'producer' => $model->getOrganization() ?? '',
         'contact' => $owner->id() > 1 ? $owner->getEmail() : '',
+        'github' => $model->getGithubSlug() ? 'https://github.com/' . $model->getGithubSlug() : '',
+        'huggingface' => $model->getHuggingfaceSlug() ? 'https://huggingface.co/' . $model->getHuggingfaceSlug() : '',
       ],
     ];
 
