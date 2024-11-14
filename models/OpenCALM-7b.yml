@@ -5,12 +5,13 @@ framework:
 release:
   name: OpenCALM-7b
   version: 7B
-  date: '2024-10-21'
+  date: '2024-11-14'
   type: ''
   architecture: decoder
   origin: OpenCALM-7b
   producer: CyberAgent
   contact: ''
+  huggingface: 'https://huggingface.co/cyberagent/open-calm-7b'
   components:
     -
       name: 'Model architecture'

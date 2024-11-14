@@ -5,12 +5,13 @@ framework:
 release:
   name: Stable-Diffusion
   version: ''
-  date: '2024-10-03'
+  date: '2024-11-14'
   type: ''
   architecture: diffusion
   origin: ''
   producer: 'Stability AI'
   contact: ''
+  huggingface: 'https://huggingface.co/stabilityai/stable-diffusion-3-medium · Hugging Face'
   components:
     -
       name: 'Model architecture'

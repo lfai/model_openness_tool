@@ -5,12 +5,14 @@ framework:
 release:
   name: mT5-XXL
   version: 13B
-  date: '2024-10-21'
+  date: '2024-11-14'
   type: ''
   architecture: ''
   origin: mT5
   producer: Google
   contact: ''
+  github: 'https://github.com/google-research/multilingual-t5'
+  huggingface: 'https://huggingface.co/google/mt5-xxl'
   components:
     -
       name: 'Model architecture'

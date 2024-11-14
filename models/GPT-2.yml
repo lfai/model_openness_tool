@@ -5,12 +5,14 @@ framework:
 release:
   name: GPT-2
   version: 1.5B
-  date: '2024-10-03'
+  date: '2024-11-14'
   type: language
   architecture: 'transformer decoder'
   origin: ''
   producer: OpenAI
   contact: ''
+  github: 'https://github.com/openai/gpt-2'
+  huggingface: 'https://huggingface.co/openai-community/gpt2'
   components:
     -
       name: 'Model architecture'

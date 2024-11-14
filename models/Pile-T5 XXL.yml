@@ -5,12 +5,13 @@ framework:
 release:
   name: 'Pile-T5 XXL'
   version: 11B
-  date: '2024-10-21'
+  date: '2024-11-14'
   type: ''
   architecture: ''
   origin: 'Pile-T5 XXL'
   producer: EleutherAI
   contact: ''
+  huggingface: 'https://huggingface.co/EleutherAI/pile-t5-xxl'
   components:
     -
       name: 'Model architecture'

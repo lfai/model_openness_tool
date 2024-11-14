@@ -5,12 +5,14 @@ framework:
 release:
   name: GPT-Neo
   version: 2.7B
-  date: '2024-10-03'
+  date: '2024-11-14'
   type: language
   architecture: 'transformer decoder'
   origin: GPT
   producer: EleutherAI
   contact: ''
+  github: 'https://github.com/EleutherAI/gpt-neo'
+  huggingface: 'https://huggingface.co/EleutherAI/gpt-neo-2.7B'
   components:
     -
       name: 'Model architecture'

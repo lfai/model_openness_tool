@@ -5,12 +5,13 @@ framework:
 release:
   name: NeMo-Megatron-GPT-20B
   version: 20B
-  date: '2024-10-21'
+  date: '2024-11-14'
   type: ''
   architecture: decoder
   origin: NeMo-Megatron-GPT-20B
   producer: NVIDIA
   contact: ''
+  huggingface: 'https://huggingface.co/nvidia/nemo-megatron-gpt-20B'
   components:
     -
       name: 'Model architecture'

@@ -5,12 +5,14 @@ framework:
 release:
   name: OpenVoice
   version: ''
-  date: '2024-10-21'
+  date: '2024-11-14'
   type: ''
   architecture: ''
   origin: OpenVoice
   producer: MyShell
   contact: ''
+  github: 'https://github.com/myshell-ai/OpenVoice/tree/main'
+  huggingface: 'https://huggingface.co/myshell-ai/OpenVoice'
   components:
     -
       name: 'Model architecture'

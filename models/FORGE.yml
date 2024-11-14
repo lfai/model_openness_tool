@@ -5,12 +5,13 @@ framework:
 release:
   name: FORGE
   version: 26B
-  date: '2024-10-03'
+  date: '2024-11-14'
   type: language
   architecture: 'transformer decoder'
   origin: ''
   producer: 'Oak Ridge National Lab'
   contact: ''
+  github: 'https://github.com/at-aaims/forge'
   components:
     -
       name: 'Model architecture'

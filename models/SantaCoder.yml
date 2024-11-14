@@ -5,12 +5,14 @@ framework:
 release:
   name: SantaCoder
   version: 1.1B
-  date: '2024-10-21'
+  date: '2024-11-14'
   type: language
   architecture: ''
   origin: GPT2
   producer: 'BigCode Project'
   contact: ''
+  github: 'https://github.com/bigcode-project/Megatron-LM'
+  huggingface: 'https://huggingface.co/bigcode/santacoder'
   components:
     -
       name: 'Model architecture'

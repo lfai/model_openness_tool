@@ -5,12 +5,13 @@ framework:
 release:
   name: CodeGemma-2B
   version: 2B
-  date: '2024-10-03'
+  date: '2024-11-14'
   type: code
   architecture: 'transformer decoder'
   origin: Gemma
   producer: Google
   contact: ''
+  huggingface: 'https://huggingface.co/google/codegemma-7b'
   components:
     -
       name: 'Model architecture'

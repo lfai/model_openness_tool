@@ -5,12 +5,13 @@ framework:
 release:
   name: HGRN2
   version: 2.9B
-  date: '2024-10-03'
+  date: '2024-11-14'
   type: language
   architecture: RNN
   origin: ''
   producer: 'Shanghai AI Lab'
   contact: ''
+  github: 'https://github.com/OpenNLPLab/HGRN2'
   components:
     -
       name: 'Model architecture'

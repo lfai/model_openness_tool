@@ -5,12 +5,14 @@ framework:
 release:
   name: DeepSeek-MoE-16B
   version: 16.4B
-  date: '2024-10-03'
+  date: '2024-11-14'
   type: language
   architecture: ''
   origin: ''
   producer: 'DeepSeek AI'
   contact: ''
+  github: 'https://github.com/deepseek-ai/DeepSeek-MoE/tree/main'
+  huggingface: 'https://huggingface.co/deepseek-ai/deepseek-moe-16b-base'
   components:
     -
       name: 'Model architecture'

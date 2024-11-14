@@ -5,12 +5,13 @@ framework:
 release:
   name: Gemini-1.5
   version: Undisclosed
-  date: '2024-10-03'
+  date: '2024-11-14'
   type: language
   architecture: ''
   origin: ''
   producer: Google
   contact: ''
+  github: 'https://github.com/GoogleCloudPlatform/generative-ai/tree/main/gemini/getting-started'
   components:
     -
       name: 'Model architecture'

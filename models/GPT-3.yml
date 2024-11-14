@@ -5,12 +5,13 @@ framework:
 release:
   name: GPT-3
   version: 175B
-  date: '2024-10-03'
+  date: '2024-11-14'
   type: language
   architecture: 'transformer decoder'
   origin: ''
   producer: OpenAI
   contact: ''
+  github: 'https://github.com/openai/gpt-3'
   components:
     -
       name: 'Model architecture'

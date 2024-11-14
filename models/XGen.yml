@@ -5,12 +5,14 @@ framework:
 release:
   name: XGen
   version: 7B
-  date: '2024-10-03'
+  date: '2024-11-14'
   type: ''
   architecture: decoder
   origin: Apache-2.0
   producer: Salesforce
   contact: ''
+  github: 'https://github.com/pytorch_model-00001-of-00003.bin · Salesforce/xgen-7b-8k-inst at main (huggingface.co)'
+  huggingface: 'https://huggingface.co/Salesforce/xgen-7b-8k-inst · Hugging Face'
   components:
     -
       name: 'Model architecture'

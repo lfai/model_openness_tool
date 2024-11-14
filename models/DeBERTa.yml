@@ -5,12 +5,13 @@ framework:
 release:
   name: DeBERTa
   version: 1.5B
-  date: '2024-10-03'
+  date: '2024-11-14'
   type: language
   architecture: encoder
   origin: ''
   producer: Microsoft
   contact: ''
+  huggingface: 'https://huggingface.co/microsoft/deberta-v3-base'
   components:
     -
       name: 'Model architecture'
