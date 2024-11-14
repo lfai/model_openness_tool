@@ -5,7 +5,7 @@ framework:
 release:
   name: Nemotron-4-340B-Base
   version: 340B
-  date: '2024-11-14'
+  date: '2024-11-15'
   type: ''
   architecture: decoder
   origin: Nemotron-4-340B-Base

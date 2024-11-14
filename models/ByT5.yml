@@ -5,7 +5,7 @@ framework:
 release:
   name: ByT5
   version: 13B
-  date: '2024-11-14'
+  date: '2024-11-15'
   type: language
   architecture: 'transformer encoder-decoder'
   origin: ''

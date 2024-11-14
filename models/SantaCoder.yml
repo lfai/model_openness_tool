@@ -5,7 +5,7 @@ framework:
 release:
   name: SantaCoder
   version: 1.1B
-  date: '2024-11-14'
+  date: '2024-11-15'
   type: language
   architecture: ''
   origin: GPT2

@@ -5,7 +5,7 @@ framework:
 release:
   name: Qwen-72B
   version: 72B
-  date: '2024-11-14'
+  date: '2024-11-15'
   type: language
   architecture: transformer
   origin: Qwen

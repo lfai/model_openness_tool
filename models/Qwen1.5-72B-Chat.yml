@@ -5,7 +5,7 @@ framework:
 release:
   name: Qwen1.5-72B-Chat
   version: 72B
-  date: '2024-11-14'
+  date: '2024-11-15'
   type: language
   architecture: decoder
   origin: Qwen2

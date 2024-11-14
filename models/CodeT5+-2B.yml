@@ -5,7 +5,7 @@ framework:
 release:
   name: CodeT5+-2B
   version: 2B
-  date: '2024-11-14'
+  date: '2024-11-15'
   type: code
   architecture: 'transformer encoder-decoder'
   origin: ''

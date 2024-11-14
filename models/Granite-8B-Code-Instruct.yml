@@ -5,7 +5,7 @@ framework:
 release:
   name: Granite-8B-Code-Instruct
   version: 8B
-  date: '2024-11-14'
+  date: '2024-11-15'
   type: code
   architecture: 'transformer decoder'
   origin: Granite-8B-Code-Base

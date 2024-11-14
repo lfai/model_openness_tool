@@ -5,7 +5,7 @@ framework:
 release:
   name: BTLM-3B-8k-base-
   version: 3B
-  date: '2024-11-14'
+  date: '2024-11-15'
   type: language
   architecture: 'transformer decoder'
   origin: ''
