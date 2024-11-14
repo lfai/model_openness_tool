@@ -5,12 +5,13 @@ framework:
 release:
   name: ChatGLM2
   version: 6B
-  date: '2024-10-03'
+  date: '2024-11-14'
   type: language
   architecture: 'transformer decoder'
   origin: ChatGLM3-6B-Base
   producer: 'Tsinghua University'
   contact: ''
+  huggingface: 'https://huggingface.co/THUDM/chatglm2-6b'
   components:
     -
       name: 'Model architecture'

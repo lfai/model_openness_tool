@@ -5,12 +5,13 @@ framework:
 release:
   name: Zephyr-141B
   version: 141B
-  date: '2024-10-03'
+  date: '2024-11-14'
   type: ''
   architecture: ''
   origin: MIT
   producer: ''
   contact: ''
+  huggingface: 'https://huggingface.co/HuggingFaceH4/zephyr-orpo-141b-A35b-v0.1 · Hugging Face'
   components:
     -
       name: 'Model architecture'

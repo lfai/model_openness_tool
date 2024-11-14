@@ -5,12 +5,13 @@ framework:
 release:
   name: NTT-Dialog
   version: 1.6B
-  date: '2024-10-21'
+  date: '2024-11-14'
   type: ''
   architecture: ''
   origin: NTT-Dialog
   producer: NTT
   contact: ''
+  github: 'https://github.com/nttcslab/japanese-dialog-transformers'
   components:
     -
       name: 'Model architecture'

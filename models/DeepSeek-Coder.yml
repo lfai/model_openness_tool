@@ -5,12 +5,13 @@ framework:
 release:
   name: DeepSeek-Coder
   version: 33B
-  date: '2024-10-03'
+  date: '2024-11-14'
   type: language
   architecture: 'transformer decoder'
   origin: ''
   producer: DeepSeek
   contact: ''
+  huggingface: 'https://huggingface.co/deepseek-ai/deepseek-coder-33b-base'
   components:
     -
       name: 'Model architecture'

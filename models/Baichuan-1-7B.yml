@@ -5,12 +5,14 @@ framework:
 release:
   name: Baichuan-1-7B
   version: 7B
-  date: '2024-10-03'
+  date: '2024-11-14'
   type: language
   architecture: 'transformer decoder'
   origin: Baichuan-1
   producer: 'Baichuan AI'
   contact: ''
+  github: 'https://github.com/baichuan-inc/Baichuan-7B/tree/main'
+  huggingface: 'https://huggingface.co/baichuan-inc/Baichuan-7B'
   components:
     -
       name: 'Model architecture'

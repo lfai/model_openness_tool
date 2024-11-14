@@ -5,12 +5,14 @@ framework:
 release:
   name: Amber
   version: 7B
-  date: '2024-10-03'
+  date: '2024-11-14'
   type: language
   architecture: 'transformer decoder'
   origin: Amber
   producer: LLM360
   contact: ''
+  github: 'https://github.com/LLM360/amber-train'
+  huggingface: 'https://huggingface.co/LLM360/Amber'
   components:
     -
       name: 'Model architecture'

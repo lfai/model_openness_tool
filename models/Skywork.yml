@@ -5,12 +5,13 @@ framework:
 release:
   name: Skywork
   version: 13B
-  date: '2024-10-21'
+  date: '2024-11-14'
   type: language
   architecture: decoder
   origin: Llama-2-13B
   producer: Kunlun
   contact: ''
+  huggingface: 'https://huggingface.co/Skywork/Skywork-13B-base'
   components:
     -
       name: 'Model architecture'

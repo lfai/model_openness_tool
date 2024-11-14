@@ -5,12 +5,13 @@ framework:
 release:
   name: Silo
   version: 1.3B
-  date: '2024-10-21'
+  date: '2024-11-14'
   type: language
   architecture: decoder
   origin: LLaMa
   producer: 'University of Washington'
   contact: ''
+  huggingface: 'https://huggingface.co/kernelmachine/silo-pd-1.3b'
   components:
     -
       name: 'Model architecture'

@@ -5,12 +5,14 @@ framework:
 release:
   name: RWKV-v4-(Raven)
   version: 14B
-  date: '2024-10-03'
+  date: '2024-11-14'
   type: ''
   architecture: RNN
   origin: ''
   producer: RWKV
   contact: ''
+  github: 'https://github.com/BlinkDL/RWKV-LM/'
+  huggingface: 'https://huggingface.co/RWKV/rwkv-raven-14b'
   components:
     -
       name: 'Model architecture'

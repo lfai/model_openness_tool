@@ -5,12 +5,14 @@ framework:
 release:
   name: dbrx-instruct
   version: '132B '
-  date: '2024-10-03'
+  date: '2024-11-14'
   type: language
   architecture: decoder
   origin: dbrx-base
   producer: Databricks
   contact: ''
+  github: 'https://github.com/deepseek-ai/DeepSeek-MoE/blob/main/README.md'
+  huggingface: 'https://huggingface.co/deepseek-ai/deepseek-moe-16b-base'
   components:
     -
       name: 'Model architecture'

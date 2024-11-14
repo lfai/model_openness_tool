@@ -5,12 +5,13 @@ framework:
 release:
   name: OPT
   version: 175B
-  date: '2024-10-21'
+  date: '2024-11-14'
   type: language
   architecture: decoder
   origin: ''
   producer: Meta
   contact: ''
+  github: 'https://github.com/facebookresearch/metaseq/blob/main/projects/OPT/MODEL_LICENSE.md'
   components:
     -
       name: 'Model architecture'

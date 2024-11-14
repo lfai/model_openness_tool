@@ -5,12 +5,14 @@ framework:
 release:
   name: FLM-101B
   version: 101B
-  date: '2024-10-03'
+  date: '2024-11-14'
   type: language
   architecture: 'transformer decoder'
   origin: ''
   producer: 'Multilateral, lead by BAAI'
   contact: ''
+  github: 'https://github.com/cofe-ai/FLM-101B'
+  huggingface: 'https://huggingface.co/CofeAI/FLM-101B'
   components:
     -
       name: 'Model architecture'

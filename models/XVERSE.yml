@@ -5,12 +5,13 @@ framework:
 release:
   name: XVERSE
   version: 65B
-  date: '2024-10-03'
+  date: '2024-11-14'
   type: ''
   architecture: decoder
   origin: Apache-2.0
   producer: 'Shenzhen Yuanxiang Technology'
   contact: ''
+  huggingface: 'https://huggingface.co/xverse/XVERSE-65B-Chat-GGUF · Hugging Face'
   components:
     -
       name: 'Model architecture'

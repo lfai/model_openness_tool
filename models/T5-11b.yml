@@ -5,12 +5,14 @@ framework:
 release:
   name: T5-11b
   version: 11B
-  date: '2024-10-21'
+  date: '2024-11-14'
   type: ''
   architecture: ''
   origin: T5-11b
   producer: Google
   contact: ''
+  github: 'https://github.com/google-research/text-to-text-transfer-transformer'
+  huggingface: 'https://huggingface.co/google-t5/t5-11b'
   components:
     -
       name: 'Model architecture'

@@ -5,12 +5,13 @@ framework:
 release:
   name: Jais
   version: 13B
-  date: '2024-10-03'
+  date: '2024-11-14'
   type: language
   architecture: 'transformer decoder'
   origin: GPT-3
   producer: 'Technology Innovation Institute, LightOn'
   contact: ''
+  huggingface: 'https://huggingface.co/inceptionai/jais-13b-chat'
   components:
     -
       name: 'Model architecture'

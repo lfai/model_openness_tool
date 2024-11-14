@@ -5,12 +5,13 @@ framework:
 release:
   name: Qwen-14B
   version: 14B
-  date: '2024-10-21'
+  date: '2024-11-14'
   type: language
   architecture: transformer
   origin: Qwen
   producer: Alibaba
   contact: ''
+  huggingface: 'https://huggingface.co/Qwen/Qwen-14B'
   components:
     -
       name: 'Model architecture'

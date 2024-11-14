@@ -5,12 +5,13 @@ framework:
 release:
   name: Arctic-Instruct
   version: 480B
-  date: '2024-10-03'
+  date: '2024-11-14'
   type: language
   architecture: 'transformer decoder'
   origin: Arctic-Base
   producer: Snowflake
   contact: ''
+  huggingface: 'https://huggingface.co/Snowflake/snowflake-arctic-instruct'
   components:
     -
       name: 'Model architecture'

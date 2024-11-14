@@ -5,12 +5,14 @@ framework:
 release:
   name: OLMO-7B
   version: 7B
-  date: '2024-10-03'
+  date: '2024-11-14'
   type: language
   architecture: transformer
   origin: oLMO
   producer: 'Allen Institute'
   contact: ''
+  github: 'https://github.com/allenai/OLMo'
+  huggingface: 'https://huggingface.co/allenai/OLMo-7B'
   components:
     -
       name: 'Model architecture'

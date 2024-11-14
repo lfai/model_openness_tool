@@ -5,12 +5,13 @@ framework:
 release:
   name: StableLM-Japanese
   version: 7B
-  date: '2024-10-03'
+  date: '2024-11-14'
   type: ''
   architecture: ''
   origin: ''
   producer: 'Stability AI'
   contact: ''
+  huggingface: 'https://huggingface.co/stabilityai/japanese-stablelm-instruct-alpha-7b · Hugging Face'
   components:
     -
       name: 'Model architecture'

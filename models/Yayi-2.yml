@@ -5,12 +5,14 @@ framework:
 release:
   name: Yayi-2
   version: 30B
-  date: '2024-10-03'
+  date: '2024-11-14'
   type: ''
   architecture: decoder
   origin: 'Other License'
   producer: 'Wenge Research'
   contact: ''
+  github: 'https://github.com/wenge-research/YAYI2: YAYI 2 是中科闻歌研发的新一代开源大语言模型，采用了超过 2 万亿 Tokens 的高质量、多语言语料进行预训练。(Repo for YaYi 2 Chinese LLMs) (github.com)'
+  huggingface: 'https://huggingface.co/wenge-research/yayi2-30b · Hugging Face'
   components:
     -
       name: 'Model architecture'
