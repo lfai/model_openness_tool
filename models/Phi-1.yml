@@ -5,12 +5,13 @@ framework:
 release:
   name: Phi-1
   version: 1.3B
-  date: '2024-10-21'
+  date: '2024-11-15'
   type: ''
   architecture: decoder
   origin: ''
   producer: Microsoft
   contact: ''
+  huggingface: 'https://huggingface.co/microsoft/phi-1/blob/main/README.md'
   components:
     -
       name: 'Model architecture'

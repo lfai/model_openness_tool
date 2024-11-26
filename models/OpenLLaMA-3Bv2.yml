@@ -5,12 +5,14 @@ framework:
 release:
   name: OpenLLaMA-3Bv2
   version: 3B
-  date: '2024-10-21'
+  date: '2024-11-15'
   type: ''
   architecture: decoder
   origin: ''
   producer: 'UC Berkeley'
   contact: ''
+  github: 'https://github.com/openlm-research/open_llama'
+  huggingface: 'https://huggingface.co/openlm-research/open_llama_3b_v2'
   components:
     -
       name: 'Model architecture'

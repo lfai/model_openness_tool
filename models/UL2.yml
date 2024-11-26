@@ -5,12 +5,14 @@ framework:
 release:
   name: UL2
   version: 20B
-  date: '2024-10-21'
+  date: '2024-11-15'
   type: language
   architecture: ''
   origin: UL2
   producer: Google
   contact: ''
+  github: 'https://github.com/google-research/google-research/tree/master/ul2'
+  huggingface: 'https://huggingface.co/google/ul2'
   components:
     -
       name: 'Model architecture'

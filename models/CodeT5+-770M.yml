@@ -5,12 +5,14 @@ framework:
 release:
   name: CodeT5+-770M
   version: 770M
-  date: '2024-10-03'
+  date: '2024-11-15'
   type: code
   architecture: 'transformer encoder-decoder'
   origin: ''
   producer: Salesforce
   contact: ''
+  github: 'https://github.com/salesforce/CodeT5/tree/main/CodeT5%2B'
+  huggingface: 'https://huggingface.co/Salesforce/codet5p-16b'
   components:
     -
       name: 'Model architecture'

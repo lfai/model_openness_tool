@@ -5,12 +5,13 @@ framework:
 release:
   name: Codegen2.5
   version: 7B
-  date: '2024-10-03'
+  date: '2024-11-15'
   type: code
   architecture: 'transformer decoder'
   origin: ''
   producer: Salesforce
   contact: ''
+  huggingface: 'https://huggingface.co/Salesforce/codegen25-7b-mono_P'
   components:
     -
       name: 'Model architecture'

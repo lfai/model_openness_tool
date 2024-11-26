@@ -5,12 +5,13 @@ framework:
 release:
   name: Qwen1.5-72B-Chat
   version: 72B
-  date: '2024-10-21'
+  date: '2024-11-15'
   type: language
   architecture: decoder
   origin: Qwen2
   producer: Alibaba
   contact: ''
+  huggingface: 'https://huggingface.co/Qwen/Qwen1.5-72B-Chat'
   components:
     -
       name: 'Model architecture'

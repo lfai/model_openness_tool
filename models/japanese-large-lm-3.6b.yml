@@ -5,12 +5,13 @@ framework:
 release:
   name: japanese-large-lm-3.6b
   version: 3.6B
-  date: '2024-10-21'
+  date: '2024-11-15'
   type: language
   architecture: decoder
   origin: japanese-large-lm-3.6b
   producer: 'Line Corporation'
   contact: ''
+  huggingface: 'https://huggingface.co/line-corporation/japanese-large-lm-3.6b'
   components:
     -
       name: 'Model architecture'

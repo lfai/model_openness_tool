@@ -5,12 +5,13 @@ framework:
 release:
   name: BLOOM
   version: 176B
-  date: '2024-10-03'
+  date: '2024-11-15'
   type: language
   architecture: 'transformer decoder'
   origin: ''
   producer: BigScience
   contact: ''
+  huggingface: 'https://huggingface.co/bigscience/bloom'
   components:
     -
       name: 'Model architecture'

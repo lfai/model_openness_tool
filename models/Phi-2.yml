@@ -5,12 +5,13 @@ framework:
 release:
   name: Phi-2
   version: 2.7B
-  date: '2024-10-21'
+  date: '2024-11-15'
   type: ''
   architecture: decoder
   origin: ''
   producer: Microsoft
   contact: ''
+  huggingface: 'https://huggingface.co/microsoft/phi-2'
   components:
     -
       name: 'Model architecture'

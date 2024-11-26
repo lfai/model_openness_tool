@@ -5,12 +5,13 @@ framework:
 release:
   name: Qwen1.5-MoE-A2.7B
   version: 7B
-  date: '2024-10-21'
+  date: '2024-11-15'
   type: language
   architecture: ''
   origin: Qwen2
   producer: Alibaba
   contact: ''
+  huggingface: 'https://huggingface.co/Qwen/Qwen1.5-MoE-A2.7B'
   components:
     -
       name: 'Model architecture'

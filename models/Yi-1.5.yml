@@ -5,12 +5,14 @@ framework:
 release:
   name: Yi-1.5
   version: 34B
-  date: '2024-10-03'
+  date: '2024-11-15'
   type: language
   architecture: decoder
   origin: Apache-2.0
   producer: 01.AI
   contact: ''
+  github: 'https://github.com/01-ai'
+  huggingface: 'https://huggingface.co/01-ai/Yi-1.5-34B-Chat · Hugging Face'
   components:
     -
       name: 'Model architecture'

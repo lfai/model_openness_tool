@@ -5,12 +5,13 @@ framework:
 release:
   name: InternLM
   version: 20B
-  date: '2024-10-03'
+  date: '2024-11-15'
   type: language
   architecture: 'transformer decoder'
   origin: ''
   producer: 'Shanghai AI Laboratory'
   contact: ''
+  huggingface: 'https://huggingface.co/internlm/internlm2_5-20b-chat'
   components:
     -
       name: 'Model architecture'

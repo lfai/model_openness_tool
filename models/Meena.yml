@@ -5,8 +5,8 @@ framework:
 release:
   name: Meena
   version: 2.6B
-  date: '2024-10-03'
-  type: ''
+  date: '2024-11-15'
+  type: language
   architecture: ''
   origin: ''
   producer: Google

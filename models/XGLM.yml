@@ -5,12 +5,14 @@ framework:
 release:
   name: XGLM
   version: 7.5B
-  date: '2024-10-03'
+  date: '2024-11-15'
   type: ''
   architecture: decoder
   origin: MIT
   producer: 'FAIR (Fundamental Artificial Intelligence Research)'
   contact: ''
+  github: 'https://github.com/fairseq/examples/xglm at main · facebookresearch/fairseq (github.com)'
+  huggingface: 'https://huggingface.co/facebook/xglm-7.5B · Hugging Face'
   components:
     -
       name: 'Model architecture'

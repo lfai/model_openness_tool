@@ -5,12 +5,13 @@ framework:
 release:
   name: RecurrentGemma
   version: '2B '
-  date: '2024-10-21'
+  date: '2024-11-15'
   type: language
   architecture: ''
   origin: ''
   producer: Google
   contact: ''
+  huggingface: 'https://huggingface.co/google/recurrentgemma-2b-it'
   components:
     -
       name: 'Model architecture'

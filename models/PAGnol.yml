@@ -5,12 +5,13 @@ framework:
 release:
   name: PAGnol
   version: 1.5B
-  date: '2024-10-21'
+  date: '2024-11-15'
   type: ''
   architecture: decoder
   origin: ''
   producer: LightOn
   contact: ''
+  huggingface: 'https://huggingface.co/lightonai/pagnol-medium'
   components:
     -
       name: 'Model architecture'

@@ -5,12 +5,13 @@ framework:
 release:
   name: BioMedGPT
   version: 2.7B
-  date: '2024-10-03'
+  date: '2024-11-15'
   type: language
   architecture: 'transformer decoder'
   origin: ''
   producer: 'Stanford CRFM'
   contact: ''
+  huggingface: 'https://huggingface.co/stanford-crfm/BioMedLM'
   components:
     -
       name: 'Model architecture'

@@ -5,12 +5,13 @@ framework:
 release:
   name: Switch-C-2048
   version: 1.5T
-  date: '2024-10-21'
+  date: '2024-11-15'
   type: language
   architecture: ''
   origin: ''
   producer: Google
   contact: ''
+  huggingface: 'https://huggingface.co/google/switch-c-2048'
   components:
     -
       name: 'Model architecture'

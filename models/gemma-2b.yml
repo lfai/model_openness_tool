@@ -5,12 +5,13 @@ framework:
 release:
   name: gemma-2b
   version: 2B
-  date: '2024-10-03'
+  date: '2024-11-15'
   type: language
   architecture: 'transformer decoder'
   origin: gemma-2b
   producer: Google
   contact: ''
+  huggingface: 'https://huggingface.co/google/gemma-2b'
   components:
     -
       name: 'Model architecture'

@@ -5,12 +5,14 @@ framework:
 release:
   name: YaLM
   version: 100B
-  date: '2024-10-03'
+  date: '2024-11-15'
   type: language
   architecture: decoder
   origin: Apache-2.0
   producer: Yandex
   contact: ''
+  github: 'https://github.com/yandex/YaLM-100B'
+  huggingface: 'https://huggingface.co/yandex/yalm-100b · Hugging Face'
   components:
     -
       name: 'Model architecture'

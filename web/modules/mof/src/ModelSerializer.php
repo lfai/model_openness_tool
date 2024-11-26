@@ -49,6 +49,13 @@ final class ModelSerializer implements ModelSerializerInterface {
       ],
     ];
 
+    if ($model->getGithubSlug()) {
+      $data['release']['github'] = 'https://github.com/' . $model->getGithubSlug();
+    }
+    if ($model->getHuggingfaceSlug()) {
+      $data['release']['huggingface'] = 'https://huggingface.co/' . $model->getHuggingfaceSlug();
+    }
+
     $completed = array_filter(
       $this->componentManager->getComponents(),
       fn($c) => in_array($c->id, $model->getCompletedComponents()));

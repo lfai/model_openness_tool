@@ -5,12 +5,13 @@ framework:
 release:
   name: Falcon-40B
   version: 40B
-  date: '2024-10-03'
+  date: '2024-11-15'
   type: language
   architecture: 'transformer decoder'
   origin: 'GPT-3, some differences'
   producer: 'Technology Innovation Institute, LightOn'
   contact: ''
+  huggingface: 'https://huggingface.co/tiiuae/falcon-40b'
   components:
     -
       name: 'Model architecture'

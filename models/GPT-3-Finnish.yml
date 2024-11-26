@@ -5,12 +5,13 @@ framework:
 release:
   name: GPT-3-Finnish
   version: 13B
-  date: '2024-10-03'
+  date: '2024-11-15'
   type: language
   architecture: 'transformer decoder'
   origin: GPT
   producer: 'University of Turku'
   contact: ''
+  huggingface: 'https://huggingface.co/TurkuNLP/gpt3-finnish-large'
   components:
     -
       name: 'Model architecture'

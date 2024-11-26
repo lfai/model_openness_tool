@@ -5,12 +5,13 @@ framework:
 release:
   name: MPT-30B
   version: 30B
-  date: '2024-10-21'
+  date: '2024-11-15'
   type: ''
   architecture: decoder
   origin: MPT-30B
   producer: MosaicML
   contact: ''
+  huggingface: 'https://huggingface.co/mosaicml/mpt-30b'
   components:
     -
       name: 'Model architecture'
