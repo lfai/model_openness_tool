@@ -5,8 +5,8 @@ framework:
 release:
   name: PanGu-α
   version: 200B
-  date: '2024-10-03'
-  type: ''
+  date: '2024-11-14'
+  type: language
   architecture: decoder
   origin: ''
   producer: Huawei
