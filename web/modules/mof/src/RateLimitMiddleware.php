@@ -73,7 +73,9 @@ final class RateLimitMiddleware implements HttpKernelInterface {
 
     if ($request_count > self::LIMIT) {
       $this->logger->notice('Rate limit exceeded for @ip', ['@ip' => $request->getClientIp()]);
-      return new JsonResponse(['error' => 'Rate limit exceeded. Try again later.'], Response::HTTP_TOO_MANY_REQUESTS);
+      return new JsonResponse(['error' => [
+        'code' => Response::HTTP_TOO_MANY_REQUESTS,
+        'message' => 'Rate limit exceeded. Try again later.']], Response::HTTP_TOO_MANY_REQUESTS);
     }
 
     $this->cache->set($cache_key, $request_count + 1, time() + self::INTERVAL);
