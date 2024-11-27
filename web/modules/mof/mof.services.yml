@@ -8,6 +8,7 @@ services:
     class: Drupal\mof\RateLimitMiddleware
     arguments:
       - '@cache.default'
+      - '@logger.channel.mot'
     tags:
       - { name: http_middleware, priority: 400 }
 

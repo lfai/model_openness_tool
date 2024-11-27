@@ -7,6 +7,7 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Psr\Log\LoggerInterface;
 
 /**
  * Middleware to rate-limit API requests by IP address.
@@ -26,7 +27,8 @@ final class RateLimitMiddleware implements HttpKernelInterface {
    */
   public function __construct(
     private readonly HttpKernelInterface $http,
-    private readonly CacheBackendInterface $cache
+    private readonly CacheBackendInterface $cache,
+    private readonly LoggerInterface $logger
   ) {}
 
   /**
@@ -70,6 +72,7 @@ final class RateLimitMiddleware implements HttpKernelInterface {
     $request_count = $this->cache->get($cache_key)->data ?? 1;
 
     if ($request_count > self::LIMIT) {
+      $this->logger->notice('Rate limit exceeded for @ip', ['@ip' => $request->getClientIp()]);
       return new JsonResponse(['error' => 'Rate limit exceeded. Try again later.'], Response::HTTP_TOO_MANY_REQUESTS);
     }
 
