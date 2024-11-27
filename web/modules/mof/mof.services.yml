@@ -1,5 +1,9 @@
 services:
 
+  logger.channel.mot:
+    parent: logger.channel_base
+    arguments: ['mot']
+
   mof.api.rate_limiter:
     class: Drupal\mof\RateLimitMiddleware
     arguments:
@@ -31,6 +35,7 @@ services:
       - '@serializer'
       - '@model_evaluator'
       - '@component.manager'
+      - '@logger.channel.mot'
 
   model_validator:
     class: Drupal\mof\ModelValidator

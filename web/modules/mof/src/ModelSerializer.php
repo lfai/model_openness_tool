@@ -10,6 +10,7 @@ use Drupal\Component\Serialization\Yaml;
 use Drupal\Component\Serialization\Exception\InvalidDataTypeException;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Serializer\Exception\UnsupportedFormatException;
+use Psr\Log\LoggerInterface;
 
 /**
  * ModelSerializer class.
@@ -22,7 +23,8 @@ final class ModelSerializer implements ModelSerializerInterface {
   public function __construct(
     private readonly SerializerInterface $serializer,
     private readonly ModelEvaluatorInterface $modelEvaluator,
-    private readonly ComponentManagerInterface $componentManager
+    private readonly ComponentManagerInterface $componentManager,
+    private readonly LoggerInterface $logger
   ) {}
 
   /**
@@ -82,7 +84,8 @@ final class ModelSerializer implements ModelSerializerInterface {
       return Yaml::encode($this->normalize($model));
     }
     catch (InvalidDataTypeException $e) {
-      // @todo Log exception.
+      $this->logger->error('@exception', ['@exception' => $e->getMessage()]);
+      throw new \RuntimeException('Failed to convert model to YAML.', $e->getCode(), $e);
     }
   }
 
@@ -98,7 +101,8 @@ final class ModelSerializer implements ModelSerializerInterface {
         ]);
     }
     catch (UnsupportedFormatException $e) {
-      // @todo Log exception.
+      $this->logger->error('@exception', ['@exception' => $e->getMessage()]);
+      throw new \RuntimeException('Failed to convert model to JSON.', $e->getCode(), $e);
     }
   }
 
