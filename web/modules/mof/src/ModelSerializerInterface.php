@@ -21,6 +21,8 @@ interface ModelSerializerInterface {
    *   The model to convert to YAML.
    * @return string
    *   A formatted string representing the model in YAML.
+   * @throws \RuntimeException
+   *   Rethrown in catch block if an InvalidDataTypeException occurs.
    */
   public function toYaml(ModelInterface $model): string;
 
@@ -31,6 +33,8 @@ interface ModelSerializerInterface {
    *   The model to convert to JSON.
    * @return string
    *   A formatted string representing the model in JSON.
+   * @throws \RuntimeException
+   *   Rethrown in catch block if an UnsupportedFormatException occurs.
    */
   public function toJson(ModelInterface $model): string;
 
