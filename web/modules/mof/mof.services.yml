@@ -12,6 +12,11 @@ services:
     tags:
       - { name: http_middleware, priority: 400 }
 
+  mof.api.exception_subscriber:
+    class: Drupal\mof\EventSubscriber\ApiExceptionSubscriber
+    tags:
+      - { name: event_subscriber }
+
   license_handler:
     class: Drupal\mof\LicenseHandler
     arguments:

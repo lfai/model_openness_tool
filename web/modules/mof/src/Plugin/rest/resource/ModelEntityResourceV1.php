@@ -236,6 +236,7 @@ final class ModelEntityResourceV1 extends ResourceBase {
       if (strstr($uri, '{model}')) {
         $route->setOption('parameters', ['model' => ['type' => 'entity:model']]);
         $route->setRequirement('_entity_access', 'model.view');
+        $route->setRequirement('model', '\d+');
       }
 
       $routes->add("{$this->pluginId}.{$key}.GET", $route);
