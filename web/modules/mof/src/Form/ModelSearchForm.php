@@ -30,8 +30,10 @@ final class ModelSearchForm extends FormBase {
   /**
    * {@inheritdoc}
    */
-  public function buildForm(array $form, FormStateInterface $form_state) {
+  public function buildForm(array $form, FormStateInterface $form_state, string $collection_name = NULL) {
     $req = $this->request;
+
+    $form['collection'] = $collection_name;
 
     $form['search'] = [
       '#type' => 'details',
@@ -93,14 +95,14 @@ final class ModelSearchForm extends FormBase {
       unset($query['org']);
     }
 
-    $form_state->setRedirect('entity.model.collection', $query);
+    $form_state->setRedirect($form['collection'], $query);
   }
 
   /** 
    * Reset the form.
    */
   public function resetForm(array $form, FormStateInterface $form_state) {
-    $form_state->setRedirect('entity.model.collection');
+    $form_state->setRedirect($form['collection']);
   }
 
 }
