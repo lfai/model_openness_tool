@@ -120,13 +120,19 @@ final class ModelController extends ControllerBase {
    * Return a yaml representation of the model.
    */
   public function yaml(ModelInterface $model): Response {
-    $yaml = $this->modelSerializer->toYaml($model);
-
     $response = new Response();
-    $response->setContent($yaml);
-    $response->headers->set('Content-Type', 'application/yaml');
-    $response->headers->set('Content-Length', (string)strlen($yaml));
-    $response->headers->set('Content-Disposition', 'attachment; filename="mof.yml"');
+
+    try {
+      $yaml = $this->modelSerializer->toYaml($model);
+      $response->setContent($yaml);
+      $response->headers->set('Content-Type', 'application/yaml');
+      $response->headers->set('Content-Length', (string)strlen($yaml));
+      $response->headers->set('Content-Disposition', 'attachment; filename="mof.yml"');
+    }
+    catch (\RuntimeException $e) {
+      $response->setContent($e->getMessage());
+      $response->setStatusCode(Response::HTTP_UNPROCESSABLE_ENTITY);
+    }
 
     return $response;
   }
@@ -135,13 +141,19 @@ final class ModelController extends ControllerBase {
    * Return a json file representation of the model.
    */
   public function json(ModelInterface $model): Response {
-    $json = $this->modelSerializer->toJson($model);
-
     $response = new Response();
-    $response->setContent($json);
-    $response->headers->set('Content-Type', 'application/json');
-    $response->headers->set('Content-Length', (string)strlen($json));
-    $response->headers->set('Content-Disposition', 'attachment; filename="mof.json"');
+
+    try {
+      $json = $this->modelSerializer->toJson($model);
+      $response->setContent($json);
+      $response->headers->set('Content-Type', 'application/json');
+      $response->headers->set('Content-Length', (string)strlen($json));
+      $response->headers->set('Content-Disposition', 'attachment; filename="mof.json"');
+    }
+    catch (\RuntimeException $e) {
+      $response->setContent($e->getMessage());
+      $response->setStatusCode(Response::HTTP_UNPROCESSABLE_ENTITY);
+    }
 
     return $response;
   }

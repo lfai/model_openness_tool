@@ -1,0 +1,29 @@
+<?php declare(strict_types=1);
+
+/**
+ * Implements hook_update_N()
+ *
+ * Install dependencies for MOT API.
+ */
+function mof_update_10201() {
+  // Enable REST and config management module.
+  \Drupal::service('module_installer')->install([
+    'rest',
+    'config',
+    'dynamic_page_cache',
+    'page_cache'
+  ]);
+
+  // Enable MOT REST plugin.
+  \Drupal::service('config.installer')->installDefaultConfig('module', 'mof');
+
+  // Add permission to use REST API for anonymous and authenticated users.
+  foreach (['anonymous', 'authenticated'] as $role_name) {
+    $role = \Drupal\user\Entity\Role::load($role_name);
+    if ($role) {
+      $role->grantPermission('restful get model_v1');
+      $role->save();
+    }
+  }
+}
+

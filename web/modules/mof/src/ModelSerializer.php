@@ -7,12 +7,15 @@ namespace Drupal\mof;
 use Drupal\mof\ModelInterface;
 use Drupal\mof\ComponentManagerInterface;
 use Drupal\Component\Serialization\Yaml;
+use Drupal\Component\Serialization\Exception\InvalidDataTypeException;
 use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Component\Serializer\Exception\UnsupportedFormatException;
+use Psr\Log\LoggerInterface;
 
 /**
  * ModelSerializer class.
  */
-final class ModelSerializer {
+final class ModelSerializer implements ModelSerializerInterface {
 
   /**
    * Construct a ModelSerializer instance.
@@ -20,18 +23,14 @@ final class ModelSerializer {
   public function __construct(
     private readonly SerializerInterface $serializer,
     private readonly ModelEvaluatorInterface $modelEvaluator,
-    private readonly ComponentManagerInterface $componentManager
+    private readonly ComponentManagerInterface $componentManager,
+    private readonly LoggerInterface $logger
   ) {}
 
   /**
-   * Transform model to an array for serialization.
-   *
-   * @param \Drupal\mof\ModelInterface $model
-   *   The model to process.
-   * @return array
-   *   An array representing the model.
+   * {@inheritdoc}
    */
-  private function processModel(ModelInterface $model): array {
+  public function normalize(ModelInterface $model): array {
     $owner = $model->getOwner();
 
     $data = [
@@ -78,32 +77,33 @@ final class ModelSerializer {
   }
 
   /**
-   * Return a YAML representation of the model.
-   *
-   * @param \Drupal\mof\ModelInterface $model
-   *   The model to convert to YAML.
-   * @return string
-   *   A string representing the model in YAML format.
+   * {@inheritdoc}
    */
   public function toYaml(ModelInterface $model): string {
-    return Yaml::encode($this->processModel($model));
+    try {
+      return Yaml::encode($this->normalize($model));
+    }
+    catch (InvalidDataTypeException $e) {
+      $this->logger->error('@exception', ['@exception' => $e->getMessage()]);
+      throw new \RuntimeException('Failed to convert model to YAML.', $e->getCode(), $e);
+    }
   }
 
   /**
-   * Return a JSON representation of the model.
-   *
-   * @param \Drupal\mof\ModelInterface $model
-   *   The model to convert to JSON.
-   * @return string
-   *   A string representing the model in JSON format.
+   * {@inheritdoc}
    */
   public function toJson(ModelInterface $model): string {
-    return $this
-      ->serializer
-      ->serialize($this
-      ->processModel($model), 'json', [
-        'json_encode_options' => \JSON_PRETTY_PRINT | \JSON_UNESCAPED_SLASHES
-      ]);
+    try {
+      return $this
+        ->serializer
+        ->serialize($this->normalize($model), 'json', [
+          'json_encode_options' => \JSON_PRETTY_PRINT | \JSON_UNESCAPED_SLASHES
+        ]);
+    }
+    catch (UnsupportedFormatException $e) {
+      $this->logger->error('@exception', ['@exception' => $e->getMessage()]);
+      throw new \RuntimeException('Failed to convert model to JSON.', $e->getCode(), $e);
+    }
   }
 
 }

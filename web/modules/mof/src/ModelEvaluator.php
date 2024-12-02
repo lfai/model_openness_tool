@@ -274,7 +274,7 @@ final class ModelEvaluator implements ModelEvaluatorInterface {
    * @return float
    *   Progress percentage
    */
-  private function getProgress(int $class): float {
+  public function getProgress(int $class): float {
     $required = $this->getRequiredComponents();
     $evaluate = $this->evaluate();
 
