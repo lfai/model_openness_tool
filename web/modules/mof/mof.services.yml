@@ -1,5 +1,22 @@
 services:
 
+  logger.channel.mot:
+    parent: logger.channel_base
+    arguments: ['mot']
+
+  mof.api.rate_limiter:
+    class: Drupal\mof\RateLimitMiddleware
+    arguments:
+      - '@cache.default'
+      - '@logger.channel.mot'
+    tags:
+      - { name: http_middleware, priority: 400 }
+
+  mof.api.exception_subscriber:
+    class: Drupal\mof\EventSubscriber\ApiExceptionSubscriber
+    tags:
+      - { name: event_subscriber }
+
   license_handler:
     class: Drupal\mof\LicenseHandler
     arguments:
@@ -24,6 +41,7 @@ services:
       - '@serializer'
       - '@model_evaluator'
       - '@component.manager'
+      - '@logger.channel.mot'
 
   model_validator:
     class: Drupal\mof\ModelValidator
