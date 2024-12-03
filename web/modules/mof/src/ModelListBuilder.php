@@ -71,11 +71,22 @@ final class ModelListBuilder extends EntityListBuilder {
 
     $build = parent::render();
     $build['#attached']['library'][] = 'mof/model-list';
-    $build['search'] = $this->formBuilder->getForm('\Drupal\mof\Form\ModelSearchForm', 'entity.model.collection');
+    $build['search'] = $this->formBuilder->getForm('\Drupal\mof\Form\ModelSearchForm');
     $build['search']['#weight'] = -100;
     $build['table']['#attributes']['class'][] = 'tablesaw';
     $build['table']['#attributes']['class'][] = 'tablesaw-stack';
     $build['table']['#attributes']['data-tablesaw-mode'] = 'stack';
+
+    $build['#cache'] = [
+      'contexts' => [
+        'url.query_args:label',
+        'url.query_args:org',
+        'url.query_args:page',
+        'url.query_args:limit',
+        'url.query_args:sort',
+        'url.query_args:order',
+      ],
+    ];
 
     return $build;
   }
