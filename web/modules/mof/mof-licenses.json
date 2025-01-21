@@ -373,7 +373,7 @@
          "isDeprecatedLicenseId":false,
          "detailsUrl":"https://spdx.org/licenses/CC-BY-SA-4.0.json",
          "referenceNumber":155,
-         "name":"Creative Commons Attribution 4.0 International",
+         "name":"Creative Commons Attribution Share Alike 4.0 International",
          "licenseId":"CC-BY-SA-4.0",
          "seeAlso":[
             "https://creativecommons.org/licenses/by-sa/4.0/legalcode"
