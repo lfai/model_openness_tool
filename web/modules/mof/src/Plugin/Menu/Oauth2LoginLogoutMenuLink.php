@@ -34,4 +34,11 @@ class Oauth2LoginLogoutMenuLink extends LoginLogoutMenuLink {
     }
   }
 
+  /**
+   * {@inheritdoc}
+   */
+  public function getCacheContexts() {
+    return [...parent::getCacheContexts(), 'user'];
+  }
+
 }
