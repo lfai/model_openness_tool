@@ -5,7 +5,7 @@ framework:
 release:
   name: StarCoder
   version: 15B
-  date: '2024-11-15'
+  date: '2025-01-28'
   type: code
   architecture: ''
   origin: ''

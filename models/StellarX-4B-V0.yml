@@ -5,7 +5,7 @@ framework:
 release:
   name: StellarX-4B-V0
   version: 4B
-  date: '2024-11-14'
+  date: '2025-01-28'
   type: ''
   architecture: decoder
   origin: StellarX-4B-V0

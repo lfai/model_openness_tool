@@ -5,7 +5,7 @@ framework:
 release:
   name: Jurassic-1-Jumbo
   version: 178B
-  date: '2024-11-14'
+  date: '2025-01-28'
   type: language
   architecture: 'transformer decoder'
   origin: ''
