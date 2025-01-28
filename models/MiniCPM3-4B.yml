@@ -3,9 +3,9 @@ framework:
   version: '1.0'
   date: '2024-12-15'
 release:
-  name: 'MiniCPM3-4B '
+  name: MiniCPM3-4B
   version: 4B
-  date: '2024-11-14'
+  date: '2025-01-28'
   type: language
   architecture: decoder
   origin: ''

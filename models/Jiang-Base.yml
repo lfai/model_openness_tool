@@ -5,7 +5,7 @@ framework:
 release:
   name: Jiang-Base
   version: 30B
-  date: '2024-11-14'
+  date: '2025-01-28'
   type: language
   architecture: 'transformer decoder'
   origin: ''

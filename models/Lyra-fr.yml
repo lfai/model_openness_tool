@@ -5,7 +5,7 @@ framework:
 release:
   name: Lyra-fr
   version: 10B
-  date: '2024-11-15'
+  date: '2025-01-28'
   type: language
   architecture: 'transformer decoder'
   origin: ''
