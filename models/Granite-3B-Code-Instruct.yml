@@ -17,7 +17,7 @@ release:
     -
       name: 'Model architecture'
       description: "Well commented code for the model's architecture"
-      location: ''
+      location: 'https://github.com/ggerganov/llama.cpp, https://github.com/vllm-project/vllm, https://github.com/huggingface/transformers' ## NB: The Granite model has only a few differences from LLaMa, and inference is possible against several different OSS frameworks. How are we differentiating code for the model's architecture vs inference and training code?
       license_name: Apache-2.0
       license_path: ''
     -
@@ -35,13 +35,13 @@ release:
     -
       name: 'Inference code'
       description: 'Code used for running the model to make predictions'
-      location: ''
-      license_name: 'Component not included'
-      license_path: ''
+      location: 'https://github.com/ggerganov/llama.cpp, https://github.com/vllm-project/vllm, https://github.com/huggingface/transformers' ## NB: Like many OSS models, the Granite model is compatible with several inference frameworks. Can we represent this information in a matrix, detailing compatibility with common inference frameworks?
+      license_name: 'MIT License, Apache-2.0 License, Apache-2.0 License; respectively'
+      license_path: 'https://github.com/ggerganov/llama.cpp/blob/master/LICENSE, https://github.com/vllm-project/vllm/blob/main/LICENSE, https://github.com/huggingface/transformers/blob/main/LICENSE; respectively'
     -
       name: 'Evaluation code'
       description: 'Code used for evaluating the model'
-      location: ''
+      location: 'https://huggingface.co/ibm-granite/granite-3b-code-instruct-2k' ## NB: While Granite doesn't publish its own evaluation code, Granite does publish metrics against several well-known benchmarks. Can we separately represent the known benchmarks, openness of those benchmarks, and a model's published performance?  See "Evaluation Results" from HuggingFace.
       license_name: 'Component not included'
       license_path: ''
     -
@@ -53,7 +53,7 @@ release:
     -
       name: 'Model parameters (Final)'
       description: 'Trained model parameters, weights and biases'
-      location: ''
+      location: 'https://huggingface.co/ibm-granite/granite-3b-code-base-2k/tree/main' ## NB: Safetensors files should establish this
       license_name: Apache-2.0
       license_path: ''
     -
@@ -65,13 +65,13 @@ release:
     -
       name: Datasets
       description: 'Training, validation and testing datasets used for the model'
-      location: ''
+      location: 'https://huggingface.co/ibm-granite/granite-3b-code-base-2k' ## The model card contains an incomplete list of the known datasets used in training the model. Is the goal complete reproducibility?
       license_name: 'License not specified'
       license_path: ''
     -
       name: 'Evaluation data'
       description: 'Data used for evaluating the model'
-      location: ''
+      location: '' ## See commentary for 'Evaluation code' - published performance against known evaluation benchmarks are available.
       license_name: 'Component not included'
       license_path: ''
     -
@@ -86,18 +86,20 @@ release:
       location: ''
       license_name: 'Component not included'
       license_path: ''
+      ## NB: What's the purpose of this question, and how does it add to the openness of a model? For a model with open weights and open inference code, this information does not appear to provide additional value.
+      ## Granite does publish a set of cookbooks, which could be thought of as sample model outputs: https://github.com/ibm-granite-community/granite-snack-cookbook
     -
       name: 'Model card'
       description: 'Model details including performance metrics, intended use, and limitations'
-      location: ''
-      license_name: 'License not specified'
-      license_path: ''
+      location: 'https://huggingface.co/ibm-granite/granite-3b-code-instruct-2k'
+      license_name: 'Apache 2.0'
+      license_path: 'https://www.apache.org/licenses/LICENSE-2.0'
     -
       name: 'Data card'
       description: 'Documentation for datasets including source, characteristics, and preprocessing details'
-      location: ''
-      license_name: 'License not specified'
-      license_path: ''
+      location: 'https://huggingface.co/ibm-granite/granite-3b-code-instruct-2k' ## NB: Partial documentation of training datasets is available on the HuggingFace model card, referencing known datasets. Does this information need to be duplicated in the MOT?
+      license_name: 'Apache 2.0'
+      license_path: 'https://www.apache.org/licenses/LICENSE-2.0'
     -
       name: 'Technical report'
       description: 'Technical report detailing capabilities and usage instructions for the model'
@@ -107,12 +109,12 @@ release:
     -
       name: 'Research paper'
       description: 'Research paper detailing the development and capabilities of the model'
-      location: ''
-      license_name: 'License not specified'
-      license_path: ''
+      location: 'https://arxiv.org/abs/2405.04324' ## Several research papers have been published on the Granite model. How can we track all known papers in the MOT? Is the existence of a single paper enough to call this "open"? Also, is a technical report, differing from the research paper, necessary for openness?
+      license_name: 'CC BY 4.0'
+      license_path: 'https://creativecommons.org/licenses/by/4.0/'
     -
       name: 'Evaluation results'
       description: 'The results from evaluating the model'
-      location: ''
+      location: 'https://huggingface.co/ibm-granite/granite-3b-code-base-2k'
       license_name: 'Component not included'
-      license_path: ''
+      license_path: '' ## See 'evaluation code' and 'evaluation data' - info on model card for known benchmarks
