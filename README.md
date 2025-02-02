@@ -1,6 +1,6 @@
 # Model Openness Tool
 
-The Model Openness Tool (MOT) is designed to facilitate the evaluation and classification of machine learning models based on the Model Openness Framework (MOF). This tool provides a comprehensive platform for model producers to assess their models against the 16 components of the MOF, ensuring transparency, reproducibility, and usability. MOT not only evaluates the openness of the license for each component but also ranks the models, helping the community identify models that adhere to the principles of open science.
+The Model Openness Tool (MOT) is designed to facilitate the evaluation and classification of machine learning models based on the [Model Openness Framework (MOF)](https://lfaidata.foundation/wp-content/uploads/sites/3/2025/01/05_White_paper_MOF_Specification.pdf). This tool provides a comprehensive platform for model producers to assess their models against the 16 components of the MOF, ensuring transparency, reproducibility, and usability. MOT not only evaluates the openness of the license for each component but also ranks the models, helping the community identify models that adhere to the principles of open science.
 Features
 
 * Model Evaluation: Assess machine learning models against the MOF's 16 components.
