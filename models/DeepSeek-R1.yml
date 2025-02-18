@@ -106,7 +106,7 @@ release:
       name: 'Research paper'
       description: 'Research paper detailing the development and capabilities of the model'
       location: ''
-      license_name: 'License not specified'
+      license_name: arXiv.org perpetual non-exclusive license 1.0
       license_path: ''
     -
       name: 'Evaluation results'
