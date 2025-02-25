@@ -15,6 +15,10 @@ table .model-updated {
   width: 145px;
 }
 
+table th.badge {
+  width: 305px;
+}
+
 table td.badge svg {
   display: block;
   margin: 6px 0;
