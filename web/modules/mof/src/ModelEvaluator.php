@@ -134,6 +134,7 @@ final class ModelEvaluator implements ModelEvaluatorInterface {
    * @param bool $mini
    *   When true, only include earned badges (i.e., conditional or qualified)
    *   with the highest qualified and lowest in progress.
+   *   This is used for the ModelList page.
    *
    * @todo Move badging related functions to its own class.
    */
@@ -162,17 +163,18 @@ final class ModelEvaluator implements ModelEvaluatorInterface {
         }
         $qualified = TRUE;
       }
-      else if (!empty($evals[$i]['invalid'])) {
-        $status = $this->t('Not met');
-        $text_color = '#fff';
-        $background_color = '#9ba0a2';
+      else if ($progress == 0) {
         if ($mini) {
           // do not include classes that are not met
           continue;
         }
+        $status = $this->t('Not met');
+        $text_color = '#fff';
+        $background_color = '#9ba0a2';
       }
       else {
         if ($mini && $in_progress) {
+          // only include the first in progress
           continue;
         }
         $status = $this->t('In progress (@progress%)', ['@progress' => round($progress)]);
@@ -291,9 +293,9 @@ final class ModelEvaluator implements ModelEvaluatorInterface {
       $total += sizeof($required[$i]);
     }
 
+    // discount components with an invalid license or missing entirely
     $intersect = array_intersect($evaluate[$class]['invalid'], $evaluate[$class]['included']);
-    $invalid = !empty($intersect) ? sizeof($evaluate[$class]['included']) : 0;
-    $invalid += sizeof($evaluate[$class]['missing']);
+    $invalid = sizeof($evaluate[$class]['missing']) + sizeof($intersect);
 
     return ($total - $invalid) / $total * 100;
   }
