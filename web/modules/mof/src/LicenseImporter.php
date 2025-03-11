@@ -3,17 +3,52 @@
 namespace Drupal\mof;
 
 use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\Core\Entity\EntityStorageException;
 use Drupal\Core\Extension\ModuleExtensionList;
+use Psr\Log\LoggerInterface;
 
-class LicenseImporter {
+final class LicenseImporter {
 
   /**
    * Constructor.
    */
   public function __construct(
     private readonly EntityTypeManagerInterface $entityTypeManager,
-    private readonly ModuleExtensionList $moduleExtensionList
+    private readonly ModuleExtensionList $moduleExtensionList,
+    private readonly LoggerInterface $logger
   ) {}
+
+  /**
+   * Update the license entity.
+   *
+   * @param \Drupal\mof\LicenseInterface $license The existing license entity.
+   * @param array $data License data.
+   */
+  private function setLicenseData(LicenseInterface $license, array $data) {
+    try {
+      $license
+        ->set('name', $data['name'])
+        ->set('license_id', $data['licenseId'])
+        ->set('reference', $data['reference'])
+        ->set('reference_number', $data['referenceNumber'])
+        ->set('deprecated_license_id', $data['isDeprecatedLicenseId'])
+        ->set('osi_approved', $data['isOsiApproved'] ?? false)
+        ->set('fsf_libre', $data['isFsfLibre'] ?? '')
+        ->set('details_url', $data['detailsUrl'])
+        ->set('see_also', $data['seeAlso'])
+        ->set('content_type', $data['ContentType'] ?? '')
+        ->save();
+    }
+    catch (EntityStorageException $e) {
+      $message = snprintf(
+        'Failed to save license entity "%s" with ID "%s": %s',
+        $data['name'], $data['licenseId'], $e->getMessage()
+      );
+
+      $this->logger->error($message);
+      throw new EntityStorageException($message, $e->getCode(), $e);
+    }
+  }
 
   /**
    * Import licenses.
@@ -21,7 +56,7 @@ class LicenseImporter {
   public function import() {
     $path = $this->moduleExtensionList->getPath('mof');
 
-    foreach (['mof-licenses.json', 'licenses.json'] as $file) {
+    foreach (['licenses.json', 'mof-licenses.json'] as $file) {
       $filepath = $path .'/'. $file;
 
       if (!file_exists($filepath)) {
@@ -40,29 +75,9 @@ class LicenseImporter {
         ->getStorage('license');
 
       foreach ($json['licenses'] as $license) {
-        $license_id = $license['licenseId'];
-
-        $entity = $license_storage
-          ->loadByProperties(['license_id' => $license_id]);
-
-        if (!empty($entity)) {
-          continue;
-        }
-
-        $entity = $license_storage->create([
-          'name' => $license['name'],
-          'license_id' => $license_id,
-          'reference' => $license['reference'],
-          'reference_number' => $license['referenceNumber'],
-          'deprecated_license_id' => $license['isDeprecatedLicenseId'],
-          'osi_approved' => $license['isOsiApproved'] ?? false,
-          'fsf_libre' => $license['isFsfLibre'] ?? '',
-          'details_url' => $license['detailsUrl'],
-          'see_also' => $license['seeAlso'],
-          'content_type' => $license['ContentType'] ?? '',
-        ]);
-
-        $entity->save();
+        $entity = $license_storage->loadByProperties(['license_id' => $license['licenseId']]);
+        $entity = !empty($entity) ? reset($entity) : $license_storage->create();
+        $this->setLicenseData($entity, $license);
       }
     } 
   }
