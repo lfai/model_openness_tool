@@ -1,7 +1,7 @@
 <?php declare(strict_types=1);
 
 try {
-  print "Syncing license data..." . PHP_EOL;
+  print "Syncing licenses..." . PHP_EOL;
   \Drupal::service('license_importer')->import();
   print "Done." . PHP_EOL;
 
