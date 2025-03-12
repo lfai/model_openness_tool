@@ -11,6 +11,8 @@ release:
   origin: ''
   producer: 'DeepSeek AI'
   contact: ''
+  github: 'https://github.com/deepseek-ai/DeepSeek-V3'
+  huggingface: 'https://huggingface.co/deepseek-ai/DeepSeek-V3'
   components:
     -
       name: 'Model architecture'
