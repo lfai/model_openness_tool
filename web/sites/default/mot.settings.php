@@ -22,6 +22,7 @@ $settings['update_free_access'] = FALSE;
 $settings['container_yamls'][] = $app_root . '/' . $site_path . '/services.yml';
 $settings['entity_update_batch_size'] = 50;
 $settings['entity_update_backup'] = TRUE;
+$settings['state_cache'] = TRUE;
 
 $settings['file_scan_ignore_directories'] = [
   'node_modules',
