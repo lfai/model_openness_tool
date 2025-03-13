@@ -27,11 +27,6 @@ Create an empty `.env` file:
 touch .env
 ```
 
-Delete the production setup:
-```shell
-rm -rf web/sites/default/files web/sites/default/settings.php
-```
-
 Start MOT:
 ```shell
 php web/core/scripts/drupal quick-start

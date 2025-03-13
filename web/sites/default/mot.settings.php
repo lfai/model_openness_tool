@@ -1,6 +1,9 @@
 <?php
 
 // phpcs:ignoreFile
+//
+// This is the default settings file for the MOT Drupal app.
+// For a production instance, copy this file to settings.php, and make any changes as needed.
 
 $databases = [];
 $databases['default']['default'] = [
