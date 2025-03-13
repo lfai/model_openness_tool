@@ -69,6 +69,17 @@ TRUSTED_HOST=
 - `TRUSTED_HOST`: The host used to access the MOT; e.g. `mot\.isitopen\.ai`
 
 
+### Configure settings
+
+Copy the default settings file:
+
+```
+cp ./web/sites/default/mot.settings.php ./web/sites/default/settings.php
+```
+
+Update `settings.php` to reflect your environment if needed.
+
+
 ### Configure webserver
 
 Ensure the document root is pointed to the `mot/web` directory.
