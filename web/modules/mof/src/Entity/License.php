@@ -54,37 +54,35 @@ use Drupal\mof\LicenseInterface;
 final class License extends ContentEntityBase implements LicenseInterface {
 
   /**
-   * Get license name.
+   * {@inheritdoc}
    */
   public function getName(): string {
     return $this->get('name')->value;
   }
 
   /**
-   * Get license id.
+   * {@inheritdoc}
    */
   public function getLicenseId(): string {
     return $this->get('license_id')->value;
   }
 
   /**
-   * Determine if license is OSI approved.
+   * {@inheritdoc}
    */
   public function isOsiApproved(): bool {
     return (bool)$this->get('osi_approved')->value;
   }
 
   /**
-   * Get license content type.
-   * `code` `document `data` are accepted values.
+   * {@inheritdoc}
    */
   public function getContentType(): ?string {
     return $this->get('content_type')->value ?? NULL;
   }
 
   /**
-   * Transform to an array that matches a license in
-   * the mof-licenses.json file.
+   * {@inheritdoc}
    */
   public function toArray(): array {
     return [

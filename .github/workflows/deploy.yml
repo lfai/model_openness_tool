@@ -99,6 +99,7 @@ jobs:
             composer install --no-dev --no-progress --optimize-autoloader
             ./vendor/bin/drush updb -y
             ./vendor/bin/drush cim --partial --source=modules/mof/config/install -y
+            ./vendor/bin/drush scr scripts/sync_licenses.php
             ./vendor/bin/drush cr
           EOF
 
