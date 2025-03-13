@@ -97,6 +97,7 @@ jobs:
             echo "Deploying to $DEPLOY_PATH"
             cd $DEPLOY_PATH
             composer install --no-dev --no-progress --optimize-autoloader
+            cp ./web/sites/default/mot.settings.php ./web/sites/default/settings.php
             ./vendor/bin/drush updb -y
             ./vendor/bin/drush cim --partial --source=modules/mof/config/install -y
             ./vendor/bin/drush scr scripts/sync_licenses.php

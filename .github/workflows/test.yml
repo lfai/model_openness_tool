@@ -96,7 +96,7 @@ jobs:
 
       - name: Set up Drupal
         run: |
-          cp ./web/sites/default/default.settings.php ./web/sites/default/settings.php
+          cp ./web/sites/default/mot.settings.php ./web/sites/default/settings.php
           cp ./web/sites/default/default.services.yml ./web/sites/default/services.yml
           ./vendor/bin/drush site-install mot_profile --yes
 

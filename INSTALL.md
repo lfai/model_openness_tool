@@ -27,11 +27,6 @@ Create an empty `.env` file:
 touch .env
 ```
 
-Delete the production setup:
-```shell
-rm -rf web/sites/default/files web/sites/default/settings.php
-```
-
 Start MOT:
 ```shell
 php web/core/scripts/drupal quick-start
@@ -72,6 +67,17 @@ TRUSTED_HOST=
 - `DB_PORT`: The port number your database server is listening on (default is usually `3306` for MySQL).
 - `HASH_SALT`: A unique, random string used for securing passwords and other sensitive data in Drupal. This should be a long and complex string.
 - `TRUSTED_HOST`: The host used to access the MOT; e.g. `mot\.isitopen\.ai`
+
+
+### Configure settings
+
+Copy the default settings file:
+
+```
+cp ./web/sites/default/mot.settings.php ./web/sites/default/settings.php
+```
+
+Update `settings.php` to reflect your environment if needed.
 
 
 ### Configure webserver

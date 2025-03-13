@@ -14,7 +14,7 @@
 /web/sites/default/*
 !/web/sites
 !/web/sites/default
-!/web/sites/default/settings.php
+!/web/sites/default/mot.settings.php
 .gitattributes
 .editorconfig
 models/.processed
