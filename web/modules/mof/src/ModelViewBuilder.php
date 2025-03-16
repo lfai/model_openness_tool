@@ -217,13 +217,21 @@ class ModelViewBuilder extends EntityViewBuilder {
       return $build;
     }
 
-    $build = [
-      "{$status}_components" => [
-        '#theme' => 'item_list',
-        '#title' => $this->t('@status components', ['@status' => ucfirst($status)]),
-      ],
-    ];
-
+    if ($status == "invalid") {
+      $build = [
+        "{$status}_components" => [
+          '#theme' => 'item_list',
+          '#title' => $this->t('Components with an invalid license'),
+        ],
+      ];
+    } else {
+      $build = [
+        "{$status}_components" => [
+          '#theme' => 'item_list',
+          '#title' => $this->t('@status components', ['@status' => ucfirst($status)]),
+        ],
+      ];
+    }
     $components = array_filter(
       $this->modelComponents,
       fn($c) => in_array($c->id, $components));
