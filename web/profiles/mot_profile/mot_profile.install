@@ -36,7 +36,7 @@ function mot_profile_install() {
     'type' => 'basic',
     'info' => 'Disclaimer',
     'body' => [
-      'value' => 'This is beta software containing preliminary data which is incomplete and may be inaccurate. If you experience errors with the tool or discover inaccurate information, please use the “report” feature in the model details to report inaccuracies or for site issues please <a href="/contact">contact us</a>.',
+      'value' => 'This is beta software containing preliminary data which is incomplete and may be inaccurate. If you experience errors with the tool or discover inaccurate information, please open an Issue or Pull Request on the <a href="https://github.com/lfai/model_openness_tool">MOF GitHub repository</a>.',
       'format' => 'full_html',
     ],
   ]);
