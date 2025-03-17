@@ -19,11 +19,6 @@ entity.model.badges:
   route_name: entity.model.badge
   base_route: entity.model.canonical
 
-entity.model.report:
-  title: 'Report'
-  route_name: entity.model.report
-  base_route: entity.model.canonical
-
 entity.model.edit_form:
   title: 'Edit'
   route_name: entity.model.edit_form
