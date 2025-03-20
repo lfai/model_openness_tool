@@ -98,6 +98,7 @@ final class ModelEvaluator implements ModelEvaluatorInterface {
         'missing' => $this->getMissing($components),
         'invalid' => $this->getInvalid($components),
         'included' => $this->getIncluded($components),
+        'unspecified' => $this->getUnspecified($components),
         'conditional' => $i === 3 ? $this->hasConditionalPass() : FALSE,
       ];
     }
@@ -338,7 +339,25 @@ final class ModelEvaluator implements ModelEvaluatorInterface {
   }
 
   /**
-   * Check which components are included and valid.
+   * Filter a list of components with a license set to 'License not specified'
+   * Remove any invalid components from the array.
+   */
+  private function filterUnspecified(): array {
+    $excluded = $this->getExtraLicenses();
+    $completed = $this->model->getCompletedComponents();
+    $licenses = $this->model->getLicenses();
+
+    foreach ($this->model->getCompletedComponents() as $key => $cid) {
+      if (array_key_exists($cid, $licenses) && $licenses[$cid]['license'] != 'License not specified') {
+        unset($completed[$key]);
+      }
+    }
+
+    return array_values($completed);
+  }
+
+  /**
+   * Check which components are included and have a valid license.
    *
    * @param array $required Required components.
    *
@@ -349,14 +368,25 @@ final class ModelEvaluator implements ModelEvaluatorInterface {
   }
 
   /**
-   * Check which required components are missing/ no license selected.
+   * Check which required components are missing.
    *
    * @param array $required Required components.
    *
    * @return array Incomplete/ missing components.
    */
   private function getMissing(array $required): array {
-    return array_diff($required, $this->filterCompleted());
+    return array_diff(array_diff($required, $this->filterCompleted()), $this->filterUnspecified());
+  }
+
+  /**
+   * Check which required components have 'no license specified'.
+   *
+   * @param array $required Required components.
+   *
+   * @return array (license) Unspecified components.
+   */
+  private function getUnspecified(array $required): array {
+    return array_intersect($required, $this->filterUnspecified());
   }
 
   /**
