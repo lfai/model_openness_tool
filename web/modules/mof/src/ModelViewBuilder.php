@@ -150,10 +150,12 @@ class ModelViewBuilder extends EntityViewBuilder {
         'evaluation' => [
           'included' => $this
             ->getComponentList($evaluation[$i]['included'], 'included'),
-          'missing' => $this
-            ->getComponentList($evaluation[$i]['missing'], 'missing'),
+          'unspecified' => $this
+            ->getComponentList($evaluation[$i]['unspecified'], 'unspecified'),
           'invalid' => $this
             ->getComponentList($evaluation[$i]['invalid'], 'invalid'),
+          'missing' => $this
+            ->getComponentList($evaluation[$i]['missing'], 'missing'),
           '#weight' => 10,
         ],
       ];
@@ -201,19 +203,19 @@ class ModelViewBuilder extends EntityViewBuilder {
   }
 
   /**
-   * Build a render array of completed, missing or invalid model components.
+   * Build a render array of completed, missing, unspecified or invalid model components.
    *
    * @param array $components
    *   Model components.
    * @param string $status
-   *   A value of "missing" or "completed" or "invalid"
+   *   A value of "missing" or "completed" or "invalid" or "unspecified"
    * @return array
    *   A drupal render array of components.
    */
   private function getComponentList(array $components, string $status): array {
     $build = [];
 
-    if (empty($components) && !in_array($status, ['missing', 'invalid', 'completed'])) {
+    if (empty($components) && !in_array($status, ['missing', 'invalid', 'completed', 'unspecified'])) {
       return $build;
     }
 
@@ -222,14 +224,21 @@ class ModelViewBuilder extends EntityViewBuilder {
         "{$status}_components" => [
           '#theme' => 'item_list',
           '#title' => $this->t('Components with an invalid license'),
-        ],
+        ]
       ];
+    } else if ($status == "unspecified") {
+        $build = [
+          "{$status}_components" => [
+            '#theme' => 'item_list',
+            '#title' => $this->t('Components with an unspecified license'),
+          ]
+        ];
     } else {
       $build = [
         "{$status}_components" => [
           '#theme' => 'item_list',
           '#title' => $this->t('@status components', ['@status' => ucfirst($status)]),
-        ],
+        ]
       ];
     }
     $components = array_filter(
