@@ -60,7 +60,7 @@ final class ModelSerializer implements ModelSerializerInterface {
 
     $completed = array_filter(
       $this->componentManager->getComponents(),
-      fn($c) => in_array($c->id, $model->getCompletedComponents()));
+      fn($c) => in_array($c->id, $model->getComponents()));
 
     $licenses = $model->getLicenses();
     foreach ($completed as $component) {

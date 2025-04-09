@@ -32,6 +32,7 @@ final class ModelController extends ControllerBase {
     $instance = parent::create($container);
     $instance->modelSerializer = $container->get('model_serializer');
     $instance->modelEvaluator = $container->get('model_evaluator');
+    $instance->badgeGenerator = $container->get('badge_generator');
     $instance->renderer = $container->get('renderer');
     return $instance;
   }
@@ -65,7 +66,7 @@ final class ModelController extends ControllerBase {
    */
   public function badgePage(ModelInterface $model): array {
     $build = ['#markup' => $this->t('Use the following markdown to embed your model badges.')];
-    $badges = $this->modelEvaluator->setModel($model)->generateBadge();
+    $badges = $this->badgeGenerator->generate($model);
 
     for ($i = 1; $i <= 3; $i++) {
       $badge = Url::fromRoute('mof.model_badge', ['model' => $model->id(), 'class' => $i]);
@@ -105,7 +106,7 @@ final class ModelController extends ControllerBase {
    * Return an SVG badge for specified model and class.
    */
   public function badge(ModelInterface $model, int $class): Response {
-    $badges = $this->modelEvaluator->setModel($model)->generateBadge();
+    $badges = $this->badgeGenerator->generate($model);
     $svg = (string)$this->renderer->render($badges[$class]);
 
     $response = new Response();
