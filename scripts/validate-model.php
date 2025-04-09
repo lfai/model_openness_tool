@@ -23,15 +23,9 @@ if (($schema = file_get_contents('schema/mof_schema.json')) === false) {
 
 try {
   $schema = json_decode($schema);
-  $yaml = (object) Yaml::parse($yaml);
 
-  $yaml->release = (object) $yaml->release;
-  $yaml->framework = (object) $yaml->framework;
-  foreach ($yaml->release->components as $key => $component) {
-    if (is_array($component)) {
-      $yaml->release->components[$key] = (object) $component;
-    }
-  } 
+  // Convert YAML-parsed array to stdClass object via JSON round-trip.
+  $yaml = json_decode(json_encode(Yaml::parse($yaml)));
 
   $validator = new Validator();
   $result = $validator->validate($yaml, $schema);

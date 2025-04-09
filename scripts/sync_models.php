@@ -63,16 +63,16 @@ if (is_dir($model_path)) {
     }
   }
   catch (\UnexpectedValueException $e) {
-    print 'Failed opening models directory: ' . $e->getMessage();
+    print 'Failed opening models directory: ' . $e->getMessage() . PHP_EOL;
   }
   catch (\ValueError $e) {
-    print "Invalid value: " . $e->getMessage();
+    print "Invalid value: " . $e->getMessage() . PHP_EOL;
   }
   catch (ParseException $e) {
-    print 'Invalid YAML format: ' . $e->getMessage();
+    print 'Invalid YAML format: ' . $e->getMessage() . PHP_EOL;
   }
 }
 else {
-  print "Models directory does not exist.";
+  print "Models directory does not exist." . PHP_EOL;
 }
 

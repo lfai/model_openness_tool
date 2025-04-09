@@ -28,6 +28,55 @@
         "version": {
           "type": "string"
         },
+        "license": {
+          "type": "object",
+          "properties": {
+            "distribution": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": ["string", "null"]
+                },
+                "path": {
+                  "type": ["string", "null"]
+                }
+              }
+            },
+            "code": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": ["string", "null"]
+                },
+                "path": {
+                  "type": ["string", "null"]
+                }
+              }
+            },
+            "document": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": ["string", "null"]
+                },
+                "path": {
+                  "type": ["string", "null"]
+                }
+              }
+            },
+            "data": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": ["string", "null"]
+                },
+                "path": {
+                  "type": ["string", "null"]
+                }
+              }
+            }
+          }
+        },
         "date": {
           "type": "string",
           "format": "date"
@@ -85,7 +134,7 @@
         },
         "components": {
           "type": "array",
-          "minItems": 17,
+          "minItems": 0,
           "maxItems": 17,
           "items": {
             "type": "object",
@@ -96,29 +145,23 @@
               "description": {
                 "type": "string"
               },
-              "location": {
-                "type": "string"
-              },
-              "license_name": {
+              "license": {
                 "type": "string"
               },
               "license_path": {
                 "type": "string"
+              },
+              "component_path": {
+                "type": "string"
               }
-            },
-            "required": [
-              "name",
-              "description",
-              "location",
-              "license_name",
-              "license_path"
-            ]
+            }
           }
         }
       },
       "required": [
         "name",
         "version",
+        "license",
         "date",
         "architecture",
         "origin",
