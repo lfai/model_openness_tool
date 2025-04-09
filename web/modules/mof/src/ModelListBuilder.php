@@ -23,26 +23,18 @@ final class ModelListBuilder extends EntityListBuilder {
 
   use PageLimitTrait;
 
-  private $modelEvaluator;
-
-  private $formBuilder;
-
-  private $request;
-
   /**
    * {@inheritdoc}
    */
   public function __construct(
     EntityTypeInterface $entity_type,
     EntityStorageInterface $storage,
-    ModelEvaluatorInterface $model_evaluator,
-    FormBuilderInterface $form_builder,
-    Request $request
+    private readonly ModelEvaluatorInterface $modelEvaluator,
+    private readonly BadgeGeneratorInterface $badgeGenerator,
+    private readonly FormBuilderInterface $formBuilder,
+    private readonly Request $request
   ) {
     parent::__construct($entity_type, $storage);
-    $this->modelEvaluator = $model_evaluator;
-    $this->formBuilder = $form_builder;
-    $this->request = $request;
   }
 
   /**
@@ -56,6 +48,7 @@ final class ModelListBuilder extends EntityListBuilder {
       $entity_type,
       $container->get('entity_type.manager')->getStorage($entity_type->id()),
       $container->get('model_evaluator'),
+      $container->get('badge_generator'),
       $container->get('form_builder'),
       $container->get('request_stack')->getCurrentRequest()
     );
@@ -166,7 +159,7 @@ final class ModelListBuilder extends EntityListBuilder {
     ];
 
     $row['badge'] = [
-      'data' => $this->modelEvaluator->setModel($entity)->generateBadge(mini: TRUE),
+      'data' => $this->badgeGenerator->generate($entity, mini: TRUE),
       'class' => ['badge'],
       'data-tablesaw-no-labels' => '',
     ];

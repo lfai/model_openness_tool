@@ -101,9 +101,9 @@ final class Model extends RevisionableContentEntityBase implements ModelInterfac
   }
 
   /**
-   * Get all completed component IDs for the model.
+   * Get included component IDs for the model.
    */
-  public function getCompletedComponents(): array {
+  public function getComponents(): array {
     return array_column($this->get('components')->getValue(), 'value');
   }
 
@@ -231,11 +231,13 @@ final class Model extends RevisionableContentEntityBase implements ModelInterfac
       $this->setOwnerId(0);
     }
 
+    /*
     $evaluator = \Drupal::service('model_evaluator')->setModel($this);
     $class = $evaluator->getClassification(FALSE);
     $this->set('classification_no', $class);
     $this->set('classification', $evaluator->getClassLabel($class));
     $this->set('total_progress', $evaluator->getTotalProgress());
+     */
   }
 
   /**

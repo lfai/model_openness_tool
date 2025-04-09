@@ -62,15 +62,20 @@ final class ModelUpdater {
    *   Either SAVED_NEW or SAVED_UPDATED.
    */
   public function update(ModelInterface $model, array $model_data): int {
+    $license_data = [];
+
     foreach ($model_data as $field => $value) {
       // @todo Rename these fields on the entity(?)
       if ($field === 'name') $field = 'label';
       if ($field === 'producer') $field = 'organization';
 
-      if ($field === 'components') {
-        $license_data = $this->processLicenses($value);
+      if ($field === 'license') {
+        $license_data['global'] = $value;
+      }
+      else if ($field === 'components') {
+        $license_data['components'] = $this->processComponentLicenses($value);
         $model->set('license_data', ['licenses' => $license_data]);
-        $model->set('components', array_keys($license_data));
+        $model->set('components', array_keys($license_data['components']));
       }
       else if ($field === 'contact') {
         $model->set('uid', $this->processOwnerContact($value));
@@ -151,7 +156,7 @@ final class ModelUpdater {
    * @return array
    *   The license array structured for a model entity.
    */
-  private function processLicenses(array $license_data): array {
+  private function processComponentLicenses(array $license_data): array {
     $licenses = [];
 
     foreach ($license_data as $component_data) {
@@ -160,9 +165,9 @@ final class ModelUpdater {
         ->getComponentByName($component_data['name']);
 
       $licenses[$component->id] = [
-        'license' => $component_data['license_name'],
-        'license_path' => $component_data['license_path'],
-        'component_path' => $component_data['location'],
+        'license' => $component_data['license'] ?? null,
+        //'license_path' => $component_data['license_path'],
+        //'component_path' => $component_data['location'],
       ];
     }
 

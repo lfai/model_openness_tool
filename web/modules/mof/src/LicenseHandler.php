@@ -50,6 +50,13 @@ final class LicenseHandler implements LicenseHandlerInterface {
   }
 
   /**
+   * Determines of a specific license is OSI-approved.
+   */
+  public function isOsiApproved(string $license): bool {
+    return in_array($license, array_column($this->getOsiApproved(), 'licenseId'));
+  }
+
+  /**
    * Extra licenses are listed for selection; however,
    * they are considered invalid, meaning models will fail evaluation
    * if selected for a component.
@@ -71,10 +78,9 @@ final class LicenseHandler implements LicenseHandlerInterface {
   }
 
   /**
-   * Check if a license exists for the specified type.
+   * Check if a type-specific license exists for license id.
    */
   public function exists(string $id, string|array $type): bool {
-    $bypass = ['Component not included', 'Other'];
     $type = is_array($type) ? $type : [$type];
 
     foreach ($type as $t) {
@@ -82,7 +88,7 @@ final class LicenseHandler implements LicenseHandlerInterface {
         fn($a) => $a['ContentType'] === $t && $a['licenseId'] === $id);
     }
 
-    return !empty($licenses) || in_array($id, $bypass);
+    return !empty($licenses);
   }
 
   /**

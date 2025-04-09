@@ -58,6 +58,11 @@ services:
     arguments:
       - '@config.factory'
 
+  badge_generator:
+    class: Drupal\mof\BadgeGenerator
+    arguments:
+      - '@model_evaluator'
+
   github:
     class: Drupal\mof\GitHubService
     arguments:
