@@ -13,14 +13,7 @@ final class BadgeGenerator implements BadgeGeneratorInterface {
   ) {}
 
   /**
-   * Generate badges for each classification.
-   *
-   * @param \Drupal\mof\ModelInterface $model
-   *   The model for which we are generating the badge.
-   * @param bool $mini
-   *   When true, only include earned badges (i.e., conditional or qualified)
-   *   with the highest qualified and lowest in progress.
-   *   This is used for the ModelList page.
+   * {@inheritdoc}
    */
   public function generate(ModelInterface $model, bool $mini = FALSE): array {
     $build = [];

@@ -166,8 +166,8 @@ final class ModelUpdater {
 
       $licenses[$component->id] = [
         'license' => $component_data['license'] ?? null,
-        //'license_path' => $component_data['license_path'],
-        //'component_path' => $component_data['location'],
+        'license_path' => $component_data['license_path'] ?? null,
+        'component_path' => $component_data['component_path'] ?? null,
       ];
     }
 

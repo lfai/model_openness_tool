@@ -281,7 +281,7 @@ final class ModelEvaluator implements ModelEvaluatorInterface {
    */
   private function isOpenSourceLicense(int $cid): bool {
     $licenses = $this->model->getLicenses();
-    return isset($licenses[$cid]) && $this->licenseHandler->isOpenSource($licenses[$cid]['license']);
+    return isset($licenses[$cid]) && $this->licenseHandler->isOsiApproved($licenses[$cid]['license']);
   }
 
   /**

@@ -38,47 +38,42 @@ final class LicenseHandler implements LicenseHandlerInterface {
    *
    */
   public function getLicensesByType(string $type): array {
-    $licenses = array_filter($this->licenses, fn($a) => $a['ContentType'] === $type);
-    return [...$licenses, ...$this->getExtraOptions()];
+    return array_filter($this->licenses, fn($a) => $a['ContentType'] === $type);
   }
 
   /**
    * Return a list of OSI-approved licenses.
+   *
+   * @return array List of open/ OSI-approved licenses.
    */
   public function getOsiApproved(): array {
     return array_filter($this->licenses, fn($a) => $a['isOsiApproved'] === true);
   }
 
   /**
-   * Determines of a specific license is OSI-approved.
+   * Determines of a specific license is open/ OSI-approved.
+   *
+   * @param string $license
+   *   The license ID to check if it is open.
+   *
+   * @return bool TRUE if open, FALSE otherwise.
    */
   public function isOsiApproved(string $license): bool {
     return in_array($license, array_column($this->getOsiApproved(), 'licenseId'));
   }
 
   /**
-   * Extra licenses are listed for selection; however,
-   * they are considered invalid, meaning models will fail evaluation
-   * if selected for a component.
-   */
-  public function getExtraOptions(): array {
-    return [[
-      'name' => 'Other license',
-      'licenseId' => 'Other license',
-    ], [
-      'name' => 'License not specified',
-      'licenseId' => 'License not specified',
-    ], [
-      'name' => 'Component not included',
-      'licenseId' => 'Component not included',
-    ], [
-      'name' => 'Pending evaluation',
-      'licenseId' => 'Pending evaluation',
-    ]];
-  }
-
-  /**
    * Check if a type-specific license exists for license id.
+   *
+   * @param string $id
+   *   The license ID to check.
+   * @param string|array $type
+   *   A single type or an array of types.
+   *   Types include: code, document, or data
+   *
+   * @return bool
+   *   TRUE if license belongs to $type.
+   *   FALSE otherwise.
    */
   public function exists(string $id, string|array $type): bool {
     $type = is_array($type) ? $type : [$type];
@@ -89,15 +84,6 @@ final class LicenseHandler implements LicenseHandlerInterface {
     }
 
     return !empty($licenses);
-  }
-
-  /**
-   * Check if a license is considered open source.
-   * A license is open source if ContentType=code
-   */
-  public function isOpenSource(string $license): bool {
-    $key = array_search($license, array_column($this->licenses, 'licenseId'));
-    return $key !== FALSE && $this->licenses[$key]['ContentType'] === 'code';
   }
 
 }

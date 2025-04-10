@@ -231,13 +231,11 @@ final class Model extends RevisionableContentEntityBase implements ModelInterfac
       $this->setOwnerId(0);
     }
 
-    /*
     $evaluator = \Drupal::service('model_evaluator')->setModel($this);
     $class = $evaluator->getClassification(FALSE);
     $this->set('classification_no', $class);
     $this->set('classification', $evaluator->getClassLabel($class));
     $this->set('total_progress', $evaluator->getTotalProgress());
-     */
   }
 
   /**
