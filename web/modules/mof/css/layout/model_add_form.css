@@ -24,17 +24,12 @@
 
 .component-license-wrapper {
   display: flex;
-  flex-wrap: wrap;
-  align-items: center;
+  flex-direction: column;
+  gap: .75rem;
   padding: .5rem 2.5rem;
-  position: relative;
   border-top: 1px solid #ddc1c1;
   border-bottom: 1px solid #ddc1c1;
   color: #000;
-}
-
-.component-license-wrapper span {
-  width: 250px;
 }
 
 .component-license-wrapper .form-item {
@@ -61,6 +56,11 @@
   padding: 4px;
 }
 
+.model-form .form-type--radio {
+  display: inline-block;
+  margin: 0 2rem;
+}
+
 #details-wrap label.form-item__label {
   display: inline-block;
   vertical-align: top;
@@ -73,10 +73,6 @@
 
 .local-actions {
   float: right;
-}
-
-.license-input + .form-item__description {
-  margin-bottom: 0;
 }
 
 @media screen and (min-width: 429px) {

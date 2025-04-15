@@ -234,7 +234,7 @@ final class ModelViewBuilder extends EntityViewBuilder {
       fn($c) => in_array($c->id, $evaluation[$class]['components'][$status]));
 
     foreach ($components as $component) {
-      $license = $evaluation[$class]['licenses'][$component->id];
+      $license = $evaluation[$class]['licenses'][$component->id] ?? null;
       $build["{$status}_components"]['#items'][] = $component->name . ($license ? " [{$license}]" : '');
     }
 

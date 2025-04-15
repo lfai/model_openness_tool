@@ -105,6 +105,9 @@ final class ModelEvaluator implements ModelEvaluatorInterface {
       }
     }
 
+    // Check if class 3 has a conditional pass.
+    $evaluation[3]['conditional'] = $this->hasConditionalPass();
+
     return $evaluation;
   }
 
@@ -132,10 +135,10 @@ final class ModelEvaluator implements ModelEvaluatorInterface {
    * @return string License ID attached to the component or NULL if none is set.
    */
   private function resolveLicense(int $cid, array $licenses): ?string {
-    $component_license = $licenses['components'][$cid] ?? [];
+    $component_license = $licenses[$cid] ?? [];
 
     // Check if there is a component-specific license attached.
-    if (isset($component_license['license'])) {
+    if (isset($component_license['license']) && $component_license['license'] !== '') {
       return $component_license['license'];
     }
 
@@ -266,6 +269,7 @@ final class ModelEvaluator implements ModelEvaluatorInterface {
 
   /**
    * Determine if a model has a conditional pass.
+   *
    * @return bool
    */
   private function hasConditionalPass(): bool {

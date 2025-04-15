@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Drupal\mof\Form;
 
@@ -17,24 +15,25 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Session\Session;
 
 /**
- * Form controller for the model entity.
+ * @file
+ * Form controller for evaluate and submit forms.
  */
 abstract class ModelForm extends ContentEntityForm {
 
   /** @var \Drupal\mof\LicenseHandler */
-  protected LicenseHandlerInterface $licenseHandler;
+  protected readonly LicenseHandlerInterface $licenseHandler;
 
   /** @var \Drupal\mof\ModelEvaluator */
-  protected ModelEvaluatorInterface $modelEvaluator;
+  protected readonly ModelEvaluatorInterface $modelEvaluator;
 
   /** @var \Drupak\mof\GitHubService */
-  protected GitHubService $github;
+  protected readonly GitHubService $github;
 
   /** @var \Drupal\mof\ComponentManager */
-  protected ComponentManagerInterface $componentManager;
+  protected readonly ComponentManagerInterface $componentManager;
 
   /** @var \Symfony\Component\HttpFoundation\Session\Session. */
-  protected Session $session;
+  protected readonly Session $session;
 
   /**
    * {@inheritdoc}
@@ -79,75 +78,252 @@ abstract class ModelForm extends ContentEntityForm {
   public function form(array $form, FormStateInterface $form_state): array {
     $form += parent::form($form, $form_state);
 
+    // Populate model data from a previous session if one is set.
+    // We save the session in case the user wants to retry without
+    // having to re-enter everything.
+    if ($this->session->has('model_session_data')) {
+      $session_model = $this->session->get('model_session_data');
+    }
+
     $form['#tree'] = TRUE;
     $form['#attached']['library'][] = 'mof/model-evaluate';
 
-    $form['code'] = [
+    $form['license'] = [
+      '#type' => 'details',
+      '#weight' => -100,
+      '#title' => $this->t('Global licenses'),
+    ];
+
+    $form['license']['distribution']['included']  = [
+      '#type' => 'radios',
+      '#title' => $this->t('Does the model have a global/distribution-wide license?'),
+      '#options' => ['yes' => $this->t('Yes'), 'no' => $this->t('No')],
+      '#default_value' => $session_model['license']['distribution']['included'] ?? '',
+      '#required' => TRUE,
+    ];
+
+    $form['license']['distribution']['name'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Distribution-wide license'),
+      '#description' => $this->t('Enter the name of the global/distribution-wide license (e.g. Apache-2.0).'),
+      '#weight' => 1,
+      '#attributes' => ['list' => 'license-datalist-0'],
+      '#default_value' => $session_model['license']['distribution']['name'] ?? '',
+      '#states' => [
+        'visible' => [
+          ':input[name="license[distribution][included]"]' => ['value' => 'yes'],
+        ],
+        'required' => [
+          ':input[name="license[distribution][included]"]' => ['value' => 'yes'],
+        ],
+      ],
+    ];
+
+    $form['license']['distribution']['path'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Path to license file'),
+      '#description' => $this->t('Enter the path to the license file (e.g. /some/path/LICENSE).'),
+      '#default_value' => $session_model['license']['distribution']['path'] ?? '',
+      '#weight' => 2,
+      '#states' => [
+        'visible' => [
+          ':input[name="license[distribution][included]"]' => ['value' => 'yes'],
+        ],
+      ],
+    ];
+
+    $form['license']['code']['included'] = [
+      '#type' => 'radios',
+      '#title' => $this->t('Does your model have a global license for code components?'),
+      '#options' => ['yes' => $this->t('Yes'), 'no' => $this->t('No')],
+      '#default_value' => $session_model['license']['code']['included'] ?? '',
+      '#states' => [
+        'visible' => [
+          ':input[name="license[distribution][included]"]' => ['value' => 'no'],
+        ],
+        'required' => [
+          ':input[name="license[distribution][included]"]' => ['value' => 'no'],
+        ],
+      ],
+    ];
+
+    $form['license']['code']['name'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Code component license'),
+      '#description' => $this->t('Enter the name of the code component license (e.g. Apache-2.0).'),
+      '#weight' => 1,
+      '#attributes' => ['list' => 'license-datalist-code'],
+      '#default_value' => $session_model['license']['code']['name'] ?? '',
+      '#states' => [
+        'visible' => [
+          ':input[name="license[distribution][included]"]' => ['value' => 'no'],
+          ':input[name="license[code][included]"]' => ['value' => 'yes'],
+        ],
+        'required' => [
+          ':input[name="license[distribution][included]"]' => ['value' => 'no'],
+          ':input[name="license[code][included]"]' => ['value' => 'yes'],
+        ],
+      ],
+    ];
+
+    $form['license']['code']['path'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Path to license file'),
+      '#description' => $this->t('Enter the path to the license file (e.g. /some/path/LICENSE).'),
+      '#default_value' => $session_model['license']['code']['path'] ?? '',
+      '#weight' => 2,
+      '#states' => [
+        'visible' => [
+          ':input[name="license[distribution][included]"]' => ['value' => 'no'],
+          ':input[name="license[code][included]"]' => ['value' => 'yes'],
+        ],
+      ],
+    ];
+
+    $form['license']['data']['included'] = [
+      '#type' => 'radios',
+      '#title' => $this->t('Does your model have a global license for data components?'),
+      '#options' => ['yes' => $this->t('Yes'), 'no' => $this->t('No')],
+      '#default_value' => $session_model['license']['data']['included'] ?? '',
+      '#states' => [
+        'visible' => [
+          ':input[name="license[distribution][included]"]' => ['value' => 'no'],
+        ],
+        'required' => [
+          ':input[name="license[distribution][included]"]' => ['value' => 'no'],
+        ],
+      ],
+    ];
+
+    $form['license']['data']['name'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Data component license'),
+      '#description' => $this->t('Enter the name of the data component license (e.g. Apache-2.0).'),
+      '#default_value' => $session_model['license']['data']['name'] ?? '',
+      '#attributes' => ['list' => 'license-datalist-data'],
+      '#weight' => 1,
+      '#states' => [
+        'visible' => [
+          ':input[name="license[distribution][included]"]' => ['value' => 'no'],
+          ':input[name="license[data][included]"]' => ['value' => 'yes'],
+        ],
+        'required' => [
+          ':input[name="license[distribution][included]"]' => ['value' => 'no'],
+          ':input[name="license[data][included]"]' => ['value' => 'yes'],
+        ],
+      ],
+    ];
+
+    $form['license']['data']['path'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Path to license file'),
+      '#description' => $this->t('Enter the path to the license file (e.g. /some/path/LICENSE).'),
+      '#default_value' => $session_model['license']['data']['path'] ?? '',
+      '#weight' => 2,
+      '#states' => [
+        'visible' => [
+          ':input[name="license[distribution][included]"]' => ['value' => 'no'],
+          ':input[name="license[data][included]"]' => ['value' => 'yes'],
+        ],
+      ],
+    ];
+
+    $form['license']['document']['included'] = [
+      '#type' => 'radios',
+      '#title' => $this->t('Does your model have a global license for document components?'),
+      '#options' => ['yes' => $this->t('Yes'), 'no' => $this->t('No')],
+      '#default_value' => $session_model['license']['document']['included'] ?? '',
+      '#states' => [
+        'visible' => [
+          ':input[name="license[distribution][included]"]' => ['value' => 'no'],
+        ],
+        'required' => [
+          ':input[name="license[distribution][included]"]' => ['value' => 'no'],
+        ],
+      ],
+    ];
+
+    $form['license']['document']['name'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Document component license'),
+      '#description' => $this->t('Enter the name of the document component license (e.g. Apache-2.0).'),
+      '#default_value' => $session_model['license']['document']['name'] ?? '',
+      '#weight' => 1,
+      '#attributes' => ['list' => 'license-datalist-document'],
+      '#states' => [
+        'visible' => [
+          ':input[name="license[distribution][included]"]' => ['value' => 'no'],
+          ':input[name="license[document][included]"]' => ['value' => 'yes'],
+        ],
+        'required' => [
+          ':input[name="license[distribution][included]"]' => ['value' => 'no'],
+          ':input[name="license[document][included]"]' => ['value' => 'yes'],
+        ],
+      ],
+    ];
+
+    $form['license']['document']['path'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Path to license file'),
+      '#description' => $this->t('Enter the path to the license file (e.g. /some/path/LICENSE).'),
+      '#default_value' => $session_model['license']['document']['path'] ?? '',
+      '#weight' => 2,
+      '#states' => [
+        'visible' => [
+          ':input[name="license[distribution][included]"]' => ['value' => 'no'],
+          ':input[name="license[document][included]"]' => ['value' => 'yes'],
+        ],
+      ],
+    ];
+
+    $form['components'] = [
+      '#type' => 'container',
+      '#weight' => -50,
+    ];
+
+    $form['components']['code'] = [
       '#type' => 'details',
       '#title' => $this->t('Code components'),
-      '#weight' => -9,
+      '#description' => $this->t('Check each component included in the model distribution.'),
+      '#weight' => 1,
     ];
 
-    $form['data'] = [
+    $form['components']['data'] = [
       '#type' => 'details',
       '#title' => $this->t('Data components'),
-      '#weight' => -9,
+      '#description' => $this->t('Check each component included in the model distribution.'),
+      '#weight' => 2,
     ];
 
-    $form['document'] = [
+    $form['components']['document'] = [
       '#type' => 'details',
       '#title' => $this->t('Document components'),
-      '#weight' => -9,
+      '#description' => $this->t('Check each component included in the model distribution.'),
+      '#weight' => 3,
     ];
 
     $model_licenses = $this->entity->getLicenses();
+    $form['datalist'][0] = $this->buildDataList(0);
 
     // Build a datalist for each license type.
     foreach (['code', 'data', 'document'] as $type) {
-      $form['license'][$type] = $this->buildDataList($type);
+      $form['datalist'][$type] = $this->buildDataList($type);
     }
 
     // Process each component.
     foreach ($this->componentManager->getComponents() as $component) {
       $cid = $component->id;
 
-      // If a component has extra licenses defined
-      // or belongs to more than one content_type
+      // If a component belongs to more than one content_type
       // we need to build a separate datalist for the component.
-      if (($extra = $component->extraLicenses) !== NULL || is_array($component->contentType)) {
-        $form['license'][$cid] = $this->buildDataList($cid);
+      if (is_array($component->contentType)) {
+        $form['datalist'][$cid] = $this->buildDataList($cid);
       }
 
       // Use the first content type for form placement.
       $group = is_array($component->contentType) ? $component->contentType[0] : $component->contentType;
 
-      // Set default license value if we're editing an existing model.
-      if (isset($model_licenses[$cid]['license'])) {
-        $default_license = $model_licenses[$cid]['license'];
-      }
-      // Set default licenses to community preferred if requested.
-      else if ($this->getRequest()->query->get('community') !== NULL) {
-        $this->messenger()->addMessage($this->t('Component licenses set to community preferred'));
-        if ($group === 'code') {
-          $default_license = 'MIT';
-        }
-        else if ($group === 'data') {
-          $default_license = 'CDLA-Permissive-2.0';
-        }
-        else if ($group === 'document') {
-          $default_license = 'CC-BY-4.0';
-        }
-      }
-      // Set default licenses if user is coming from evaluate model form.
-      else if (($session_model = $this->session->get('model_data')) !== NULL) {
-        $default_license = $session_model['licenses'][$cid]['license'] ?? '';
-      }
-      // No default licenses to use.
-      else {
-        $default_license = '';
-      }
-
-      $form[$group]['components'][$cid] = [
+      $form['components'][$group][$cid] = [
         '#type' => 'container',
         '#attributes' => [
           'class' => ['component-wrapper'],
@@ -158,24 +334,113 @@ abstract class ModelForm extends ContentEntityForm {
             'class' => ['component-license-wrapper'],
             'id' => "component-{$cid}",
           ],
-          'label' => [
-            '#type' => 'html_tag',
-            '#tag' => 'span',
-            '#value' => $component->name,
+          'included' => [
+            '#type' => 'checkbox',
+            '#title' => $component->name,
+            '#default_value' => isset($session_model) && $session_model['component'][$cid] !== 0 ? $session_model['component'][$cid] : '',
+            '#return_value' => $cid,
+            '#parents' => ['component', $cid],
+          ],
+          'global' => [
+            '#type' => 'radios',
+            '#parents' => ['global', $cid],
+            '#options' => ['yes' => $this->t('Yes'), 'no' => $this->t('No')],
+            '#title' => $this->t('Does this component use the global license?'),
+            '#default_value' => $session_model['global'][$cid] ?? '',
+            'yes' => [
+              '#states' => [
+                'required' => [":input[name=\"component[{$cid}]\"]" => ['checked' => true]]
+              ],
+            ],
+            'no' => [
+              '#states' => [
+                'required' => [":input[name=\"component[{$cid}]\"]" => ['checked' => true]]
+              ],
+            ],
+            '#states' => [
+              'visible' => [
+                [
+                  ":input[name=\"component[{$cid}]\"]" => ['checked' => true],
+                  ":input[name=\"license[{$group}][included]\"]" => ['value' => 'yes'],
+                ],
+                'or',
+                [
+                  ":input[name=\"component[{$cid}]\"]" => ['checked' => true],
+                  ":input[name=\"license[distribution][included]\"]" => ['value' => 'yes'],
+                ],
+              ],
+            ],
           ],
           'license' => [
             '#type' => 'textfield',
-            '#parents' => ['components', $cid, 'license'],
+            '#parents' => ['component_data', $cid, 'license'],
             '#description' => $component->tooltip,
-            '#default_value' => $default_license,
+            '#default_value' => $session_model['component_data'][$cid]['license'] ?? '',
             '#placeholder' => $this->t('Begin typing to find a license'),
             '#attributes' => [
               'data-component-id' => $cid,
-              'list' => isset($form['license'][$cid])
-                ? "license-datalist-{$cid}"
-                : "license-datalist-{$group}",
+              'list' => isset($form['datalist'][$cid]) ? "license-datalist-{$cid}" : "license-datalist-{$group}",
               'class' => ['license-input'],
               'autocomplete' => 'off',
+            ],
+            '#states' => [
+              'visible' => [
+                [
+                  ":input[name=\"component[{$cid}]\"]" => ['value' => $cid],
+                  ":input[name=\"global[{$cid}]\"]" => ['value' => 'no'],
+                ],
+                'or',
+                [
+                  ":input[name=\"component[{$cid}]\"]" => ['value' => $cid],
+                  ":input[name=\"license[{$group}][included]\"]" => ['value' => 'no'],
+                ],
+              ],
+            ],
+          ],
+          'license_path' => [
+            '#type' => 'textfield',
+            '#parents' => ['component_data', $cid, 'license_path'],
+            '#description' => $this->t('The file system path to the license file. (e.g. /path/to/LICENSE)'),
+            '#default_value' => $session_model['component_data'][$cid]['license_path'] ?? '',
+            '#placeholder' => $this->t('Enter file system path to license file'),
+            '#attributes' => [
+              'autocomplete' => 'off',
+            ],
+            '#states' => [
+              'visible' => [
+                [
+                  ":input[name=\"component[{$cid}]\"]" => ['value' => $cid],
+                  ":input[name=\"global[{$cid}]\"]" => ['value' => 'no'],
+                ],
+                'or',
+                [
+                  ":input[name=\"component[{$cid}]\"]" => ['value' => $cid],
+                  ":input[name=\"license[{$group}][included]\"]" => ['value' => 'no'],
+                ],
+              ],
+            ],
+          ],
+          'component_path' => [
+            '#type' => 'textfield',
+            '#parents' => ['component_data', $cid, 'component_path'],
+            '#description' => $this->t('The file system path to the component. (e.g. /path/to/component)'),
+            '#default_value' => $session_model['component_data'][$cid]['component_path'] ?? '',
+            '#placeholder' => $this->t('Enter file system path to the component'),
+            '#attributes' => [
+              'autocomplete' => 'off',
+            ],
+            '#states' => [
+              'visible' => [
+                [
+                  ":input[name=\"component[{$cid}]\"]" => ['value' => $cid],
+                  ":input[name=\"global[{$cid}]\"]" => ['value' => 'no'],
+                ],
+                'or',
+                [
+                  ":input[name=\"component[{$cid}]\"]" => ['value' => $cid],
+                  ":input[name=\"license[{$group}][included]\"]" => ['value' => 'no'],
+                ],
+              ],
             ],
           ],
         ],
@@ -188,34 +453,22 @@ abstract class ModelForm extends ContentEntityForm {
   /**
    * {@inheritdoc}
    */
-  public function validateForm(array &$form, FormStateInterface $form_state): void {
-    parent::validateForm($form, $form_state);
-
-    // Ensure the entered or selected license is valid for each component.
-    foreach ($this
-      ->filterComponents($form_state
-      ->getValue('components')) as $cid => $item) {
-
-      $license = array_filter($this
-        ->componentManager
-        ->getComponent($cid)
-        ->getLicenses(), fn($a) => $a['licenseId'] === $item['license']);
-
-      if (empty($license)) {
-        $form_state
-          ->setErrorByName("components][{$cid}][license", $this
-          ->t('Invalid license selected.'));
-      }
-    }
-  }
-
-  /**
-   * {@inheritdoc}
-   */
   public function submitForm(array &$form, FormStateInterface $form_state): void {
-    $licenses = $this->filterComponents($form_state->getValue('components'));
-    $form_state->setValue('components', array_keys($licenses));
-    $form_state->setValue('license_data', ['licenses' => $licenses]);
+    $globals = array_filter($form_state->getValue('global'));
+    $included_components = array_filter($form_state->getValue('component'));
+    $component_data = $form_state->getValue('component_data');
+
+    $license_data = [
+      'global' =>  $form_state->getValue('license'),
+      'components' => [],
+    ];
+
+    foreach ($included_components as $cid) {
+      if ($globals[$cid] === 'no') $license_data[$cid] = $component_data[$cid];
+    }
+
+    $form_state->setValue('components', $included_components);
+    $form_state->setValue('license_data', ['licenses' => $license_data]);
     parent::submitForm($form, $form_state);
   }
 
@@ -224,7 +477,9 @@ abstract class ModelForm extends ContentEntityForm {
    */
   public function save(array $form, FormStateInterface $form_state): int {
     $result = parent::save($form, $form_state);
+    return $result;
 
+    /*
     try {
       $status = $this
         ->modelEvaluator
@@ -263,6 +518,7 @@ abstract class ModelForm extends ContentEntityForm {
 
     $form_state->setRedirectUrl($this->entity->toUrl());
     return $result;
+    */
   }
 
   /**
@@ -280,20 +536,28 @@ abstract class ModelForm extends ContentEntityForm {
 
     // Collect licenses for the individual component.
     if (is_int($type)) {
-      $licenses = $this->componentManager->getComponent($type)->getLicenses();
+      // Component IDs are always greater than zero.
+      if ($type > 0) {
+        $licenses = $this->componentManager->getComponent($type)->getLicenses();
+      }
+      // If $type is 0 (zero) then build a list of all available licenses.
+      else {
+        $licenses = $this->licenseHandler->licenses;
+      }
     }
-    // Collect all licenses by content type.
-    // 'code' 'document' or 'data'
+    // Collect all licenses by content type: 'code' 'document' or 'data'
     else {
       $licenses = $this->licenseHandler->getLicensesByType($type);
     }
 
     // Special case for 'code' components.
     // Include all OSI-approved licenses.
-    if ($type === 'code' || (is_int($type) && $this->componentManager->getComponent($type)->contentType === 'code')) {
+    if ($type === 'code' || (is_int($type) && $type > 0 && $this->componentManager->getComponent($type)->contentType === 'code')) {
       $licenses = array_unique([...$licenses, ...$this->licenseHandler->getOsiApproved()], SORT_REGULAR);
     }
-    uasort($licenses, fn($a, $b) => strcasecmp($a['name'],$b['name']));
+
+    // Sort licenses by name.
+    uasort($licenses, fn($a, $b) => strcasecmp($a['name'], $b['name']));
 
     foreach ($licenses as $license) {
       $datalist['licenses'][] = [
@@ -307,11 +571,5 @@ abstract class ModelForm extends ContentEntityForm {
     return $datalist;
   }
 
-  /**
-   * Filter a list of set licenses for each component.
-   */
-  private function filterComponents(array $components): array {
-    return array_filter($components, fn($a) => $a['license'] !== '');
-  }
 }
 

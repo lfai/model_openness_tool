@@ -30,7 +30,7 @@ final class BadgeGenerator implements BadgeGeneratorInterface {
       $progress = $this->modelEvaluator->getProgress($i);
 
       // under MOF 1.1 Conditional is a Pass
-      if ($progress === 100.00 || $evals[$i]['conditional'] === TRUE) {
+      if ($progress === 100.00 || ($i === 3 && $evals[$i]['conditional'] === TRUE)) {
         $status = $this->t('Qualified');
         $text_color = '#fff';
         $background_color = '#4c1';

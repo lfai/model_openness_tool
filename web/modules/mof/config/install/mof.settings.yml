@@ -105,9 +105,6 @@ components:
     tooltip: "(Optional) The license used for any supporting libraries and tools, 'License not specified', or 'Component not included'."
     content_type: code
     class: 2
-    extra_licenses:
-      - Proprietary
-      - Mixed
     weight: 0
     required: false
   -

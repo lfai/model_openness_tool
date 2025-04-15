@@ -11,7 +11,7 @@ use Drupal\Core\Entity\EntityTypeManagerInterface;
  */
 final class LicenseHandler implements LicenseHandlerInterface {
 
-  private readonly array $licenses;
+  public readonly array $licenses;
 
   /**
    * Constructor.

@@ -1,17 +1,20 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Drupal\mof\Form;
 
 use Drupal\Core\Form\FormStateInterface;
 
+/**
+ * @file
+ * Provides form processing for evaluating model openness and license compliance.
+ */
 final class ModelEvaluateForm extends ModelForm {
 
   /**
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state): array {
+    // Return evaluation results if available, otherwise display user input form.
     return $form_state->get('evaluation') ?: parent::buildForm($form, $form_state);
   }
 
@@ -54,9 +57,10 @@ final class ModelEvaluateForm extends ModelForm {
     $actions = parent::actions($form, $form_state);
     $actions['submit']['#value'] = $this->t('Evaluate');
 
-    if ($this->session->get('model_data') !== NULL) {
+    if ($this->session->get('model_session_data') !== NULL) {
       $actions['reset'] = [
         '#type' => 'submit',
+        '#limit_validation_errors' => [],
         '#value' => $this->t('Start over'),
         '#submit' => [[$this, 'resetForm']],
       ];
@@ -72,11 +76,11 @@ final class ModelEvaluateForm extends ModelForm {
     parent::submitForm($form, $form_state);
     $this
       ->session
-      ->set('model_evaluation', TRUE);
+      ->set('model_session_evaluation', TRUE);
     $this
       ->session
-      ->set('model_data', $form_state
-      ->getValue('license_data'));
+      ->set('model_session_data', $form_state
+      ->getValues());
     $form_state
       ->setRebuild(TRUE);
     $form_state
@@ -104,8 +108,8 @@ final class ModelEvaluateForm extends ModelForm {
    *   The current state of the form.
    */
   public function resetForm(array &$form, FormStateInterface $form_state): void {
-    $this->session->remove('model_evaluation');
-    $this->session->remove('model_data');
+    $this->session->remove('model_session_evaluation');
+    $this->session->remove('model_session_data');
   }
 
 }
