@@ -464,7 +464,9 @@ abstract class ModelForm extends ContentEntityForm {
     ];
 
     foreach ($included_components as $cid) {
-      if ($globals[$cid] === 'no') $license_data[$cid] = $component_data[$cid];
+      if ($globals[$cid] === 'no') {
+        $license_data['components'][$cid] = $component_data[$cid];
+      }
     }
 
     $form_state->setValue('components', $included_components);

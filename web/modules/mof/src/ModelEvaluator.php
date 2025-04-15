@@ -135,11 +135,11 @@ final class ModelEvaluator implements ModelEvaluatorInterface {
    * @return string License ID attached to the component or NULL if none is set.
    */
   private function resolveLicense(int $cid, array $licenses): ?string {
-    $component_license = $licenses[$cid] ?? [];
+    $component_license = $licenses['components'][$cid] ?? [];
 
     // Check if there is a component-specific license attached.
-    if (isset($component_license['license']) && $component_license['license'] !== '') {
-      return $component_license['license'];
+    if (isset($component_license['license'])) {
+      return $component_license['license'] ?: null;
     }
 
     // If no component-specific license,
