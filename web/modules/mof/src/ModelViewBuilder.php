@@ -154,7 +154,7 @@ final class ModelViewBuilder extends EntityViewBuilder {
       $this->messenger->addMessage($list);
     }
 
-    if ($this->session->get('model_evaluation') === TRUE) {
+    if ($this->session->get('model_session_evaluation') === TRUE) {
       $build['retry'] = [
         '#type' => 'link',
         '#title' => $this->t('Retry'),
@@ -165,10 +165,10 @@ final class ModelViewBuilder extends EntityViewBuilder {
         ],
       ];
 
-      $build['submit'] = [
+      $build['download'] = [
         '#type' => 'link',
-        '#title' => $this->t('Submit model'),
-        '#url' => Url::fromRoute('entity.model.add_form'),
+        '#title' => $this->t('Download YAML'),
+        '#url' => Url::fromRoute('mof.model.evaluate_form.download'),
         '#weight' => -200,
         '#attributes' => [
           'class' => ['button', 'button--action', 'button--primary'],

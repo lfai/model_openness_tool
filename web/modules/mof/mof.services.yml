@@ -40,7 +40,6 @@ services:
     class: Drupal\mof\ModelSerializer
     arguments:
       - '@serializer'
-      - '@model_evaluator'
       - '@component.manager'
       - '@logger.channel.mot'
 

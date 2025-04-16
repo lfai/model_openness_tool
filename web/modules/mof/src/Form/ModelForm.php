@@ -92,6 +92,7 @@ abstract class ModelForm extends ContentEntityForm {
       '#type' => 'details',
       '#weight' => -100,
       '#title' => $this->t('Global licenses'),
+      '#open' => true,
     ];
 
     $form['license']['distribution']['included']  = [
@@ -386,13 +387,7 @@ abstract class ModelForm extends ContentEntityForm {
             '#states' => [
               'visible' => [
                 [
-                  ":input[name=\"component[{$cid}]\"]" => ['value' => $cid],
-                  ":input[name=\"global[{$cid}]\"]" => ['value' => 'no'],
-                ],
-                'or',
-                [
-                  ":input[name=\"component[{$cid}]\"]" => ['value' => $cid],
-                  ":input[name=\"license[{$group}][included]\"]" => ['value' => 'no'],
+                  ":input[name=\"component[{$cid}]\"]" => ['checked' => true],
                 ],
               ],
             ],
@@ -409,13 +404,7 @@ abstract class ModelForm extends ContentEntityForm {
             '#states' => [
               'visible' => [
                 [
-                  ":input[name=\"component[{$cid}]\"]" => ['value' => $cid],
-                  ":input[name=\"global[{$cid}]\"]" => ['value' => 'no'],
-                ],
-                'or',
-                [
-                  ":input[name=\"component[{$cid}]\"]" => ['value' => $cid],
-                  ":input[name=\"license[{$group}][included]\"]" => ['value' => 'no'],
+                  ":input[name=\"component[{$cid}]\"]" => ['checked' => true],
                 ],
               ],
             ],
@@ -432,13 +421,7 @@ abstract class ModelForm extends ContentEntityForm {
             '#states' => [
               'visible' => [
                 [
-                  ":input[name=\"component[{$cid}]\"]" => ['value' => $cid],
-                  ":input[name=\"global[{$cid}]\"]" => ['value' => 'no'],
-                ],
-                'or',
-                [
-                  ":input[name=\"component[{$cid}]\"]" => ['value' => $cid],
-                  ":input[name=\"license[{$group}][included]\"]" => ['value' => 'no'],
+                  ":input[name=\"component[{$cid}]\"]" => ['checked' => true],
                 ],
               ],
             ],
