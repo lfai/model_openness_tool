@@ -14,6 +14,14 @@ mof.model.evaluate_form:
   requirements:
     _access: 'TRUE'
 
+mof.model.evaluate_form.download:
+  path: '/model/evaluate/download'
+  defaults:
+    _controller: \Drupal\mof\Controller\ModelController::download
+    _title: Download YAML Model
+  requirements:
+    _access: 'TRUE'
+
 entity.model.admin_edit_form:
   path: '/admin/model/{model}/edit'
   defaults:

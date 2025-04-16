@@ -1,29 +1,39 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Drupal\mof\Controller;
 
 use Drupal\mof\ModelInterface;
+use Drupal\mof\ModelSerializerInterface;
+use Drupal\mof\ModelEvaluatorInterface;
+use Drupal\mof\BadgeGeneratorInterface;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\StringTranslation\TranslatableMarkup;
 use Drupal\Core\Url;
 use Drupal\Core\Access\AccessResult;
+use Drupal\Core\Render\RendererInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+
 
 final class ModelController extends ControllerBase {
 
-  /** @var \Drupal\mof\ModelSerializer. */
-  private $modelSerializer;
+  /** @var \Drupal\mof\ModelSerializerInterface. */
+  private readonly ModelSerializerInterface $modelSerializer;
 
   /** @var \Drupal\mof\ModelEvaluatorInterface. */
-  private $modelEvaluator;
+  private readonly ModelEvaluatorInterface $modelEvaluator;
+
+  /** @var \Drupal\mof\BadgeGeneratorInterface. */
+  private readonly BadgeGeneratorInterface $badgeGenerator;
 
   /** @var \Drupal\Core\Render\RendererInterfce. */
-  private $renderer;
+  private readonly RendererInterface $renderer;
+
+  /** @var \Symfony\Component\HttpFoundation\Session\Session. */
+  private readonly Session $session;
 
   /**
    * {@inheritdoc}
@@ -34,6 +44,7 @@ final class ModelController extends ControllerBase {
     $instance->modelEvaluator = $container->get('model_evaluator');
     $instance->badgeGenerator = $container->get('badge_generator');
     $instance->renderer = $container->get('renderer');
+    $instance->session = $container->get('session');
     return $instance;
   }
 
@@ -114,6 +125,24 @@ final class ModelController extends ControllerBase {
     $response->headers->set('Content-Length', (string)strlen($svg));
     $response->headers->set('Content-Type', 'image/svg+xml');
 
+    return $response;
+  }
+
+  /**
+   * Download a YAML representation of a model stored in the user's session data.
+   * If no session data is available, return a string indicating such.
+   *
+   * @return \Symfony\Component\HttpFoundation\Response.
+   */
+  public function download(): Response {
+    if ($this->session->has('model_session_data')) {
+      $model = $this->session->get('model_session_data');
+      $model = $this->entityTypeManager()->getStorage('model')->create($model);
+      return $this->yaml($model);
+    }
+
+    $response = new Response();
+    $response->setContent((string)$this->t('No model data defined.'));
     return $response;
   }
 
