@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Drupal\mof;
 
@@ -22,7 +20,6 @@ final class ModelSerializer implements ModelSerializerInterface {
    */
   public function __construct(
     private readonly SerializerInterface $serializer,
-    private readonly ModelEvaluatorInterface $modelEvaluator,
     private readonly ComponentManagerInterface $componentManager,
     private readonly LoggerInterface $logger
   ) {}
@@ -58,19 +55,46 @@ final class ModelSerializer implements ModelSerializerInterface {
       $data['release']['huggingface'] = 'https://huggingface.co/' . $model->getHuggingfaceSlug();
     }
 
+    /**
+     * An array of Component objects that are included in the model.
+     * @var \Drupal\mof\Component[] $completed
+     */
     $completed = array_filter(
       $this->componentManager->getComponents(),
       fn($c) => in_array($c->id, $model->getComponents()));
 
+    // Build global licenses section.
     $licenses = $model->getLicenses();
-    foreach ($completed as $component) {
-      $data['release']['components'][] = [
+    $data['release']['license'] = [];
+    foreach ($licenses['global'] as $key => $type) {
+      if ($type['included'] === 'yes') {
+        $data['release']['license'][$key]['name'] = $type['name'];
+        $data['release']['license'][$key]['path'] = $type['path'];
+      }
+    }
+
+    // Build component section of all included components.
+    foreach ($completed as $key => $component) {
+      $data['release']['components'][$key] = [
         'name' => $component->name,
         'description' => $component->description,
-        'location' => $licenses[$component->id]['component_path'],
-        'license_name' => $licenses[$component->id]['license'],
-        'license_path' => $licenses[$component->id]['license_path'],
       ];
+
+      // Component must have a global license assigned.
+      if (!isset($licenses['components'][$component->id])) continue;
+
+      // Process component-specific license.
+      foreach ($licenses['components'] as $value) {
+        $data['release']['components'][$key]['license'] = $value['license'];
+
+        if (($license_path = $value['license_path']) !== '') {
+          $data['release']['components'][$key]['license_path'] = $license_path;
+        }
+
+        if (($component_path = $value['component_path']) !== '') {
+          $data['release']['components'][$key]['license_path'] = $component_path;
+        }
+      }
     }
 
     return $data;
