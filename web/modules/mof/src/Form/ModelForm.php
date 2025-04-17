@@ -96,11 +96,9 @@ abstract class ModelForm extends ContentEntityForm {
     ];
 
     $form['license']['distribution']['included']  = [
-      '#type' => 'radios',
-      '#title' => $this->t('Does the model have a global/distribution-wide license?'),
-      '#options' => ['yes' => $this->t('Yes'), 'no' => $this->t('No')],
+      '#type' => 'checkbox',
+      '#title' => $this->t('This model has a global/distribution-wide license'),
       '#default_value' => $session_model['license']['distribution']['included'] ?? '',
-      '#required' => TRUE,
     ];
 
     $form['license']['distribution']['name'] = [
@@ -112,10 +110,7 @@ abstract class ModelForm extends ContentEntityForm {
       '#default_value' => $session_model['license']['distribution']['name'] ?? '',
       '#states' => [
         'visible' => [
-          ':input[name="license[distribution][included]"]' => ['value' => 'yes'],
-        ],
-        'required' => [
-          ':input[name="license[distribution][included]"]' => ['value' => 'yes'],
+          ':input[name="license[distribution][included]"]' => ['checked' => true],
         ],
       ],
     ];
@@ -128,24 +123,15 @@ abstract class ModelForm extends ContentEntityForm {
       '#weight' => 2,
       '#states' => [
         'visible' => [
-          ':input[name="license[distribution][included]"]' => ['value' => 'yes'],
+          ':input[name="license[distribution][included]"]' => ['checked' => true],
         ],
       ],
     ];
 
     $form['license']['code']['included'] = [
-      '#type' => 'radios',
-      '#title' => $this->t('Does your model have a global license for code components?'),
-      '#options' => ['yes' => $this->t('Yes'), 'no' => $this->t('No')],
+      '#type' => 'checkbox',
+      '#title' => $this->t('This model has a global license for code components'),
       '#default_value' => $session_model['license']['code']['included'] ?? '',
-      '#states' => [
-        'visible' => [
-          ':input[name="license[distribution][included]"]' => ['value' => 'no'],
-        ],
-        'required' => [
-          ':input[name="license[distribution][included]"]' => ['value' => 'no'],
-        ],
-      ],
     ];
 
     $form['license']['code']['name'] = [
@@ -157,12 +143,7 @@ abstract class ModelForm extends ContentEntityForm {
       '#default_value' => $session_model['license']['code']['name'] ?? '',
       '#states' => [
         'visible' => [
-          ':input[name="license[distribution][included]"]' => ['value' => 'no'],
-          ':input[name="license[code][included]"]' => ['value' => 'yes'],
-        ],
-        'required' => [
-          ':input[name="license[distribution][included]"]' => ['value' => 'no'],
-          ':input[name="license[code][included]"]' => ['value' => 'yes'],
+          ':input[name="license[code][included]"]' => ['checked' => true],
         ],
       ],
     ];
@@ -175,25 +156,15 @@ abstract class ModelForm extends ContentEntityForm {
       '#weight' => 2,
       '#states' => [
         'visible' => [
-          ':input[name="license[distribution][included]"]' => ['value' => 'no'],
-          ':input[name="license[code][included]"]' => ['value' => 'yes'],
+          ':input[name="license[code][included]"]' => ['checked' => true],
         ],
       ],
     ];
 
     $form['license']['data']['included'] = [
-      '#type' => 'radios',
-      '#title' => $this->t('Does your model have a global license for data components?'),
-      '#options' => ['yes' => $this->t('Yes'), 'no' => $this->t('No')],
+      '#type' => 'checkbox',
+      '#title' => $this->t('This model has a global license for data components'),
       '#default_value' => $session_model['license']['data']['included'] ?? '',
-      '#states' => [
-        'visible' => [
-          ':input[name="license[distribution][included]"]' => ['value' => 'no'],
-        ],
-        'required' => [
-          ':input[name="license[distribution][included]"]' => ['value' => 'no'],
-        ],
-      ],
     ];
 
     $form['license']['data']['name'] = [
@@ -205,12 +176,7 @@ abstract class ModelForm extends ContentEntityForm {
       '#weight' => 1,
       '#states' => [
         'visible' => [
-          ':input[name="license[distribution][included]"]' => ['value' => 'no'],
-          ':input[name="license[data][included]"]' => ['value' => 'yes'],
-        ],
-        'required' => [
-          ':input[name="license[distribution][included]"]' => ['value' => 'no'],
-          ':input[name="license[data][included]"]' => ['value' => 'yes'],
+          ':input[name="license[data][included]"]' => ['checked' => true],
         ],
       ],
     ];
@@ -223,25 +189,15 @@ abstract class ModelForm extends ContentEntityForm {
       '#weight' => 2,
       '#states' => [
         'visible' => [
-          ':input[name="license[distribution][included]"]' => ['value' => 'no'],
-          ':input[name="license[data][included]"]' => ['value' => 'yes'],
+          ':input[name="license[data][included]"]' => ['checked' => true],
         ],
       ],
     ];
 
     $form['license']['document']['included'] = [
-      '#type' => 'radios',
-      '#title' => $this->t('Does your model have a global license for document components?'),
-      '#options' => ['yes' => $this->t('Yes'), 'no' => $this->t('No')],
+      '#type' => 'checkbox',
+      '#title' => $this->t('This model has a global license for document components'),
       '#default_value' => $session_model['license']['document']['included'] ?? '',
-      '#states' => [
-        'visible' => [
-          ':input[name="license[distribution][included]"]' => ['value' => 'no'],
-        ],
-        'required' => [
-          ':input[name="license[distribution][included]"]' => ['value' => 'no'],
-        ],
-      ],
     ];
 
     $form['license']['document']['name'] = [
@@ -253,12 +209,7 @@ abstract class ModelForm extends ContentEntityForm {
       '#attributes' => ['list' => 'license-datalist-document'],
       '#states' => [
         'visible' => [
-          ':input[name="license[distribution][included]"]' => ['value' => 'no'],
-          ':input[name="license[document][included]"]' => ['value' => 'yes'],
-        ],
-        'required' => [
-          ':input[name="license[distribution][included]"]' => ['value' => 'no'],
-          ':input[name="license[document][included]"]' => ['value' => 'yes'],
+          ':input[name="license[document][included]"]' => ['checked' => true],
         ],
       ],
     ];
@@ -271,8 +222,7 @@ abstract class ModelForm extends ContentEntityForm {
       '#weight' => 2,
       '#states' => [
         'visible' => [
-          ':input[name="license[distribution][included]"]' => ['value' => 'no'],
-          ':input[name="license[document][included]"]' => ['value' => 'yes'],
+          ':input[name="license[document][included]"]' => ['checked' => true],
         ],
       ],
     ];
@@ -347,6 +297,7 @@ abstract class ModelForm extends ContentEntityForm {
             '#parents' => ['global', $cid],
             '#options' => ['yes' => $this->t('Yes'), 'no' => $this->t('No')],
             '#title' => $this->t('Does this component use the global license?'),
+            '#attributes' => ['class' => ['license-usage']],
             '#default_value' => $session_model['global'][$cid] ?? '',
             'yes' => [
               '#states' => [
@@ -362,12 +313,12 @@ abstract class ModelForm extends ContentEntityForm {
               'visible' => [
                 [
                   ":input[name=\"component[{$cid}]\"]" => ['checked' => true],
-                  ":input[name=\"license[{$group}][included]\"]" => ['value' => 'yes'],
+                  ":input[name=\"license[{$group}][included]\"]" => ['checked' => true],
                 ],
                 'or',
                 [
                   ":input[name=\"component[{$cid}]\"]" => ['checked' => true],
-                  ":input[name=\"license[distribution][included]\"]" => ['value' => 'yes'],
+                  ":input[name=\"license[distribution][included]\"]" => ['checked' => true],
                 ],
               ],
             ],

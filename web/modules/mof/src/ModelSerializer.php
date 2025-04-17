@@ -67,32 +67,30 @@ final class ModelSerializer implements ModelSerializerInterface {
     $licenses = $model->getLicenses();
     $data['release']['license'] = [];
     foreach ($licenses['global'] as $key => $type) {
-      if ($type['included'] === 'yes') {
+      if ($type['included']) {
         $data['release']['license'][$key]['name'] = $type['name'];
         $data['release']['license'][$key]['path'] = $type['path'];
       }
     }
 
     // Build component section of all included components.
-    foreach ($completed as $key => $component) {
-      $data['release']['components'][$key] = [
+    foreach ($completed as $component) {
+      $data['release']['components'][] = [
         'name' => $component->name,
         'description' => $component->description,
       ];
 
-      // Component must have a global license assigned.
+      // Component must have a global license attached.
       if (!isset($licenses['components'][$component->id])) continue;
 
       // Process component-specific license.
-      foreach ($licenses['components'] as $value) {
-        $data['release']['components'][$key]['license'] = $value['license'];
-
-        if (($license_path = $value['license_path']) !== '') {
-          $data['release']['components'][$key]['license_path'] = $license_path;
+      $delta = array_key_last($data['release']['components']);
+      foreach ($licenses['components'][$component->id] as $key => $value) {
+        if ($key === 'license' && $value === '') {
+          $data['release']['components'][$delta]['license'] = 'unlicensed';
         }
-
-        if (($component_path = $value['component_path']) !== '') {
-          $data['release']['components'][$key]['license_path'] = $component_path;
+        else if ($value !== '') {
+          $data['release']['components'][$delta][$key] = $value;
         }
       }
     }
