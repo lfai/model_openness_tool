@@ -22,32 +22,32 @@ final class ModelEvaluateForm extends ModelForm {
    * {@inheritdoc}
    */
   public function form(array $form, FormStateInterface $form_state): array {
-    $form += parent::form($form, $form_state);
-    $form['#title'] = $this->t('Evaluate model');
+    if (!$this->session->isStarted()) {
+      $this->session->start();
+    }
 
-    // Hide elements that aren't needed for evaluation only.
-    $hide = [
-      'label',
-      'description',
-      'version',
-      'organization',
-      'type',
-      'architecture',
-      'treatment',
-      'origin',
-      'revision_information',
-      'github',
-      'huggingface',
-      'status',
-    ];
+    $model_data = null;
+    if ($this->session->has('model_session_data')) {
+      $model_data = $this->session->get('model_session_data');
+    }
 
-    foreach ($hide as $field_name) {
-      if (isset($form[$field_name])) {
-        $form[$field_name]['#access'] = FALSE;
+    // If we have session data and the form is not being rebuilt from
+    // submitted values, repopulate the model entity.
+    if ($model_data && !$form_state->isSubmitted()) {
+      // Create new or update existing entity.
+      if (!$this->entity || $this->entity->isNew()) {
+        $this->entity = $this->entityTypeManager->getStorage('model')->create();
+      }
+
+      foreach ($model_data as $field => $value) {
+        if ($this->entity->hasField($field)) {
+          $this->entity->set($field, $value);
+        }
       }
     }
 
-    return $form; 
+    $form += parent::form($form, $form_state);
+    return $form;
   }
 
   /**

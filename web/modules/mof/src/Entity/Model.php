@@ -50,7 +50,7 @@ use Drupal\user\EntityOwnerTrait;
  *   data_table = "model_field_data",
  *   revision_table = "model_revision",
  *   revision_data_table = "model_field_revision",
- *   show_revision_ui = TRUE,
+ *   show_revision_ui = FALSE,
  *   translatable = TRUE,
  *   admin_permission = "administer model",
  *   collection_permission = "view model collection",
@@ -292,7 +292,7 @@ final class Model extends RevisionableContentEntityBase implements ModelInterfac
       ->setTranslatable(TRUE)
       ->setLabel(t('Organization'))
       ->setDescription(t('The organization that developed the model.'))
-      ->setRequired(TRUE)
+      ->setRequired(FALSE)
       ->setSetting('max_length', 255)
       ->setDisplayOptions('form', [
         'type' => 'string_textfield',

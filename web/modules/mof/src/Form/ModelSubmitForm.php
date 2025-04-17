@@ -40,34 +40,6 @@ final class ModelSubmitForm extends ModelForm {
       ],
     ];
 
-    $model_details = [
-      'label',
-      'organization',
-      'description',
-      'version',
-      'type',
-      'architecture',
-      'treatment',
-      'origin',
-      'revision_information',
-      'huggingface',
-    ];
-
-    $form['details'] = [
-      '#type' => 'details',
-      '#title' => $this->t('Model details'),
-      '#open' => FALSE,
-      '#weight' => -90,
-      '#prefix' => '<div id="details-wrap">',
-      '#suffix' => '</div>',
-    ];
-
-    // Move entity defined fields into a details element.
-    foreach ($model_details as $field) {
-      $form['details'][$field] = $form[$field];
-      unset($form[$field]);
-    }
-
     // Prepare html5 datalist.
     $form['details']['datalist'] = [
       '#type' => 'html_tag',

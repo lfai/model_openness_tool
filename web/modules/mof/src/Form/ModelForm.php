@@ -88,11 +88,45 @@ abstract class ModelForm extends ContentEntityForm {
     $form['#tree'] = TRUE;
     $form['#attached']['library'][] = 'mof/model-evaluate';
 
+    // Hide status field.
+    $form['status']['#access'] = false;
+
+    // Hide revision field.
+    // @todo Strip revision support from model entity; it's not needed.
+    $form['revision_log']['#access'] = false;
+
+    $model_details = [
+      'label',
+      'organization',
+      'description',
+      'version',
+      'type',
+      'architecture',
+      'treatment',
+      'origin',
+      'huggingface',
+    ];
+
+    $form['details'] = [
+      '#type' => 'details',
+      '#title' => $this->t('Model details'),
+      '#open' => false,
+      '#weight' => -90,
+      '#prefix' => '<div id="details-wrap">',
+      '#suffix' => '</div>',
+    ];
+
+    // Move entity defined fields into a details element.
+    foreach ($model_details as $field) {
+      $form['details'][$field] = $form[$field];
+      unset($form[$field]);
+    }
+
     $form['license'] = [
       '#type' => 'details',
-      '#weight' => -100,
+      '#weight' => -50,
       '#title' => $this->t('Global licenses'),
-      '#open' => true,
+      '#open' => false,
     ];
 
     $form['license']['distribution']['included']  = [
