@@ -27,3 +27,20 @@ function mof_update_10201() {
   }
 }
 
+/**
+ * Implements hook_update_N().
+ *
+ * Removes 'github' field from database schema.
+ */
+function mof_update_10401() {
+  $update_manager = \Drupal::entityDefinitionUpdateManager();
+  $entity_type = \Drupal::entityTypeManager()->getDefinition('model');
+  $storage = \Drupal::service('entity_field.manager')->getFieldStorageDefinitions('model');
+
+  if (isset($storage['github'])) {
+    $update_manager->uninstallFieldStorageDefinition($storage['github']);
+  }
+
+  $update_manager->updateEntityType($entity_type);
+}
+

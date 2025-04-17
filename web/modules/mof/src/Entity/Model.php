@@ -178,7 +178,7 @@ final class Model extends RevisionableContentEntityBase implements ModelInterfac
    * Get models github repo slug.
    */
   public function getGithubSlug(): ?string {
-    return $this->get('github')->value ?? NULL;
+    return NULL;
   }
 
   /**
@@ -263,20 +263,6 @@ final class Model extends RevisionableContentEntityBase implements ModelInterfac
       ])
       ->setDisplayConfigurable('view', TRUE)
       ->addConstraint('ModelNameConstraint');
-
-    $fields['github'] = BaseFieldDefinition::create('list_string')
-      ->setRevisionable(TRUE)
-      ->setTranslatable(FALSE)
-      ->setLabel(t('Project repository'))
-      ->setRequired(FALSE)
-      ->setReadOnly(TRUE)
-      ->setSetting('allowed_values_function', 'mof_github_repo_list')
-      ->setDisplayConfigurable('form', FALSE)
-      ->setCardinality(1)
-      ->setDisplayOptions('form', [
-        'type' => 'options_select',
-        'weight' => -110,
-      ]);
 
     $fields['huggingface'] = BaseFieldDefinition::create('string')
       ->setRevisionable(TRUE)
