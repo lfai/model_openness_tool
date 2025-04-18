@@ -9,6 +9,11 @@ use Drupal\user\UserInterface;
 use Drupal\mof\Entity\Model;
 use Drupal\mof\ModelInterface;
 
+/**
+ * @file
+ * Creates or updates model entities with provided data.
+ * Typically used to sync data in models/ directory.
+ */
 final class ModelUpdater {
 
   /** @var \Drupal\Core\Entity\EntityStorageInterface. */
@@ -40,15 +45,8 @@ final class ModelUpdater {
    *   The model if it exists; NULL otherwise.
    */
   public function exists(array $model_data): ?ModelInterface {
-    $model = $this
-      ->modelStorage
-      ->loadByProperties(['label' => $model_data['name']]);
-
-    if (empty($model)) {
-      return NULL;
-    }
-
-    return reset($model);
+    $model = $this->modelStorage->loadByProperties(['label' => $model_data['name']]);
+    return empty($model) ? NULL : reset($model);
   }
 
   /**
@@ -77,8 +75,9 @@ final class ModelUpdater {
         $model->set('license_data', ['licenses' => $license_data]);
         $model->set('components', array_keys($license_data['components']));
       }
+      // @todo Replace contact with contact field.
       else if ($field === 'contact') {
-        $model->set('uid', $this->processOwnerContact($value));
+        $model->set('uid', 1);
       }
       else if ($field === 'date') {
         $model->set('changed', strtotime($value));
@@ -111,38 +110,6 @@ final class ModelUpdater {
   }
 
   /**
-   * Process contact field.
-   * Find or create a Drupal user entity.
-   *
-   * @param string $email
-   *   An email address belonging to the model contact.
-   * @return \Drupal\user\UserInterface.
-   *   A Drupal user account or NULL if not found or cannot be created.
-   */
-  private function processOwnerContact(string $email): ?UserInterface {
-    if (filter_var($email, FILTER_VALIDATE_EMAIL) === FALSE) {
-      return NULL;
-    }
-
-    $user = $this->userStorage->loadByProperties(['mail' => $email]);
-
-    if (empty($user)) {
-      $user = $this->userStorage->create([
-        'mail' => $email,
-        'name' => explode('@', $email)[0],
-        'pass' => \Drupal::service('password')->hash(random_bytes(16)),
-      ]);
-
-      $user->save();
-    }
-    else {
-      $user = reset($user);
-    }
-
-    return $user;
-  }
-
-  /**
    * Process licenses for each component of the model.
    *
    * @param array $license_data
@@ -158,11 +125,11 @@ final class ModelUpdater {
         ->componentManager
         ->getComponentByName($component_data['name']);
 
-      $licenses[$component->id] = [
-        'license' => $component_data['license'] ?? null,
-        'license_path' => $component_data['license_path'] ?? null,
-        'component_path' => $component_data['component_path'] ?? null,
-      ];
+      foreach (['license', 'license_path', 'component_path'] as $key) {
+        if (isset($component_data[$key])) {
+          $licenses[$component->id][$key] = $component_data[$key];
+        }
+      }
     }
 
     return $licenses;
