@@ -16,12 +16,6 @@
   width: 130px;
 }
 
-.license-input,
-.license-path,
-.component-path {
-  width: 250px;
-}
-
 .component-license-wrapper {
   display: flex;
   flex-direction: column;
