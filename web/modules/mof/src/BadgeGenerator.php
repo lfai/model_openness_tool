@@ -18,11 +18,6 @@ final class BadgeGenerator implements BadgeGeneratorInterface {
   public function generate(ModelInterface $model, bool $mini = FALSE): array {
     $build = [];
 
-    // Do not generate badges if model is pending evaluation.
-    if ($model->isPending()) {
-      return $build;
-    }
-
     $evals = $this->modelEvaluator->setModel($model)->evaluate();
     $qualified = $in_progress = FALSE;
 

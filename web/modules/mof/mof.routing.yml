@@ -41,7 +41,6 @@ entity.model.json:
         type: entity:model
   requirements:
     _entity_access: model.view
-    _custom_access: \Drupal\mof\Controller\ModelController::pendingAccessCheck
 
 entity.model.yaml:
   path: '/model/{model}/yaml'
@@ -54,7 +53,6 @@ entity.model.yaml:
         type: entity:model
   requirements:
     _entity_access: model.view
-    _custom_access: \Drupal\mof\Controller\ModelController::pendingAccessCheck
 
 entity.model.admin_import:
   path: '/admin/model/import'
@@ -91,7 +89,6 @@ entity.model.badge:
         type: entity:model
   requirements:
     _entity_access: model.view
-    _custom_access: \Drupal\mof\Controller\ModelController::pendingAccessCheck
 
 entity.model.set_status:
   path: '/model/{model}/status/{status}'
@@ -117,5 +114,4 @@ mof.model_badge:
         type: entity:model
   requirements:
     _entity_access: model.view
-    _custom_access: \Drupal\mof\Controller\ModelController::pendingAccessCheck
     class: '1|2|3'

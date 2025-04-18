@@ -199,13 +199,5 @@ final class ModelController extends ControllerBase {
     return $this->redirect('entity.model.admin_collection');
   }
 
-  /**
-   * Check model pending status.
-   * Access callback is used when generating badges or json.
-   */
-  public function pendingAccessCheck(ModelInterface $model): AccessResult {
-    return AccessResult::allowedIf(!$model->isPending());
-  }
-
 }
 

@@ -234,13 +234,10 @@ final class ModelEvaluator implements ModelEvaluatorInterface {
    *   Progress percentage.
    */
   public function getTotalProgress(): float {
-    if ($this->model->isPending()) {
-      return -1;
-    }
-
     $total = 0;
-    for ($i = 3; $i >= 1; $i--) {
-      $total += $this->getProgress($i);
+
+    for ($class = 3; $class > 0; $class--) {
+      $total += $this->getProgress($class);
     }
 
     return $total / 3;

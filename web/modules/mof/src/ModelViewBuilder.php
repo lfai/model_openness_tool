@@ -71,12 +71,6 @@ final class ModelViewBuilder extends EntityViewBuilder {
    * {@inheritdoc}
    */
   public function build(array $build) {
-    // Do not display evaluation if model is pending.
-    if ($build['#model']->isPending()) {
-      $this->messenger->addWarning($this->t('Model pending evaluation'));
-      return $build;
-    }
-
     // When evaluating a model via the Evaluate Model form
     // there is no model ID when rendered. Skip the following.
     if ($build['#model']->id() !== NULL) {

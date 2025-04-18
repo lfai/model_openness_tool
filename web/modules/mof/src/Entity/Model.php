@@ -107,17 +107,6 @@ final class Model extends RevisionableContentEntityBase implements ModelInterfac
   }
 
   /**
-   * Determine if the model is pending evaluation.
-   *
-   * A model is pending evaluation if any component license is set to
-   * `Pending evaluation`
-   *
-   */
-  public function isPending(): bool {
-    return in_array('Pending evaluation', array_column($this->getLicenses(), 'license'));
-  }
-
-  /**
    * Get model description.
    */
   public function getDescription(): ?string {
