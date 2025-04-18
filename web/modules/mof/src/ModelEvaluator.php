@@ -122,10 +122,14 @@ final class ModelEvaluator implements ModelEvaluatorInterface {
    *
    * Flattens type-specific license arrays and checks if the provided license ID exists among them.
    *
-   * @param string $license The license ID to check (e.g., 'MIT').
-   * @param array $types The component's content types (e.g., ['code', 'data']).
+   * @param string $license
+   *   The license ID to check (e.g., 'MIT').
    *
-   * @return bool True if the license ID is type-specific, false otherwise.
+   * @param array $types
+   *   The component's content types (e.g., ['code', 'data']).
+   *
+   * @return bool
+   *   TRUE if the license ID is type-specific, FALSE otherwise.
    */
   private function isTypeSpecific(string $license, array $types): bool {
     $licenses = array_merge(...array_map([$this->licenseHandler, 'getLicensesByType'], $types));
@@ -135,10 +139,14 @@ final class ModelEvaluator implements ModelEvaluatorInterface {
   /**
    * Determines the license for a given component.
    *
-   * @param int $cid Component ID.
-   * @param array $licenses An array of licenses attached to the model.
+   * @param int $cid
+   *   Component ID.
    *
-   * @return string License ID attached to the component or NULL if none is set.
+   * @param array $licenses
+   *   An array of licenses attached to the model.
+   *
+   * @return string
+   *   License ID attached to the component or NULL if none is set.
    */
   private function resolveLicense(int $cid, array $licenses): ?string {
     $component_license = $licenses['components'][$cid] ?? [];
@@ -200,30 +208,30 @@ final class ModelEvaluator implements ModelEvaluatorInterface {
   }
 
   /**
-   * Get the model's final classification.
+   * Determine the model's final classification.
+   *
+   * @param bool $label
+   *   TRUE to return translatable markup text.
+   *   FALSE to return class integer (1, 2, or 3).
+   *
+   * @return \Drupal\Core\StringTranslation\TranslatableMarkup|int
    */
   public function getClassification(bool $label = TRUE): TranslatableMarkup|int {
-    $evals = $this->evaluate();
-    $class = 0;
+    $completed_class = 0;
 
-    if (empty($evals)) {
-      $class = -1;
-    }
-    else if (empty($evals[1]['missing']) && empty($evals[1]['invalid'])) {
-      $class = 1;
-    }
-    else if (empty($evals[2]['missing']) && empty($evals[2]['invalid'])) {
-      $class = 2;
-    }
-    else if ((empty($evals[3]['missing']) && empty($evals[3]['invalid'])) || $evals[3]['conditional']) {
-      $class = 3;
+    for ($class = 3; $class > 0; $class--) {
+      $progress = $this->getProgress($class);
+      if ($progress === 100.0) $completed_class = $class;
     }
 
-    return $label ? $this->getClassLabel($class) : $class;
+    return $label ? $this->getClassLabel($completed_class) : $completed_class;
   }
 
   /**
-   * Get the model's total progress.
+   * Get the model's total progress across all 3 classes.
+   *
+   * @return float
+   *   Progress percentage.
    */
   public function getTotalProgress(): float {
     if ($this->model->isPending()) {
@@ -248,8 +256,8 @@ final class ModelEvaluator implements ModelEvaluatorInterface {
    *  - `Model card` (13)
    *  - `Data card` (14)
    *
-   * @return array
-   *   An array of translatable strings.
+   * @return \Drupal\Core\StringTranslation\TranslatableMarkup[]
+   *   An array of translatable string messages.
    */
   public function getConditionalMessage(): array {
     $messages = [
@@ -277,8 +285,12 @@ final class ModelEvaluator implements ModelEvaluatorInterface {
   /**
    * Determine if a component is using an open source license.
    *
-   * @param int $cid Component ID.
+   * @param string $license
+   *   The license name.
+   *
    * @return bool
+   *   TRUE if license is open-source.
+   *   FALSE otherwise.
    */
   private function isOpenSourceLicense(string $license): bool {
     return $this->licenseHandler->isOsiApproved($license);
@@ -288,10 +300,10 @@ final class ModelEvaluator implements ModelEvaluatorInterface {
    * Returns a percentage indicating the models progress for specified class.
    *
    * @param int $class
-   *   Class 1, 2, or 3
+   *   Class 1, 2, or 3.
    *
    * @return float
-   *   Progress percentage
+   *   Progress percentage.
    */
   public function getProgress(int $class): float {
     $evaluate = $this->evaluate();
