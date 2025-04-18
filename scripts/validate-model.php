@@ -27,6 +27,12 @@ try {
   // Convert YAML-parsed array to stdClass object via JSON round-trip.
   $yaml = json_decode(json_encode(Yaml::parse($yaml)));
 
+  // Convert release->license to stdClass if it's an array.
+  // Typically happens when license is empty.
+  if (is_array($yaml->release->license)) {
+    $yaml->release->license = (object) $yaml->release->license;
+  }
+
   $validator = new Validator();
   $result = $validator->validate($yaml, $schema);
 

@@ -30,6 +30,8 @@
         },
         "license": {
           "type": "object",
+          "additionalProperties": true,
+          "minProperties": 0,
           "properties": {
             "distribution": {
               "type": "object",
