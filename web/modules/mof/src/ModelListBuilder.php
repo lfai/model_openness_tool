@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Drupal\mof;
 
@@ -130,8 +128,8 @@ final class ModelListBuilder extends EntityListBuilder {
       'class' => 'model-label',
     ];
 
-    if (($slug = $entity->getGithubSlug())) {
-      $row['label']['data']['#github' ] = $slug;
+    if (($slug = $entity->getRepository())) {
+      $row['label']['data']['#repository' ] = $slug;
     }
 
     if (($slug = $entity->getHuggingfaceSlug())) {

@@ -45,12 +45,10 @@ final class ModelSerializer implements ModelSerializerInterface {
         'origin' => $model->getOrigin() ?? '',
         'producer' => $model->getOrganization() ?? '',
         'contact' => $owner->id() > 1 ? $owner->getEmail() : '',
+        'repository' => $model->getRepository() ?? '',
       ],
     ];
 
-    if ($model->getGithubSlug()) {
-      $data['release']['github'] = 'https://github.com/' . $model->getGithubSlug();
-    }
     if ($model->getHuggingfaceSlug()) {
       $data['release']['huggingface'] = 'https://huggingface.co/' . $model->getHuggingfaceSlug();
     }

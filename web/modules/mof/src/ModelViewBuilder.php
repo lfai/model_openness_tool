@@ -105,7 +105,7 @@ final class ModelViewBuilder extends EntityViewBuilder {
 
       $build['icons'] = [
         '#theme' => 'model_link',
-        '#github' => $build['#model']->getGithubSlug(),
+        '#repository' => $build['#model']->getRepository(),
         '#huggingface' => $build['#model']->getHuggingfaceSlug(),
         '#weight' => -180,
       ];

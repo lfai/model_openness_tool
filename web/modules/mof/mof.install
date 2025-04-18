@@ -34,13 +34,29 @@ function mof_update_10201() {
  */
 function mof_update_10401() {
   $update_manager = \Drupal::entityDefinitionUpdateManager();
-  $entity_type = \Drupal::entityTypeManager()->getDefinition('model');
-  $storage = \Drupal::service('entity_field.manager')->getFieldStorageDefinitions('model');
 
+  $storage = \Drupal::service('entity_field.manager')->getFieldStorageDefinitions('model');
   if (isset($storage['github'])) {
     $update_manager->uninstallFieldStorageDefinition($storage['github']);
   }
 
+  $entity_type = \Drupal::entityTypeManager()->getDefinition('model');
+  $update_manager->updateEntityType($entity_type);
+}
+
+/**
+ * Implements hook_update_N().
+ *
+ * Adds 'repository' field.
+ */
+function mof_update_10402() {
+  $update_manager = \Drupal::entityDefinitionUpdateManager();
+  $field_manager = \Drupal::service('entity_field.manager');
+
+  $field = $field_manager->getBaseFieldDefinitions('model')['repository'];
+  $update_manager->installFieldStorageDefinition('repository', 'model', 'mof', $field);
+
+  $entity_type = \Drupal::entityTypeManager()->getDefinition('model');
   $update_manager->updateEntityType($entity_type);
 }
 

@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Drupal\mof\Form;
 
@@ -30,36 +28,6 @@ final class ModelSubmitForm extends ModelForm {
     // Only admins can approve models.
     $form['status']['#access'] = $this->currentUser()->hasPermission('administer model');
 
-    $form['github']['widget']['#ajax'] = [
-      'callback' => [$this, 'populateModelDetails'],
-      'event' => 'change',
-      'wrapper' => 'details-wrap',
-      'progress' => [
-        'type' => 'throbber',
-        'message' => $this->t('Loading repository...'),
-      ],
-    ];
-
-    // Prepare html5 datalist.
-    $form['details']['datalist'] = [
-      '#type' => 'html_tag',
-      '#tag' => 'datalist',
-      '#attributes' => ['id' => 'git-tree'],
-      'tree' => [],
-    ];
-
-    // Populate datalist if we're coming in with a default repo selected.
-    if (!$form_state->isRebuilding() && !empty($form['github']['widget']['#default_value'])) {
-      $repo_name = $form['github']['widget']['#default_value'][0];
-
-      if (($repo = $form_state->get($repo_name)) === NULL) {
-        $repo = $this->github->getRepo($repo_name);
-        $form_state->set($repo_name, $repo);
-      }
-
-      $form['details']['datalist']['tree'] = $this->getRepoTree($repo->full_name, $repo->default_branch);
-    }
-
     // Open when ajax rebuilds the form.
     if ($form_state->isRebuilding()) {
       $form['details']['#open'] = FALSE;
@@ -79,7 +47,6 @@ final class ModelSubmitForm extends ModelForm {
               'class' => ['license-path-wrapper'],
             ],
             '#attributes' => [
-              'list' => 'git-tree',
               'class' => ['license-path'],
               'autocomplete' => 'off',
             ],
@@ -93,7 +60,6 @@ final class ModelSubmitForm extends ModelForm {
               'class' => ['component-path-wrapper'],
             ],
             '#attributes' => [
-              'list' => 'git-tree',
               'class' => ['component-path'],
               'autocomplete' => 'off',
             ],
@@ -121,42 +87,9 @@ final class ModelSubmitForm extends ModelForm {
    */
   public function validateForm(array &$form, FormStateInterface $form_state): void {
     parent::validateForm($form, $form_state);
-
     if (preg_match('/\s/', $form_state->getValue('label')[0]['value'])) {
       $form_state->setErrorByName('label', $this->t('Model name cannot have spaces.'));
     }
-
-    $extra = array_column($this->licenseHandler->getExtraOptions(), 'licenseId');
-
-    // Re-populate git repo tree datalist.
-    if (($repo_name = $form_state->getValue('github')) && !empty($repo_name)) {
-
-      if (($repo = $form_state->get($repo_name[0]['value'])) === NULL) {
-        $repo = $this->github->getRepo($repo_name[0]['value']);
-        $form_state->set($repo_name[0]['value'], $repo);
-      }
-
-      $form['details']['datalist']['tree'] += $this->getRepoTree($repo->full_name, $repo->default_branch);
-    }
-  }
-
-  /**
-   * Ajax callback. Returns populated model details.
-   */
-  public function populateModelDetails(array &$form, FormStateInterface $form_state): array {
-    if ($repo_name = $form_state->getValue('github')) {
-
-      if (($repo = $form_state->get($repo_name[0]['value'])) === NULL) {
-        $repo = $this->github->getRepo($repo_name[0]['value']);
-        $form_state->set($repo_name[0]['value'], $repo);
-      }
-
-      $form['details']['label']['widget'][0]['value']['#value'] = $repo->name;
-      $form['details']['description']['widget'][0]['value']['#value'] = $repo->description;
-      $form['details']['datalist']['tree'] = $this->getRepoTree($repo->full_name, $repo->default_branch);
-    }
-
-    return $form['details'];
   }
 
   /**
@@ -166,32 +99,6 @@ final class ModelSubmitForm extends ModelForm {
     $actions = parent::actions($form, $form_state);
     $actions['submit']['#value'] = $this->t('Submit');
     return $actions;
-  }
-
-  /**
-   * Build a render array for datalist options.
-   */
-  private function getRepoTree(string $repo, string $branch): array {
-    // May be called more than once during form processing.
-    // This will reduce github API hits.
-    static $tree = [];
-
-    if (!isset($tree[$repo])) {
-      foreach ($this
-        ->github
-        ->getTree($repo, $branch)
-        ->tree as $item) {
-
-        $tree[$repo][] = [
-          '#type' => 'html_tag',
-          '#tag' => 'option',
-          '#attributes' => ['value' => $item->path],
-          '#parents' => [],
-        ];
-      }
-    }
-
-    return $tree[$repo];
   }
 
 }

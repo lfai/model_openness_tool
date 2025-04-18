@@ -10,7 +10,6 @@ use Drupal\component\Datetime\TimeInterface;
 use Drupal\mof\LicenseHandlerInterface;
 use Drupal\mof\ModelEvaluatorInterface;
 use Drupal\mof\ComponentManagerInterface;
-use Drupal\mof\GitHubService;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Session\Session;
 
@@ -25,9 +24,6 @@ abstract class ModelForm extends ContentEntityForm {
 
   /** @var \Drupal\mof\ModelEvaluator */
   protected readonly ModelEvaluatorInterface $modelEvaluator;
-
-  /** @var \Drupak\mof\GitHubService */
-  protected readonly GitHubService $github;
 
   /** @var \Drupal\mof\ComponentManager */
   protected readonly ComponentManagerInterface $componentManager;
@@ -44,14 +40,12 @@ abstract class ModelForm extends ContentEntityForm {
     TimeInterface $time,
     LicenseHandlerInterface $license_handler,
     ModelEvaluatorInterface $model_evaluator,
-    GitHubService $github,
     ComponentManagerInterface $component_manager,
     Session $session
   ) {
     parent::__construct($entity_repository, $entity_type_bundle_info, $time);
     $this->licenseHandler = $license_handler;
     $this->modelEvaluator = $model_evaluator;
-    $this->github = $github;
     $this->componentManager = $component_manager;
     $this->session = $session;
   }
@@ -66,7 +60,6 @@ abstract class ModelForm extends ContentEntityForm {
       $container->get('datetime.time'),
       $container->get('license_handler'),
       $container->get('model_evaluator'),
-      $container->get('github'),
       $container->get('component.manager'),
       $container->get('session')
     );

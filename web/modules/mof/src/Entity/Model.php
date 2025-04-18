@@ -168,17 +168,17 @@ final class Model extends RevisionableContentEntityBase implements ModelInterfac
   }
 
   /**
-   * Get models huggingface slug.
+   * Get model huggingface slug.
    */
   public function getHuggingfaceSlug(): ?string {
     return $this->get('huggingface')->value ?? NULL;
   }
 
   /**
-   * Get models github repo slug.
+   * Get model repository URL.
    */
-  public function getGithubSlug(): ?string {
-    return NULL;
+  public function getRepository(): ?string {
+    return $this->get('repository')->value ?? NULL;
   }
 
   /**
@@ -263,6 +263,15 @@ final class Model extends RevisionableContentEntityBase implements ModelInterfac
       ])
       ->setDisplayConfigurable('view', TRUE)
       ->addConstraint('ModelNameConstraint');
+
+    $fields['repository'] = BaseFieldDefinition::create('string')
+      ->setRevisionable(FALSE)
+      ->setTranslatable(FALSE)
+      ->setLabel(t('Git repository'))
+      ->setDescription(t('Full URL to the git repository.'))
+      ->setRequired(FALSE)
+      ->setDisplayConfigurable('form', FALSE)
+      ->setDisplayConfigurable('view', FALSE);
 
     $fields['huggingface'] = BaseFieldDefinition::create('string')
       ->setRevisionable(TRUE)

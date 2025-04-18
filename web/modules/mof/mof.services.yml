@@ -62,14 +62,6 @@ services:
     arguments:
       - '@model_evaluator'
 
-  github:
-    class: Drupal\mof\GitHubService
-    arguments:
-      - '@http_client'
-      - '@current_user'
-      - '@entity_type.manager'
-      - '@logger.factory'
-
   mof.event_subscriber:
     class: Drupal\mof\EventSubscriber\GitHubSubscriber
     tags:

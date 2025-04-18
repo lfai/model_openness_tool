@@ -2,8 +2,8 @@
   {% if model %}
     <div>{{ model }}</div>
   {% endif %}
-  {% if github %}
-    <a href="https://github.com/{{ github }}" class="icon"><i class="fa fa-brands fa-github"></i></a>
+  {% if repository %}
+    <a href="{{ repository }}" class="icon"><i class="fa fa-brands fa-github"></i></a>
   {% endif %}
   {% if huggingface %}
     <a href="https://huggingface.co/{{ huggingface }}" class="icon"><img src="/modules/mof/assets/huggingface.svg"></a>

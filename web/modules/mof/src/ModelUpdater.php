@@ -83,12 +83,6 @@ final class ModelUpdater {
       else if ($field === 'date') {
         $model->set('changed', strtotime($value));
       }
-      else if ($field === 'github') {
-        $parsed = parse_url($value);
-        if (isset($parsed['path'])) {
-          $model->set('github', ltrim($parsed['path'], '/'));
-        }
-      }
       else if ($field === 'huggingface') {
         $parsed = parse_url($value);
         if (isset($parsed['path'])) {
