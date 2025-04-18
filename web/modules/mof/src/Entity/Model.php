@@ -35,12 +35,11 @@ use Drupal\user\EntityOwnerTrait;
  *     "views_data" = "Drupal\views\EntityViewsData",
  *     "access" = "Drupal\mof\Access\ModelAccessHandler",
  *     "form" = {
- *       "add" = "Drupal\mof\Form\ModelSubmitForm",
- *       "edit" = "Drupal\mof\Form\ModelSubmitForm",
+ *       "add" = "Drupal\mof\Form\ModelEditForm",
+ *       "edit" = "Drupal\mof\Form\ModelEditForm",
  *       "delete" = "Drupal\Core\Entity\ContentEntityDeleteForm",
  *       "delete-multiple-confirm" = "Drupal\Core\Entity\Form\DeleteMultipleForm",
- *       "evaluate" = "Drupal\mof\Form\ModelEvaluateForm",
- *       "admin" = "Drupal\mof\Form\ModelAdminEditForm",
+ *       "evaluate" = "Drupal\mof\Form\ModelEvaluateForm"
  *     },
  *     "route_provider" = {
  *       "html" = "Drupal\mof\Routing\ModelEntityRouteProvider",

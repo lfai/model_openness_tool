@@ -56,10 +56,6 @@ final class ModelController extends ControllerBase {
     case 'entity.model.badge':
       $subtitle = $this->t('Badges');
       break;
-
-    case 'entity.model.admin_edit_form':
-      $subtitle = $this->t('Admin');
-      break;
     }
 
     $t_args = ['@model_name' => $model->label()];

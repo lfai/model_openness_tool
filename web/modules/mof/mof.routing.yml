@@ -1,11 +1,3 @@
-entity.model.settings:
-  path: '/admin/structure/model'
-  defaults:
-    _form: \Drupal\mof\Form\ModelSettingsForm
-    _title: 'Model Openness Framework'
-  requirements:
-    _permission: 'administer model'
-
 mof.model.evaluate_form:
   path: '/model/evaluate'
   defaults:
@@ -22,18 +14,10 @@ mof.model.evaluate_form.download:
   requirements:
     _access: 'TRUE'
 
-entity.model.admin_edit_form:
-  path: '/admin/model/{model}/edit'
-  defaults:
-    _entity_form: model.admin
-    _title_callback: \Drupal\mof\Controller\ModelController::pageTitle
-  requirements:
-    _permission: 'administer model'
-
 entity.model.admin_submit_form:
   path: '/admin/model/add'
   defaults:
-    _entity_form: model.admin
+    _entity_form: model.add
     _title: 'Model administration'
   requirements:
     _permission: 'administer model'

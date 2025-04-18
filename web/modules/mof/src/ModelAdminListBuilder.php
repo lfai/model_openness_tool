@@ -59,8 +59,6 @@ class ModelAdminListBuilder extends EntityListBuilder {
   public function getOperations(EntityInterface $entity) {
     $operations = parent::getOperations($entity);
 
-    $operations['edit']['url'] = Url::fromRoute('entity.model.admin_edit_form', ['model' => $entity->id()]);
-
     $operations['view'] = [
       'title' => $this->t('View'),
       'weight' => 5,
