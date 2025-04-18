@@ -20,6 +20,7 @@ function mof_theme(): array {
     'model_link' => [
       'variables' => [
         'model' => NULL,
+        'repository' => NULL,
         'huggingface' => NULL,
       ],
     ],
