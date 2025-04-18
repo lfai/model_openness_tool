@@ -34,6 +34,19 @@ final class ModelEditForm extends ModelForm {
   /**
    * {@inheritdoc}
    */
+  public function submitForm(array &$form, FormStateInterface $form_state): void {
+    parent::submitForm($form, $form_state);
+    if (!$this->entity->isNew()) {
+      $form_state->setRedirectUrl($this->entity->toUrl());
+    }
+    else {
+      $form_state->setRedirect('entity.model.admin_collection');
+    }
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   protected function actions(array $form, FormStateInterface $form_state) {
     $actions = parent::actions($form, $form_state);
     $actions['submit']['#value'] = $this->t('Submit');

@@ -47,6 +47,8 @@ final class ModelEvaluateForm extends ModelForm {
     }
 
     $form += parent::form($form, $form_state);
+    $form['#attached']['library'][] = 'mof/model-evaluate';
+
     return $form;
   }
 

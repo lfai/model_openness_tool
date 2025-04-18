@@ -102,7 +102,7 @@ final class Model extends RevisionableContentEntityBase implements ModelInterfac
   /**
    * Get included component IDs for the model.
    */
-  public function getComponents(): array {
+  public function getComponents(): ?array {
     return array_column($this->get('components')->getValue(), 'value');
   }
 
@@ -269,7 +269,7 @@ final class Model extends RevisionableContentEntityBase implements ModelInterfac
       ->setLabel(t('Git repository'))
       ->setDescription(t('Full URL to the git repository.'))
       ->setRequired(FALSE)
-      ->setDisplayConfigurable('form', FALSE)
+      ->setDisplayConfigurable('form', TRUE)
       ->setDisplayConfigurable('view', FALSE);
 
     $fields['huggingface'] = BaseFieldDefinition::create('string')

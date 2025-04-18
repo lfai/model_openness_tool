@@ -70,16 +70,7 @@ abstract class ModelForm extends ContentEntityForm {
    */
   public function form(array $form, FormStateInterface $form_state): array {
     $form += parent::form($form, $form_state);
-
-    // Populate model data from a previous session if one is set.
-    // We save the session in case the user wants to retry without
-    // having to re-enter everything.
-    if ($this->session->has('model_session_data')) {
-      $session_model = $this->session->get('model_session_data');
-    }
-
     $form['#tree'] = TRUE;
-    $form['#attached']['library'][] = 'mof/model-evaluate';
 
     // Hide status field.
     $form['status']['#access'] = false;
@@ -97,6 +88,7 @@ abstract class ModelForm extends ContentEntityForm {
       'architecture',
       'treatment',
       'origin',
+      'repository',
       'huggingface',
     ];
 
@@ -111,9 +103,15 @@ abstract class ModelForm extends ContentEntityForm {
 
     // Move entity defined fields into a details element.
     foreach ($model_details as $field) {
-      $form['details'][$field] = $form[$field];
-      unset($form[$field]);
+      if (isset($form[$field])) {
+        $form['details'][$field] = $form[$field];
+        unset($form[$field]);
+      }
     }
+
+    // Model licenses to populate fields with a default value.
+    $model_licenses = $this->entity->getLicenses() ?? [];
+    $model_components = $this->entity->getComponents() ?? [];
 
     $form['license'] = [
       '#type' => 'details',
@@ -125,7 +123,7 @@ abstract class ModelForm extends ContentEntityForm {
     $form['license']['distribution']['included']  = [
       '#type' => 'checkbox',
       '#title' => $this->t('This model has a global/distribution-wide license'),
-      '#default_value' => $session_model['license']['distribution']['included'] ?? '',
+      '#default_value' => $model_licenses['global']['distribution']['included'] ?? '',
     ];
 
     $form['license']['distribution']['name'] = [
@@ -134,7 +132,7 @@ abstract class ModelForm extends ContentEntityForm {
       '#description' => $this->t('Enter the name of the global/distribution-wide license (e.g. Apache-2.0).'),
       '#weight' => 1,
       '#attributes' => ['list' => 'license-datalist-0'],
-      '#default_value' => $session_model['license']['distribution']['name'] ?? '',
+      '#default_value' => $model_licenses['global']['distribution']['name'] ?? '',
       '#states' => [
         'visible' => [
           ':input[name="license[distribution][included]"]' => ['checked' => true],
@@ -146,7 +144,7 @@ abstract class ModelForm extends ContentEntityForm {
       '#type' => 'textfield',
       '#title' => $this->t('Path to license file'),
       '#description' => $this->t('Enter the path to the license file (e.g. /some/path/LICENSE).'),
-      '#default_value' => $session_model['license']['distribution']['path'] ?? '',
+      '#default_value' => $model_licenses['global']['distribution']['path'] ?? '',
       '#weight' => 2,
       '#states' => [
         'visible' => [
@@ -158,7 +156,7 @@ abstract class ModelForm extends ContentEntityForm {
     $form['license']['code']['included'] = [
       '#type' => 'checkbox',
       '#title' => $this->t('This model has a global license for code components'),
-      '#default_value' => $session_model['license']['code']['included'] ?? '',
+      '#default_value' => $model_licenses['global']['code']['included'] ?? '',
     ];
 
     $form['license']['code']['name'] = [
@@ -167,7 +165,7 @@ abstract class ModelForm extends ContentEntityForm {
       '#description' => $this->t('Enter the name of the code component license (e.g. Apache-2.0).'),
       '#weight' => 1,
       '#attributes' => ['list' => 'license-datalist-code'],
-      '#default_value' => $session_model['license']['code']['name'] ?? '',
+      '#default_value' => $model_licenses['global']['code']['name'] ?? '',
       '#states' => [
         'visible' => [
           ':input[name="license[code][included]"]' => ['checked' => true],
@@ -179,7 +177,7 @@ abstract class ModelForm extends ContentEntityForm {
       '#type' => 'textfield',
       '#title' => $this->t('Path to license file'),
       '#description' => $this->t('Enter the path to the license file (e.g. /some/path/LICENSE).'),
-      '#default_value' => $session_model['license']['code']['path'] ?? '',
+      '#default_value' => $model_licenses['global']['code']['path'] ?? '',
       '#weight' => 2,
       '#states' => [
         'visible' => [
@@ -191,14 +189,14 @@ abstract class ModelForm extends ContentEntityForm {
     $form['license']['data']['included'] = [
       '#type' => 'checkbox',
       '#title' => $this->t('This model has a global license for data components'),
-      '#default_value' => $session_model['license']['data']['included'] ?? '',
+      '#default_value' => $model_licenses['global']['data']['included'] ?? '',
     ];
 
     $form['license']['data']['name'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Data component license'),
       '#description' => $this->t('Enter the name of the data component license (e.g. Apache-2.0).'),
-      '#default_value' => $session_model['license']['data']['name'] ?? '',
+      '#default_value' => $model_licenses['global']['data']['name'] ?? '',
       '#attributes' => ['list' => 'license-datalist-data'],
       '#weight' => 1,
       '#states' => [
@@ -212,7 +210,7 @@ abstract class ModelForm extends ContentEntityForm {
       '#type' => 'textfield',
       '#title' => $this->t('Path to license file'),
       '#description' => $this->t('Enter the path to the license file (e.g. /some/path/LICENSE).'),
-      '#default_value' => $session_model['license']['data']['path'] ?? '',
+      '#default_value' => $model_licenses['global']['data']['path'] ?? '',
       '#weight' => 2,
       '#states' => [
         'visible' => [
@@ -224,14 +222,14 @@ abstract class ModelForm extends ContentEntityForm {
     $form['license']['document']['included'] = [
       '#type' => 'checkbox',
       '#title' => $this->t('This model has a global license for document components'),
-      '#default_value' => $session_model['license']['document']['included'] ?? '',
+      '#default_value' => $model_licenses['global']['document']['included'] ?? '',
     ];
 
     $form['license']['document']['name'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Document component license'),
       '#description' => $this->t('Enter the name of the document component license (e.g. Apache-2.0).'),
-      '#default_value' => $session_model['license']['document']['name'] ?? '',
+      '#default_value' => $model_licenses['global']['document']['name'] ?? '',
       '#weight' => 1,
       '#attributes' => ['list' => 'license-datalist-document'],
       '#states' => [
@@ -245,7 +243,7 @@ abstract class ModelForm extends ContentEntityForm {
       '#type' => 'textfield',
       '#title' => $this->t('Path to license file'),
       '#description' => $this->t('Enter the path to the license file (e.g. /some/path/LICENSE).'),
-      '#default_value' => $session_model['license']['document']['path'] ?? '',
+      '#default_value' => $model_licenses['global']['document']['path'] ?? '',
       '#weight' => 2,
       '#states' => [
         'visible' => [
@@ -280,7 +278,6 @@ abstract class ModelForm extends ContentEntityForm {
       '#weight' => 3,
     ];
 
-    $model_licenses = $this->entity->getLicenses();
     $form['datalist'][0] = $this->buildDataList(0);
 
     // Build a datalist for each license type.
@@ -315,7 +312,7 @@ abstract class ModelForm extends ContentEntityForm {
           'included' => [
             '#type' => 'checkbox',
             '#title' => $component->name,
-            '#default_value' => isset($session_model) && $session_model['component'][$cid] !== 0 ? $session_model['component'][$cid] : '',
+            '#default_value' => in_array($cid, $model_components) ? $cid : false,
             '#return_value' => $cid,
             '#parents' => ['component', $cid],
           ],
@@ -323,7 +320,7 @@ abstract class ModelForm extends ContentEntityForm {
             '#type' => 'checkbox',
             '#parents' => ['global', $cid],
             '#title' => $this->t('Does this component use the global license?'),
-            '#default_value' => $session_model['global'][$cid] ?? '',
+            '#default_value' => in_array($cid, $model_components) && !isset($model_licenses['components'][$cid]) ? true : false,
             '#states' => [
               'visible' => [
                 [
@@ -342,7 +339,7 @@ abstract class ModelForm extends ContentEntityForm {
             '#type' => 'textfield',
             '#parents' => ['component_data', $cid, 'license'],
             '#description' => $component->tooltip,
-            '#default_value' => $session_model['component_data'][$cid]['license'] ?? '',
+            '#default_value' => $model_licenses['components'][$cid]['license'] ?? '',
             '#placeholder' => $this->t('Begin typing to find a license'),
             '#attributes' => [
               'data-component-id' => $cid,
@@ -363,7 +360,7 @@ abstract class ModelForm extends ContentEntityForm {
             '#type' => 'textfield',
             '#parents' => ['component_data', $cid, 'license_path'],
             '#description' => $this->t('The file system path to the license file. (e.g. /path/to/LICENSE)'),
-            '#default_value' => $session_model['component_data'][$cid]['license_path'] ?? '',
+            '#default_value' => $model_licenses['components'][$cid]['license_path'] ?? '',
             '#placeholder' => $this->t('Enter file system path to license file'),
             '#attributes' => [
               'autocomplete' => 'off',
@@ -381,7 +378,7 @@ abstract class ModelForm extends ContentEntityForm {
             '#type' => 'textfield',
             '#parents' => ['component_data', $cid, 'component_path'],
             '#description' => $this->t('The file system path to the component. (e.g. /path/to/component)'),
-            '#default_value' => $session_model['component_data'][$cid]['component_path'] ?? '',
+            '#default_value' => $model_licenses['components'][$cid]['component_path'] ?? '',
             '#placeholder' => $this->t('Enter file system path to the component'),
             '#attributes' => [
               'autocomplete' => 'off',
