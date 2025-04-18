@@ -340,7 +340,7 @@ abstract class ModelForm extends ContentEntityForm {
             '#parents' => ['component_data', $cid, 'license'],
             '#description' => $component->tooltip,
             '#default_value' => $model_licenses['components'][$cid]['license'] ?? '',
-            '#placeholder' => $this->t('Begin typing to find a license'),
+            '#placeholder' => $this->t('Begin typing to find a license; leave blank if unlicensed'),
             '#attributes' => [
               'data-component-id' => $cid,
               'list' => isset($form['datalist'][$cid]) ? "license-datalist-{$cid}" : "license-datalist-{$group}",

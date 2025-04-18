@@ -127,7 +127,13 @@ final class ModelUpdater {
 
       foreach (['license', 'license_path', 'component_path'] as $key) {
         if (isset($component_data[$key])) {
-          $licenses[$component->id][$key] = $component_data[$key];
+          // Set key but leave blank if unlicensed.
+          if ($key === 'license' && $component_data[$key] === 'unlicensed') {
+            $licenses[$component->id][$key] = '';
+          }
+          else {
+            $licenses[$component->id][$key] = $component_data[$key];
+          }
         }
       }
     }
