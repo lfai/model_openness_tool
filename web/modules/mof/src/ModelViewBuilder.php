@@ -175,7 +175,7 @@ final class ModelViewBuilder extends EntityViewBuilder {
         ],
       ];
 
-      $this->session->set('model_evaluation', FALSE);
+      $this->session->set('model_session_evaluation', FALSE);
     }
 
     $build['#attached']['library'][] = 'mof/model-evaluation';

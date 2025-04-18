@@ -327,22 +327,10 @@ abstract class ModelForm extends ContentEntityForm {
             '#parents' => ['component', $cid],
           ],
           'global' => [
-            '#type' => 'radios',
+            '#type' => 'checkbox',
             '#parents' => ['global', $cid],
-            '#options' => ['yes' => $this->t('Yes'), 'no' => $this->t('No')],
             '#title' => $this->t('Does this component use the global license?'),
-            '#attributes' => ['class' => ['license-usage']],
             '#default_value' => $session_model['global'][$cid] ?? '',
-            'yes' => [
-              '#states' => [
-                'required' => [":input[name=\"component[{$cid}]\"]" => ['checked' => true]]
-              ],
-            ],
-            'no' => [
-              '#states' => [
-                'required' => [":input[name=\"component[{$cid}]\"]" => ['checked' => true]]
-              ],
-            ],
             '#states' => [
               'visible' => [
                 [
@@ -373,6 +361,7 @@ abstract class ModelForm extends ContentEntityForm {
               'visible' => [
                 [
                   ":input[name=\"component[{$cid}]\"]" => ['checked' => true],
+                  ":input[name=\"global[{$cid}]\"]" => ['checked' => false],
                 ],
               ],
             ],
@@ -390,6 +379,7 @@ abstract class ModelForm extends ContentEntityForm {
               'visible' => [
                 [
                   ":input[name=\"component[{$cid}]\"]" => ['checked' => true],
+                  ":input[name=\"global[{$cid}]\"]" => ['checked' => false],
                 ],
               ],
             ],
@@ -407,6 +397,7 @@ abstract class ModelForm extends ContentEntityForm {
               'visible' => [
                 [
                   ":input[name=\"component[{$cid}]\"]" => ['checked' => true],
+                  ":input[name=\"global[{$cid}]\"]" => ['checked' => false],
                 ],
               ],
             ],
@@ -432,7 +423,7 @@ abstract class ModelForm extends ContentEntityForm {
     ];
 
     foreach ($included_components as $cid) {
-      if ($globals[$cid] === 'no') {
+      if (!isset($globals[$cid])) {
         $license_data['components'][$cid] = $component_data[$cid];
       }
     }

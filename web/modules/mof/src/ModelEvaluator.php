@@ -106,7 +106,13 @@ final class ModelEvaluator implements ModelEvaluatorInterface {
     }
 
     // Check if class 3 has a conditional pass.
-    $evaluation[3]['conditional'] = $this->hasConditionalPass();
+    $evaluation[3]['conditional'] = false;
+    foreach ($evaluation[3]['licenses'] as $cid => $license) {
+      if (in_array($cid, static::CLASS_3_CIDS) && $this->isOpenSourceLicense($license)) {
+        $evaluation[3]['conditional'] = true;
+        break;
+      }
+    }
 
     return $evaluation;
   }
@@ -258,8 +264,9 @@ final class ModelEvaluator implements ModelEvaluatorInterface {
       14 => $this->t('Data card of type documentation.'),
     ];
 
-    foreach (self::CLASS_3_CIDS as $cid) {
-      if (isset($component_messages[$cid]) && $this->isOpenSourceLicense($cid)) {
+    $evaluation = $this->evaluate();
+    foreach ($evaluation[3]['licenses'] as $cid => $license) {
+      if (in_array($cid, static::CLASS_3_CIDS) && $this->isOpenSourceLicense($license)) {
         $messages[] = $component_messages[$cid];
       }
     }
@@ -268,24 +275,13 @@ final class ModelEvaluator implements ModelEvaluatorInterface {
   }
 
   /**
-   * Determine if a model has a conditional pass.
-   *
-   * @return bool
-   */
-  private function hasConditionalPass(): bool {
-    $pass = array_filter(self::CLASS_3_CIDS, fn($cid) => $this->isOpenSourceLicense($cid));
-    return !empty($pass);
-  }
-
-  /**
    * Determine if a component is using an open source license.
    *
    * @param int $cid Component ID.
    * @return bool
    */
-  private function isOpenSourceLicense(int $cid): bool {
-    $licenses = $this->model->getLicenses();
-    return isset($licenses[$cid]) && $this->licenseHandler->isOsiApproved($licenses[$cid]['license']);
+  private function isOpenSourceLicense(string $license): bool {
+    return $this->licenseHandler->isOsiApproved($license);
   }
 
   /**

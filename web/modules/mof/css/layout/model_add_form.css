@@ -71,17 +71,6 @@
   float: right;
 }
 
-.license-usage {
-  display: flex;
-  align-items: baseline;
-}
-
-.license-usage .form-radios {
-  display: flex;
-  gap: 1rem;
-  margin-left: 1rem;
-}
-
 @media screen and (min-width: 429px) {
   #edit-details .form-item__description {
     margin-left: 155px;
