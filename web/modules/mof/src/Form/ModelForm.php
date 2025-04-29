@@ -504,18 +504,18 @@ abstract class ModelForm extends ContentEntityForm {
     // Special case for 'code' components.
     // Include all OSI-approved licenses.
     if ($type === 'code' || (is_int($type) && $type > 0 && $this->componentManager->getComponent($type)->contentType === 'code')) {
-      $licenses = array_unique([...$licenses, ...$this->licenseHandler->getOsiApproved()], SORT_REGULAR);
+      $licenses = array_unique([...$licenses, ...$this->licenseHandler->getOsiApproved()], SORT_STRING);
     }
 
     // Sort licenses by name.
-    uasort($licenses, fn($a, $b) => strcasecmp($a['name'], $b['name']));
+    uasort($licenses, fn($a, $b) => strcasecmp($a->getName(), $b->getName()));
 
     foreach ($licenses as $license) {
       $datalist['licenses'][] = [
         '#type' => 'html_tag',
         '#tag' => 'option',
-        '#value' => $license['name'],
-        '#attributes' => ['value' => $license['licenseId']],
+        '#value' => $license->getName(),
+        '#attributes' => ['value' => $license->getLicenseId()],
       ];
     }
 

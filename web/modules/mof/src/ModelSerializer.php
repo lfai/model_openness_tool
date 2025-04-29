@@ -64,10 +64,13 @@ final class ModelSerializer implements ModelSerializerInterface {
     // Build global licenses section.
     $licenses = $model->getLicenses();
     $data['release']['license'] = [];
-    foreach ($licenses['global'] as $key => $type) {
-      if ($type['included']) {
-        $data['release']['license'][$key]['name'] = $type['name'];
-        $data['release']['license'][$key]['path'] = $type['path'];
+
+    if (isset($licenses['global'])) {
+      foreach ($licenses['global'] as $key => $type) {
+        if ($type['included']) {
+          $data['release']['license'][$key]['name'] = $type['name'];
+          $data['release']['license'][$key]['path'] = $type['path'];
+        }
       }
     }
 

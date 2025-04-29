@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Drupal\mof;
 
@@ -11,21 +9,76 @@ use Drupal\Core\Entity\EntityTypeManagerInterface;
  */
 final class LicenseHandler implements LicenseHandlerInterface {
 
+  // These license IDs are considered open for data component types.
+  const OPEN_DATA_LICENSES = [
+    'CC0-1.0',
+    'CC-BY-1.0',
+    'CC-BY-2.0',
+    'CC-BY-2.5',
+    'CC-BY-2.5-AU',
+    'CC-BY-3.0',
+    'CC-BY-3.0-AT',
+    'CC-BY-3.0-AU',
+    'CC-BY-3.0-DE',
+    'CC-BY-3.0-IGO',
+    'CC-BY-3.0-NL',
+    'CC-BY-3.0-US',
+    'CC-BY-4.0',
+    'CC-BY-SA-1.0',
+    'CC-BY-SA-2.0',
+    'CC-BY-SA-2.0-UK',
+    'CC-BY-SA-2.1-JP',
+    'CC-BY-SA-2.5',
+    'CC-BY-SA-3.0',
+    'CC-BY-SA-3.0-AT',
+    'CC-BY-SA-4.0',
+    'CDLA-Permissive-1.0',
+    'CDLA-Permissive-2.0',
+    'CDLA-Sharing-1.0',
+    'ODC-PDDL-1.0',
+    'ODC-By-1.0',
+    'ODbL-1.0',
+    'GFDL-1.3',
+    'OGL-Canada-2.0',
+    'OGL-UK-2.0',
+    'OGL-UK-3.0',
+  ];
+
+  // All licenses.
   public readonly array $licenses;
 
   /**
    * Constructor.
    */
   public function __construct(EntityTypeManagerInterface $entity_type_manager) {
-    $licenses = [];
+    $this->licenses = $entity_type_manager->getStorage('license')->loadMultiple();
+  }
 
-    foreach ($entity_type_manager
-      ->getStorage('license')
-      ->loadMultiple() as $license) {
-      $licenses[] = $license->toArray();
-    }
+  /**
+   * Return a list of FSF-approved licenses.
+   *
+   * @return array List of isFsfLibre licesnses.
+   */
+  private function getFsfApproved(): array {
+    return array_filter($this->licenses, fn($l) => $l->isFsfApproved());
+  }
 
-    $this->licenses = $licenses;
+  /**
+   * Return a list of deprecated licenses.
+   *
+   * @return array List of deprecated licenses.
+   */
+  private function getDeprecated(): array {
+    return array_filter($this->licenses, fn($l) => $l->isDeprecated());
+  }
+
+  /**
+   * Return a list of OSI-approved licenses.
+   *
+   * @return array List of open/ OSI-approved licenses.
+   */
+  public function getOsiApproved(): array {
+    return array_filter($this->licenses, fn($l) => $l->isOsiApproved());
   }
 
   /**
@@ -38,20 +91,11 @@ final class LicenseHandler implements LicenseHandlerInterface {
    *
    */
   public function getLicensesByType(string $type): array {
-    return array_filter($this->licenses, fn($a) => $a['ContentType'] === $type);
+    return array_filter($this->licenses, fn($l) => $l->getContentType() === $type);
   }
 
   /**
-   * Return a list of OSI-approved licenses.
-   *
-   * @return array List of open/ OSI-approved licenses.
-   */
-  public function getOsiApproved(): array {
-    return array_filter($this->licenses, fn($a) => $a['isOsiApproved'] === true);
-  }
-
-  /**
-   * Determines of a specific license is open/ OSI-approved.
+   * Determines if a specific license is open/ OSI-approved.
    *
    * @param string $license
    *   The license ID to check if it is open.
@@ -59,31 +103,43 @@ final class LicenseHandler implements LicenseHandlerInterface {
    * @return bool TRUE if open, FALSE otherwise.
    */
   public function isOsiApproved(string $license): bool {
-    return in_array($license, array_column($this->getOsiApproved(), 'licenseId'));
+    return in_array($license, array_map(fn($l) => $l->getLicenseId(), $this->getOsiApproved()));
   }
 
   /**
-   * Check if a type-specific license exists for license id.
+   * Determines if a specific license is FSF-approved.
    *
-   * @param string $id
-   *   The license ID to check.
-   * @param string|array $type
-   *   A single type or an array of types.
-   *   Types include: code, document, or data
+   * @param string $license
+   *   The license ID to check if it is FSF.
    *
-   * @return bool
-   *   TRUE if license belongs to $type.
-   *   FALSE otherwise.
+   * @return bool TRUE if open, FALSE otherwise.
    */
-  public function exists(string $id, string|array $type): bool {
-    $type = is_array($type) ? $type : [$type];
+  public function isFsfApproved(string $license): bool {
+    return in_array($license, array_map(fn($l) => $l->getLicenseId(), $this->getFsfApproved()));
+  }
 
-    foreach ($type as $t) {
-      $licenses = array_filter($this->licenses,
-        fn($a) => $a['ContentType'] === $t && $a['licenseId'] === $id);
-    }
+  /**
+   * Determines if a specific license is deprecated.
+   *
+   * @param string $license
+   *   The license ID to check if it is deprecated.
+   *
+   * @return @bool TRUE if deprecated, FALSE otherwise.
+   */
+  public function isDeprecated(string $license): bool {
+    return in_array($license, array_map(fn($l) => $l->getLicenseId(), $this->getDeprecated()));
+  }
 
-    return !empty($licenses);
+  /**
+   * Determines if a specific license is open data.
+   *
+   * @param string $license
+   *   The license ID to check if it is open.
+   *
+   * @return bool TRUE if open, FALSE otherwise.
+   */
+  public function isOpenData(string $license): bool {
+    return in_array($license, self::OPEN_DATA_LICENSES);
   }
 
 }

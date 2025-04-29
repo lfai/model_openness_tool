@@ -84,7 +84,7 @@ final class ModelEvaluator implements ModelEvaluatorInterface {
 
         // Does the component have a type-specific license? and if it's open.
         $type_specific = $this->isTypeSpecific($license, $types);
-        $is_open = $this->licenseHandler->isOsiApproved($license);
+        $is_open = $this->isOpenSourceLicense($component, $license);
 
         if ($type_specific && $is_open) {
           $evaluation[$class]['components']['included'][] = $cid;
@@ -108,8 +108,9 @@ final class ModelEvaluator implements ModelEvaluatorInterface {
     // Check if class 3 has a conditional pass.
     $evaluation[3]['conditional'] = false;
     foreach ($evaluation[3]['licenses'] as $cid => $license) {
-      if (in_array($cid, static::CLASS_3_CIDS) && $this->isOpenSourceLicense($license)) {
-        $evaluation[3]['conditional'] = true;
+      if (in_array($cid, self::CLASS_3_CIDS)) {
+        $component = $this->componentManager->getComponent($cid);
+        $evaluation[3]['conditional'] = $this->isOpenSourceLicense($component, $license);
         break;
       }
     }
@@ -271,8 +272,11 @@ final class ModelEvaluator implements ModelEvaluatorInterface {
 
     $evaluation = $this->evaluate();
     foreach ($evaluation[3]['licenses'] as $cid => $license) {
-      if (in_array($cid, static::CLASS_3_CIDS) && $this->isOpenSourceLicense($license)) {
-        $messages[] = $component_messages[$cid];
+      if (in_array($cid, static::CLASS_3_CIDS)) {
+        $component = $this->componentManager->getComponent($cid);
+        if ($this->isOpenSourceLicense($component, $license)) {
+          $messages[] = $component_messages[$cid];
+        }
       }
     }
 
@@ -282,6 +286,9 @@ final class ModelEvaluator implements ModelEvaluatorInterface {
   /**
    * Determine if a component is using an open source license.
    *
+   * @param \Drupal\mof\Component $component
+   *   The MOF component we're checking.
+   *
    * @param string $license
    *   The license name.
    *
@@ -289,8 +296,24 @@ final class ModelEvaluator implements ModelEvaluatorInterface {
    *   TRUE if license is open-source.
    *   FALSE otherwise.
    */
-  private function isOpenSourceLicense(string $license): bool {
-    return $this->licenseHandler->isOsiApproved($license);
+  private function isOpenSourceLicense(Component $component, string $license): bool {
+    $component_types = (array) $component->contentType;
+
+    foreach ($component_types as $type) {
+      if ($type === 'document' && $this->licenseHandler->isFsfApproved($license)) {
+        return true;
+      }
+
+      if ($type === 'data' && $this->licenseHandler->isOpenData($license)) {
+        return true;
+      }
+
+      if ($type === 'code' && $this->licenseHandler->isOsiApproved($license)) {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   /**

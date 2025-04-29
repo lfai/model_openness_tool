@@ -12,7 +12,7 @@ release:
   origin: 'Qwen2.5-1.5B-instruct '
   producer: 'Beijing Academy of Artificial Intelligence（BAAl）'
   contact: 403969556@qq.com
-  huggingface: 'https://huggingface.co/https://huggingface.co/BAAI/Aquila-VL-2B-llava-qwen'
+  huggingface: 'https://huggingface.co/BAAI/Aquila-VL-2B-llava-qwen'
   components:
     -
       name: 'Model architecture'

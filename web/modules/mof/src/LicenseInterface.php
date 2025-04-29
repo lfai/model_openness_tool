@@ -31,6 +31,20 @@ interface LicenseInterface extends ContentEntityInterface {
   public function isOsiApproved(): bool;
 
   /**
+   * Determine if a license is FSF approved.
+   *
+   * @return bool TRUE if FSFLibre approved; FALSE otherwise.
+   */
+  public function isFsfApproved(): bool;
+
+  /**
+   * Determine if a license is deprecated.
+   *
+   * @return bool TRUE if license is deprecated, FALSE otherwise.
+   */
+  public function isDeprecated(): bool;
+
+  /**
    * Get license content type.
    *
    * @return string Accepted values: 'code', 'document', and 'data' or NULL if not set
