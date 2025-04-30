@@ -111,7 +111,7 @@ final class ModelEvaluator implements ModelEvaluatorInterface {
       if (in_array($cid, self::CLASS_3_CIDS)) {
         $component = $this->componentManager->getComponent($cid);
         $evaluation[3]['conditional'] = $this->isOpenSourceLicense($component, $license);
-        break;
+        if ($evaluation[3]['conditional']) break;
       }
     }
 
