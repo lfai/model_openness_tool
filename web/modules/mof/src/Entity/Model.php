@@ -256,6 +256,10 @@ final class Model extends RevisionableContentEntityBase implements ModelInterfac
       ->setLabel(t('Git repository'))
       ->setDescription(t('Full URL to the git repository.'))
       ->setRequired(FALSE)
+      ->setDisplayOptions('form', [
+        'type' => 'string_textfield',
+        'weight' => 8,
+      ])
       ->setDisplayConfigurable('form', TRUE)
       ->setDisplayConfigurable('view', FALSE);
 
@@ -265,6 +269,10 @@ final class Model extends RevisionableContentEntityBase implements ModelInterfac
       ->setLabel(t('Hugging Face Link'))
       ->setDescription(t('A link to the Hugging Face page where the model is hosted.'))
       ->setRequired(FALSE)
+      ->setDisplayOptions('form', [
+        'type' => 'string_textfield',
+        'weight' => 9,
+      ])
       ->setDisplayConfigurable('form', TRUE)
       ->setDisplayConfigurable('view', FALSE);
 
