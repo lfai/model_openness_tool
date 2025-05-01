@@ -123,7 +123,7 @@ abstract class ModelForm extends ContentEntityForm {
     $form['license']['distribution']['included']  = [
       '#type' => 'checkbox',
       '#title' => $this->t('This model has a global/distribution-wide license'),
-      '#default_value' => $model_licenses['global']['distribution']['included'] ?? '',
+      '#default_value' => isset($model_licenses['global']['distribution']),
     ];
 
     $form['license']['distribution']['name'] = [
@@ -156,7 +156,7 @@ abstract class ModelForm extends ContentEntityForm {
     $form['license']['code']['included'] = [
       '#type' => 'checkbox',
       '#title' => $this->t('This model has a global license for code components'),
-      '#default_value' => $model_licenses['global']['code']['included'] ?? '',
+      '#default_value' => isset($model_licenses['global']['code']),
     ];
 
     $form['license']['code']['name'] = [
@@ -189,7 +189,7 @@ abstract class ModelForm extends ContentEntityForm {
     $form['license']['data']['included'] = [
       '#type' => 'checkbox',
       '#title' => $this->t('This model has a global license for data components'),
-      '#default_value' => $model_licenses['global']['data']['included'] ?? '',
+      '#default_value' => isset($model_licenses['global']['data']),
     ];
 
     $form['license']['data']['name'] = [
@@ -222,7 +222,7 @@ abstract class ModelForm extends ContentEntityForm {
     $form['license']['document']['included'] = [
       '#type' => 'checkbox',
       '#title' => $this->t('This model has a global license for document components'),
-      '#default_value' => $model_licenses['global']['document']['included'] ?? '',
+      '#default_value' => isset($model_licenses['global']['document']),
     ];
 
     $form['license']['document']['name'] = [
@@ -320,7 +320,7 @@ abstract class ModelForm extends ContentEntityForm {
             '#type' => 'checkbox',
             '#parents' => ['global', $cid],
             '#title' => $this->t('Does this component use the global license?'),
-            '#default_value' => in_array($cid, $model_components) && !isset($model_licenses['components'][$cid]) ? true : false,
+            '#default_value' => in_array($cid, $model_components) && empty($model_licenses['components'][$cid]) ? true : false,
             '#states' => [
               'visible' => [
                 [
@@ -408,7 +408,7 @@ abstract class ModelForm extends ContentEntityForm {
     $component_data = $form_state->getValue('component_data');
 
     $license_data = [
-      'global' =>  $form_state->getValue('license'),
+      'global' => array_filter($form_state->getValue('license'), fn($a) => $a['included'] !== 0),
       'components' => [],
     ];
 

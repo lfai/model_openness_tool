@@ -154,9 +154,9 @@ final class Model extends RevisionableContentEntityBase implements ModelInterfac
   }
 
   /**
-   * Get model huggingface slug.
+   * Get model huggingface URL.
    */
-  public function getHuggingfaceSlug(): ?string {
+  public function getHuggingface(): ?string {
     return $this->get('huggingface')->value ?? NULL;
   }
 

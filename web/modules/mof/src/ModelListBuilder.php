@@ -128,12 +128,12 @@ final class ModelListBuilder extends EntityListBuilder {
       'class' => 'model-label',
     ];
 
-    if (($slug = $entity->getRepository())) {
-      $row['label']['data']['#repository' ] = $slug;
+    if (($url = $entity->getRepository())) {
+      $row['label']['data']['#repository' ] = $url;
     }
 
-    if (($slug = $entity->getHuggingfaceSlug())) {
-      $row['label']['data']['#huggingface'] = $slug;
+    if (($url = $entity->getHuggingface())) {
+      $row['label']['data']['#huggingface'] = $url;
     }
 
     $row['owner'] = [

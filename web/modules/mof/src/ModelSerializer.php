@@ -46,12 +46,9 @@ final class ModelSerializer implements ModelSerializerInterface {
         'producer' => $model->getOrganization() ?? '',
         'contact' => $owner->id() > 1 ? $owner->getEmail() : '',
         'repository' => $model->getRepository() ?? '',
+        'huggingface' => $model->getHuggingface() ?? '',
       ],
     ];
-
-    if ($model->getHuggingfaceSlug()) {
-      $data['release']['huggingface'] = 'https://huggingface.co/' . $model->getHuggingfaceSlug();
-    }
 
     /**
      * An array of Component objects that are included in the model.
@@ -67,10 +64,8 @@ final class ModelSerializer implements ModelSerializerInterface {
 
     if (isset($licenses['global'])) {
       foreach ($licenses['global'] as $key => $type) {
-        if ($type['included']) {
-          $data['release']['license'][$key]['name'] = $type['name'];
-          $data['release']['license'][$key]['path'] = $type['path'];
-        }
+        $data['release']['license'][$key]['name'] = $type['name'];
+        $data['release']['license'][$key]['path'] = $type['path'];
       }
     }
 

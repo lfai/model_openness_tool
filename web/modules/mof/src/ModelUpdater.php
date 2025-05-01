@@ -72,28 +72,26 @@ final class ModelUpdater {
       }
       else if ($field === 'components') {
         $license_data['components'] = $this->processComponentLicenses($value);
-        $model->set('license_data', ['licenses' => $license_data]);
-        $model->set('components', array_keys($license_data['components']));
       }
-      // @todo Replace contact with contact field.
+      // @todo Replace owner reference field with a contact text field.
       else if ($field === 'contact') {
         $model->set('uid', 1);
       }
       else if ($field === 'date') {
         $model->set('changed', strtotime($value));
       }
-      else if ($field === 'huggingface') {
-        $parsed = parse_url($value);
-        if (isset($parsed['path'])) {
-          $model->set('huggingface', ltrim($parsed['path'], '/'));
-        }
-      }
       else {
         $model->set($field, $value);
       }
     }
 
+    // Set license and component data.
+    $model->set('license_data', ['licenses' => $license_data]);
+    $model->set('components', array_keys($license_data['components']));
+
+    // Model is auto-approved.
     $model->setStatus(Model::STATUS_APPROVED);
+
     return $model->save();
   }
 
@@ -124,6 +122,8 @@ final class ModelUpdater {
       $component = $this
         ->componentManager
         ->getComponentByName($component_data['name']);
+
+      $licenses[$component->id] = [];
 
       foreach (['license', 'license_path', 'component_path'] as $key) {
         if (isset($component_data[$key])) {

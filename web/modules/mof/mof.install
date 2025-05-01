@@ -60,3 +60,27 @@ function mof_update_10402() {
   $update_manager->updateEntityType($entity_type);
 }
 
+
+/**
+ * Implements hook_update_N().
+ *
+ * Updates model form display to render repository field.
+ */
+function mof_update_10405() {
+  $form_display = \Drupal::entityTypeManager()
+    ->getStorage('entity_form_display')
+    ->load('model.model.default');
+
+  if ($form_display instanceOf \Drupal\Core\Entity\Display\EntityFormDisplayInterface) {
+    $form_display->setComponent('repository', [
+      'type' => 'string_textfield',
+      'weight' => 7,
+      'region' => 'content',
+      'settings' => [
+        'size' => 60,
+        'placeholder' => '',
+      ]
+    ])->save();
+  }
+}
+
