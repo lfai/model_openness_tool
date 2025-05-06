@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Drupal\mof\Entity;
 
@@ -35,12 +33,11 @@ use Drupal\user\EntityOwnerTrait;
  *     "views_data" = "Drupal\views\EntityViewsData",
  *     "access" = "Drupal\mof\Access\ModelAccessHandler",
  *     "form" = {
- *       "add" = "Drupal\mof\Form\ModelSubmitForm",
- *       "edit" = "Drupal\mof\Form\ModelSubmitForm",
+ *       "add" = "Drupal\mof\Form\ModelEditForm",
+ *       "edit" = "Drupal\mof\Form\ModelEditForm",
  *       "delete" = "Drupal\Core\Entity\ContentEntityDeleteForm",
  *       "delete-multiple-confirm" = "Drupal\Core\Entity\Form\DeleteMultipleForm",
- *       "evaluate" = "Drupal\mof\Form\ModelEvaluateForm",
- *       "admin" = "Drupal\mof\Form\ModelAdminEditForm",
+ *       "evaluate" = "Drupal\mof\Form\ModelEvaluateForm"
  *     },
  *     "route_provider" = {
  *       "html" = "Drupal\mof\Routing\ModelEntityRouteProvider",
@@ -50,7 +47,7 @@ use Drupal\user\EntityOwnerTrait;
  *   data_table = "model_field_data",
  *   revision_table = "model_revision",
  *   revision_data_table = "model_field_revision",
- *   show_revision_ui = TRUE,
+ *   show_revision_ui = FALSE,
  *   translatable = TRUE,
  *   admin_permission = "administer model",
  *   collection_permission = "view model collection",
@@ -101,21 +98,10 @@ final class Model extends RevisionableContentEntityBase implements ModelInterfac
   }
 
   /**
-   * Get all completed component IDs for the model.
+   * Get included component IDs for the model.
    */
-  public function getCompletedComponents(): array {
+  public function getComponents(): ?array {
     return array_column($this->get('components')->getValue(), 'value');
-  }
-
-  /**
-   * Determine if the model is pending evaluation.
-   *
-   * A model is pending evaluation if any component license is set to
-   * `Pending evaluation`
-   *
-   */
-  public function isPending(): bool {
-    return in_array('Pending evaluation', array_column($this->getLicenses(), 'license'));
   }
 
   /**
@@ -168,17 +154,17 @@ final class Model extends RevisionableContentEntityBase implements ModelInterfac
   }
 
   /**
-   * Get models huggingface slug.
+   * Get model huggingface URL.
    */
-  public function getHuggingfaceSlug(): ?string {
+  public function getHuggingface(): ?string {
     return $this->get('huggingface')->value ?? NULL;
   }
 
   /**
-   * Get models github repo slug.
+   * Get model repository URL.
    */
-  public function getGithubSlug(): ?string {
-    return $this->get('github')->value ?? NULL;
+  public function getRepository(): ?string {
+    return $this->get('repository')->value ?? NULL;
   }
 
   /**
@@ -264,19 +250,18 @@ final class Model extends RevisionableContentEntityBase implements ModelInterfac
       ->setDisplayConfigurable('view', TRUE)
       ->addConstraint('ModelNameConstraint');
 
-    $fields['github'] = BaseFieldDefinition::create('list_string')
-      ->setRevisionable(TRUE)
+    $fields['repository'] = BaseFieldDefinition::create('string')
+      ->setRevisionable(FALSE)
       ->setTranslatable(FALSE)
-      ->setLabel(t('Project repository'))
+      ->setLabel(t('Git repository'))
+      ->setDescription(t('Full URL to the git repository.'))
       ->setRequired(FALSE)
-      ->setReadOnly(TRUE)
-      ->setSetting('allowed_values_function', 'mof_github_repo_list')
-      ->setDisplayConfigurable('form', FALSE)
-      ->setCardinality(1)
       ->setDisplayOptions('form', [
-        'type' => 'options_select',
-        'weight' => -110,
-      ]);
+        'type' => 'string_textfield',
+        'weight' => 8,
+      ])
+      ->setDisplayConfigurable('form', TRUE)
+      ->setDisplayConfigurable('view', FALSE);
 
     $fields['huggingface'] = BaseFieldDefinition::create('string')
       ->setRevisionable(TRUE)
@@ -284,6 +269,10 @@ final class Model extends RevisionableContentEntityBase implements ModelInterfac
       ->setLabel(t('Hugging Face Link'))
       ->setDescription(t('A link to the Hugging Face page where the model is hosted.'))
       ->setRequired(FALSE)
+      ->setDisplayOptions('form', [
+        'type' => 'string_textfield',
+        'weight' => 9,
+      ])
       ->setDisplayConfigurable('form', TRUE)
       ->setDisplayConfigurable('view', FALSE);
 
@@ -292,7 +281,7 @@ final class Model extends RevisionableContentEntityBase implements ModelInterfac
       ->setTranslatable(TRUE)
       ->setLabel(t('Organization'))
       ->setDescription(t('The organization that developed the model.'))
-      ->setRequired(TRUE)
+      ->setRequired(FALSE)
       ->setSetting('max_length', 255)
       ->setDisplayOptions('form', [
         'type' => 'string_textfield',

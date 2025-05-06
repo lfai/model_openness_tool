@@ -3,12 +3,6 @@ entity.model.settings:
   route_name: entity.model.settings
   base_route: entity.model.settings
 
-entity.model.admin:
-  title: 'Admin'
-  route_name: entity.model.admin_edit_form
-  base_route: entity.model.canonical
-  weight: -10
-
 entity.model.view:
   title: 'View'
   route_name: entity.model.canonical

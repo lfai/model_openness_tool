@@ -36,7 +36,7 @@ class ModelCsvImport {
       'architecture' => self::getAllowedValueKey('architecture', $data['Architecture']) ?? '',
       'treatment' => self::getAllowedValueKey('treatment', $data['Training Treatment']) ?? '',
       'origin' => $data['Base Model'],
-      'github' => self::getPathFromUrl($data['Github Repo URL']),
+      'repository' => self::getPathFromUrl($data['Github Repo URL']),
       'huggingface' => self::getPathFromUrl($data['HuggingFace Model URL']),
       'approver' => self::setApprover($data['Researcher']), 'status' => 'approved',
     ];

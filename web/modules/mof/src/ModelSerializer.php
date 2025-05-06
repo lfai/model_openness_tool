@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Drupal\mof;
 
@@ -22,7 +20,6 @@ final class ModelSerializer implements ModelSerializerInterface {
    */
   public function __construct(
     private readonly SerializerInterface $serializer,
-    private readonly ModelEvaluatorInterface $modelEvaluator,
     private readonly ComponentManagerInterface $componentManager,
     private readonly LoggerInterface $logger
   ) {}
@@ -48,29 +45,50 @@ final class ModelSerializer implements ModelSerializerInterface {
         'origin' => $model->getOrigin() ?? '',
         'producer' => $model->getOrganization() ?? '',
         'contact' => $owner->id() > 1 ? $owner->getEmail() : '',
+        'repository' => $model->getRepository() ?? '',
+        'huggingface' => $model->getHuggingface() ?? '',
       ],
     ];
 
-    if ($model->getGithubSlug()) {
-      $data['release']['github'] = 'https://github.com/' . $model->getGithubSlug();
-    }
-    if ($model->getHuggingfaceSlug()) {
-      $data['release']['huggingface'] = 'https://huggingface.co/' . $model->getHuggingfaceSlug();
-    }
-
+    /**
+     * An array of Component objects that are included in the model.
+     * @var \Drupal\mof\Component[] $completed
+     */
     $completed = array_filter(
       $this->componentManager->getComponents(),
-      fn($c) => in_array($c->id, $model->getCompletedComponents()));
+      fn($c) => in_array($c->id, $model->getComponents()));
 
+    // Build global licenses section.
     $licenses = $model->getLicenses();
+    $data['release']['license'] = [];
+
+    if (isset($licenses['global'])) {
+      foreach ($licenses['global'] as $key => $type) {
+        $data['release']['license'][$key]['name'] = $type['name'];
+        $data['release']['license'][$key]['path'] = $type['path'];
+      }
+    }
+
+    // Build component section of all included components.
     foreach ($completed as $component) {
       $data['release']['components'][] = [
         'name' => $component->name,
         'description' => $component->description,
-        'location' => $licenses[$component->id]['component_path'],
-        'license_name' => $licenses[$component->id]['license'],
-        'license_path' => $licenses[$component->id]['license_path'],
       ];
+
+      // Component must have a global license attached.
+      if (!isset($licenses['components'][$component->id])) continue;
+
+      // Process component-specific license.
+      $delta = array_key_last($data['release']['components']);
+      foreach ($licenses['components'][$component->id] as $key => $value) {
+        if ($key === 'license' && $value === '') {
+          $data['release']['components'][$delta]['license'] = 'unlicensed';
+        }
+        else if ($value !== '') {
+          $data['release']['components'][$delta][$key] = $value;
+        }
+      }
     }
 
     return $data;

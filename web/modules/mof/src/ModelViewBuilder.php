@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Drupal\mof;
 
@@ -22,19 +20,7 @@ use Symfony\Component\HttpFoundation\Session\Session;
 /**
  * ModelViewBuilder class.
  */
-class ModelViewBuilder extends EntityViewBuilder {
-
-  /** @var \Drupal\mof\ModelEvaluatorInterface. */
-  protected ModelEvaluatorInterface $modelEvaluator;
-
-  /** @var array */
-  protected array $modelComponents;
-
-  /** @var \Drupal\Core\Messenger\MessengerInterface. */
-  protected MessengerInterface $messenger;
-
-  /** @var \Symfony\Component\HttpFoundation\Session\Session. */
-  protected Session $session;
+final class ModelViewBuilder extends EntityViewBuilder {
 
   /**
    * {@inheritdoc}
@@ -45,10 +31,11 @@ class ModelViewBuilder extends EntityViewBuilder {
     LanguageManagerInterface $language_manager,
     Registry $theme_registry,
     EntityDisplayRepositoryInterface $entity_display_repository,
-    ModelEvaluatorInterface $model_evaluator,
-    ComponentManagerInterface $component_manager,
-    MessengerInterface $messenger,
-    Session $session
+    private readonly ModelEvaluatorInterface $modelEvaluator,
+    private readonly BadgeGeneratorInterface $badgeGenerator,
+    private readonly array $modelComponents,
+    private readonly MessengerInterface $messenger,
+    private readonly Session $session
   ) {
     parent::__construct(
       $entity_type,
@@ -57,10 +44,6 @@ class ModelViewBuilder extends EntityViewBuilder {
       $theme_registry,
       $entity_display_repository
     );
-    $this->modelEvaluator = $model_evaluator;
-    $this->modelComponents = $component_manager->getComponents();
-    $this->messenger = $messenger;
-    $this->session = $session;
   }
 
   /**
@@ -77,7 +60,8 @@ class ModelViewBuilder extends EntityViewBuilder {
       $container->get('theme.registry'),
       $container->get('entity_display.repository'),
       $container->get('model_evaluator'),
-      $container->get('component.manager'),
+      $container->get('badge_generator'),
+      $container->get('component.manager')->getComponents(),
       $container->get('messenger'),
       $container->get('session')
     );
@@ -87,14 +71,8 @@ class ModelViewBuilder extends EntityViewBuilder {
    * {@inheritdoc}
    */
   public function build(array $build) {
-    if ($build['#model']->isPending()) {
-      $this->messenger->addWarning($this->t('Model pending evaluation'));
-      return $build;
-    }
-
-    $this->modelEvaluator->setModel($build['#model']);
-    $evaluation = $this->modelEvaluator->evaluate();
-
+    // When evaluating a model via the Evaluate Model form
+    // there is no model ID when rendered. Skip the following.
     if ($build['#model']->id() !== NULL) {
       if ($build['#model']->getStatus() === Model::STATUS_UNAPPROVED) {
         $this->messenger->addWarning($this->t('This model is awaiting approval'));
@@ -121,16 +99,15 @@ class ModelViewBuilder extends EntityViewBuilder {
 
       $build['icons'] = [
         '#theme' => 'model_link',
-        '#github' => $build['#model']->getGithubSlug(),
-        '#huggingface' => $build['#model']->getHuggingfaceSlug(),
+        '#repository' => $build['#model']->getRepository(),
+        '#huggingface' => $build['#model']->getHuggingface(),
         '#weight' => -180,
       ];
     }
 
-    $badges = $this
-      ->modelEvaluator
-      ->setModel($build['#model'])
-      ->generateBadge();
+    $this->modelEvaluator->setModel($build['#model']);
+    $evaluation = $this->modelEvaluator->evaluate();
+    $badges = $this->badgeGenerator->generate($build['#model']);
 
     $build['evaluations'] = [
       '#type' => 'container',
@@ -138,24 +115,24 @@ class ModelViewBuilder extends EntityViewBuilder {
       '#weight' => -100,
     ];
 
-    for ($i = 3; $i >= 1; $i--) {
-      $build['evaluations'][$i] = [
+    for ($class = 3; $class >= 1; $class--) {
+      $build['evaluations'][$class] = [
         '#type' => 'container',
         'class_name' => [
           '#type' => 'html_tag',
           '#tag' => 'h4',
-          '#value' => $this->modelEvaluator->getClassLabel($i),
+          '#value' => $this->modelEvaluator->getClassLabel($class),
         ],
-        'badge' => $badges[$i],
+        'badge' => $badges[$class],
         'evaluation' => [
           'included' => $this
-            ->getComponentList($evaluation[$i]['included'], 'included'),
+            ->buildComponentList($class, $evaluation, 'included'),
           'unspecified' => $this
-            ->getComponentList($evaluation[$i]['unspecified'], 'unspecified'),
+            ->buildComponentList($class, $evaluation, 'unlicensed'),
           'invalid' => $this
-            ->getComponentList($evaluation[$i]['invalid'], 'invalid'),
+            ->buildComponentList($class, $evaluation, 'invalid'),
           'missing' => $this
-            ->getComponentList($evaluation[$i]['missing'], 'missing'),
+            ->buildComponentList($class, $evaluation, 'missing'),
           '#weight' => 10,
         ],
       ];
@@ -171,7 +148,7 @@ class ModelViewBuilder extends EntityViewBuilder {
       $this->messenger->addMessage($list);
     }
 
-    if ($this->session->get('model_evaluation') === TRUE) {
+    if ($this->session->get('model_session_evaluation') === TRUE) {
       $build['retry'] = [
         '#type' => 'link',
         '#title' => $this->t('Retry'),
@@ -182,17 +159,17 @@ class ModelViewBuilder extends EntityViewBuilder {
         ],
       ];
 
-      $build['submit'] = [
+      $build['download'] = [
         '#type' => 'link',
-        '#title' => $this->t('Submit model'),
-        '#url' => Url::fromRoute('entity.model.add_form'),
+        '#title' => $this->t('Download YAML'),
+        '#url' => Url::fromRoute('mof.model.evaluate_form.download'),
         '#weight' => -200,
         '#attributes' => [
           'class' => ['button', 'button--action', 'button--primary'],
         ],
       ];
 
-      $this->session->set('model_evaluation', FALSE);
+      $this->session->set('model_session_evaluation', FALSE);
     }
 
     $build['#attached']['library'][] = 'mof/model-evaluation';
@@ -205,48 +182,54 @@ class ModelViewBuilder extends EntityViewBuilder {
   /**
    * Build a render array of completed, missing, unspecified or invalid model components.
    *
-   * @param array $components
-   *   Model components.
+   * @param int $class
+   *   The MOF class: 1, 2 or 3.
+   * @param array $evaluation
+   *   An evaluated model array containing component and license data.
    * @param string $status
-   *   A value of "missing" or "completed" or "invalid" or "unspecified"
+   *   A value of "missing" or "included" or "invalid" or "unlicensed".
+   *
    * @return array
    *   A drupal render array of components.
    */
-  private function getComponentList(array $components, string $status): array {
+  private function buildComponentList(int $class, array $evaluation, string $status): array {
     $build = [];
 
-    if (empty($components) && !in_array($status, ['missing', 'invalid', 'completed', 'unspecified'])) {
+    if (!in_array($status, ['missing', 'invalid', 'included', 'unlicensed'])) {
       return $build;
     }
 
-    if ($status == "invalid") {
-      $build = [
-        "{$status}_components" => [
-          '#theme' => 'item_list',
-          '#title' => $this->t('Components with an invalid license'),
-        ]
-      ];
-    } else if ($status == "unspecified") {
-        $build = [
-          "{$status}_components" => [
-            '#theme' => 'item_list',
-            '#title' => $this->t('Components with an unspecified license'),
-          ]
-        ];
-    } else {
-      $build = [
-        "{$status}_components" => [
-          '#theme' => 'item_list',
-          '#title' => $this->t('@status components', ['@status' => ucfirst($status)]),
-        ]
-      ];
+    switch ($status) {
+    case 'invalid':
+      $title = $this->t('Components with an invalid license');
+      break;
+
+    case 'unlicensed':
+      $title = $this->t('Components without a license');
+      break;
+
+    case 'missing':
+      $title = $this->t('Components missing');
+      break;
+
+    case 'included':
+      $title = $this->t('Components included');
+      break;
     }
+
+    $build["{$status}_components"] = [
+      '#theme' => 'item_list',
+      '#title' => $title,
+      '#items' => [],
+    ];
+
     $components = array_filter(
       $this->modelComponents,
-      fn($c) => in_array($c->id, $components));
+      fn($c) => in_array($c->id, $evaluation[$class]['components'][$status]));
 
     foreach ($components as $component) {
-      $build["{$status}_components"]['#items'][] = $component->name;
+      $license = $evaluation[$class]['licenses'][$component->id] ?? null;
+      $build["{$status}_components"]['#items'][] = $component->name . ($license ? " [{$license}]" : '');
     }
 
     return $build;

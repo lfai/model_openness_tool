@@ -16,25 +16,15 @@
   width: 130px;
 }
 
-.license-input,
-.license-path,
-.component-path {
-  width: 250px;
-}
-
 .component-license-wrapper {
   display: flex;
-  flex-wrap: wrap;
-  align-items: center;
+  flex-direction: column;
+  gap: .75rem;
   padding: .5rem 2.5rem;
-  position: relative;
-  border-top: 1px solid #ddc1c1;
-  border-bottom: 1px solid #ddc1c1;
+  border-left: 1px solid #f7eded;
+  border-bottom: 1px solid #f7eded;
+  border-bottom-left-radius: 5px;
   color: #000;
-}
-
-.component-license-wrapper span {
-  width: 250px;
 }
 
 .component-license-wrapper .form-item {
@@ -73,10 +63,6 @@
 
 .local-actions {
   float: right;
-}
-
-.license-input + .form-item__description {
-  margin-bottom: 0;
 }
 
 @media screen and (min-width: 429px) {

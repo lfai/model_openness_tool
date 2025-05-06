@@ -3,7 +3,7 @@ components:
     id: 15
     name: Datasets
     description: "Training, validation and testing datasets used for the model"
-    tooltip: "(Optional) The license used for the datasets, pretraining, fine-tuning, RLHF or otherwise, 'License not specified', or 'Component not included'."
+    tooltip: "(Optional) The license used for the datasets, pretraining, fine-tuning, RLHF or otherwise, leave blank if the component is unlicensed."
     content_type: [data, code, document]
     class: 1
     weight: 30
@@ -12,7 +12,7 @@ components:
     id: 16
     name: Data preprocessing code
     description: "Code for data cleansing, normalization, and augmentation"
-    tooltip: "The license used for the data preprocessing code, 'License not specified', or 'Component not included'."
+    tooltip: "The license used for the data preprocessing code. Leave blank if the component is unlicensed."
     content_type: code
     class: 1
     weight: -60
@@ -21,7 +21,7 @@ components:
     id: 9
     name: Model architecture
     description: "Well commented code for the model's architecture"
-    tooltip: "The license used for the model architecture, 'License not specified', or 'Component not included'."
+    tooltip: "The license used for the model architecture. Leave blank if the component is unlicensed."
     content_type: code
     class: 3
     weight: -80
@@ -30,7 +30,7 @@ components:
     id: 10
     name: Model parameters (Final)
     description: "Trained model parameters, weights and biases"
-    tooltip: "The license used for the final model parameters, 'License not specified', or 'Component not included'."
+    tooltip: "The license used for the final model parameters. Leave blank if the component is unlicensed."
     content_type: [data, code]
     class: 3
     weight: 10
@@ -39,7 +39,7 @@ components:
     id: 17
     name: Model metadata
     description: "Any model metadata including training configuration and optimizer states"
-    tooltip: "The license used for the model's metadata, 'License not specified', or 'Component not included'."
+    tooltip: "The license used for the model's metadata. Leave blank if the component is unlicensed."
     content_type: data
     class: 1
     weight: 60
@@ -48,7 +48,7 @@ components:
     id: 24
     name: Model parameters (Intermediate)
     description: "Trained model parameters, weights and biases"
-    tooltip: "The license used for the intermediate checkpoints, 'License not specified', or 'Component not included'."
+    tooltip: "The license used for the intermediate checkpoints. Leave blank is the component is unlicensed."
     content_type: data
     class: 1
     weight: 20
@@ -57,7 +57,7 @@ components:
     id: 7
     name: Training code
     description: "Code used for training the model"
-    tooltip: "The license used for the training code, 'License not specified', or 'Component not included'."
+    tooltip: "The license used for the training code. Leave blank if the component is unlicensed."
     content_type: code
     class: 2
     weight: -40
@@ -66,7 +66,7 @@ components:
     id: 8
     name: Inference code
     description: "Code used for running the model to make predictions"
-    tooltip: "The license used for the inference code, 'License not specified', or 'Component not included'."
+    tooltip: "The license used for the inference code. Leave blank if the component is unlicensed."
     content_type: code
     class: 2
     weight: -30
@@ -75,7 +75,7 @@ components:
     id: 18
     name: Evaluation code
     description: "Code used for evaluating the model"
-    tooltip: "The license used for the evaluation code, 'License not specified', or 'Component not included'."
+    tooltip: "The license used for the evaluation code. Leave blank if the component is unlicensed."
     content_type: code
     class: 2
     weight: -10
@@ -84,7 +84,7 @@ components:
     id: 19
     name: Evaluation data
     description: "Data used for evaluating the model"
-    tooltip: "The license used for the evaluation data, 'License not specified', or 'Component not included'."
+    tooltip: "The license used for the evaluation data. Leave blank if the component is unlicensed."
     content_type: data
     class: 2
     weight: 50
@@ -93,7 +93,7 @@ components:
     id: 12
     name: Evaluation results
     description: "The results from evaluating the model"
-    tooltip: "The license used for evaluation results, 'License not specified', or 'Component not included'."
+    tooltip: "The license used for evaluation results. Leave blank if the component is unlicensed."
     content_type: [document, code]
     class: 3
     weight: 101
@@ -102,19 +102,16 @@ components:
     id: 22
     name: Supporting libraries and tools
     description: "Libraries and tools used in the model's development"
-    tooltip: "(Optional) The license used for any supporting libraries and tools, 'License not specified', or 'Component not included'."
+    tooltip: "(Optional) The license used for any supporting libraries and tools. Leave blank if the component is unlicensed."
     content_type: code
     class: 2
-    extra_licenses:
-      - Proprietary
-      - Mixed
     weight: 0
     required: false
   -
     id: 13
     name: Model card
     description: "Model details including performance metrics, intended use, and limitations"
-    tooltip: "The license used for the model card, 'License not specified', or 'Component not included'."
+    tooltip: "The license used for the model card. Leave blank if the component is unlicensed."
     content_type: [document, code]
     class: 3
     weight: 70
@@ -123,7 +120,7 @@ components:
     id: 14
     name: Data card
     description: "Documentation for datasets including source, characteristics, and preprocessing details"
-    tooltip: "The license used for the data card, 'License not specified', or 'Component not included'."
+    tooltip: "The license used for the data card. Leave blank if the component is unlicensed."
     content_type: [document, code]
     class: 3
     weight: 80
@@ -132,7 +129,7 @@ components:
     id: 11
     name: Technical report
     description: "Technical report detailing capabilities and usage instructions for the model"
-    tooltip: "The license used for the technical report, 'License not specified', or 'Component not included'."
+    tooltip: "The license used for the technical report. Leave blank if the component is unlicensed."
     content_type: [document, code]
     class: 3
     weight: 90
@@ -141,7 +138,7 @@ components:
     id: 21
     name: Research paper
     description: "Research paper detailing the development and capabilities of the model"
-    tooltip: "The license used for the research paper, 'License not specified', or 'Component not included'."
+    tooltip: "The license used for the research paper. Leave blank if the component is unlicensed."
     content_type: document
     class: 1
     weight: 100
@@ -150,7 +147,7 @@ components:
     id: 20
     name: Sample model outputs
     description: "Examples of outputs generated by the model"
-    tooltip: "(Optional) The license used for sample model outputs, 'License not specified', or 'Component not included'."
+    tooltip: "(Optional) The license used for sample model outputs. Leave blank if the component is unlicensed."
     content_type: [data, code, document]
     class: 3
     weight: 60

@@ -64,7 +64,7 @@ final class Component implements ComponentInterface {
       ];
     }
 
-    return array_unique($licenses, SORT_REGULAR);
+    return array_unique($licenses, SORT_STRING);
   }
 
 }

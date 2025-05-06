@@ -20,7 +20,7 @@ function mof_theme(): array {
     'model_link' => [
       'variables' => [
         'model' => NULL,
-        'github' => NULL,
+        'repository' => NULL,
         'huggingface' => NULL,
       ],
     ],
@@ -33,14 +33,6 @@ function mof_theme(): array {
       ],
     ],
   ];
-}
-
-/**
- * Allow only github repos values.
- */
-function mof_github_repo_list(FieldStorageDefinitionInterface $definition, ?FieldableEntityInterface $entity = NULL, &$cacheable = TRUE): array {
-  $github = \Drupal::service('github');
-  return $github->isAuthenticated() ? $github->getRepoList() : [];
 }
 
 /**

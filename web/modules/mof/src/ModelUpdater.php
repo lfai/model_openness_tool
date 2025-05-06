@@ -9,6 +9,11 @@ use Drupal\user\UserInterface;
 use Drupal\mof\Entity\Model;
 use Drupal\mof\ModelInterface;
 
+/**
+ * @file
+ * Creates or updates model entities with provided data.
+ * Typically used to sync data in models/ directory.
+ */
 final class ModelUpdater {
 
   /** @var \Drupal\Core\Entity\EntityStorageInterface. */
@@ -40,15 +45,8 @@ final class ModelUpdater {
    *   The model if it exists; NULL otherwise.
    */
   public function exists(array $model_data): ?ModelInterface {
-    $model = $this
-      ->modelStorage
-      ->loadByProperties(['label' => $model_data['name']]);
-
-    if (empty($model)) {
-      return NULL;
-    }
-
-    return reset($model);
+    $model = $this->modelStorage->loadByProperties(['label' => $model_data['name']]);
+    return empty($model) ? NULL : reset($model);
   }
 
   /**
@@ -62,40 +60,38 @@ final class ModelUpdater {
    *   Either SAVED_NEW or SAVED_UPDATED.
    */
   public function update(ModelInterface $model, array $model_data): int {
+    $license_data = [];
+
     foreach ($model_data as $field => $value) {
       // @todo Rename these fields on the entity(?)
       if ($field === 'name') $field = 'label';
       if ($field === 'producer') $field = 'organization';
 
-      if ($field === 'components') {
-        $license_data = $this->processLicenses($value);
-        $model->set('license_data', ['licenses' => $license_data]);
-        $model->set('components', array_keys($license_data));
+      if ($field === 'license') {
+        $license_data['global'] = $value;
       }
+      else if ($field === 'components') {
+        $license_data['components'] = $this->processComponentLicenses($value);
+      }
+      // @todo Replace owner reference field with a contact text field.
       else if ($field === 'contact') {
-        $model->set('uid', $this->processOwnerContact($value));
+        $model->set('uid', 1);
       }
       else if ($field === 'date') {
         $model->set('changed', strtotime($value));
-      }
-      else if ($field === 'github') {
-        $parsed = parse_url($value);
-        if (isset($parsed['path'])) {
-          $model->set('github', ltrim($parsed['path'], '/'));
-        }
-      }
-      else if ($field === 'huggingface') {
-        $parsed = parse_url($value);
-        if (isset($parsed['path'])) {
-          $model->set('huggingface', ltrim($parsed['path'], '/'));
-        }
       }
       else {
         $model->set($field, $value);
       }
     }
 
+    // Set license and component data.
+    $model->set('license_data', ['licenses' => $license_data]);
+    $model->set('components', array_keys($license_data['components']));
+
+    // Model is auto-approved.
     $model->setStatus(Model::STATUS_APPROVED);
+
     return $model->save();
   }
 
@@ -112,38 +108,6 @@ final class ModelUpdater {
   }
 
   /**
-   * Process contact field.
-   * Find or create a Drupal user entity.
-   *
-   * @param string $email
-   *   An email address belonging to the model contact.
-   * @return \Drupal\user\UserInterface.
-   *   A Drupal user account or NULL if not found or cannot be created.
-   */
-  private function processOwnerContact(string $email): ?UserInterface {
-    if (filter_var($email, FILTER_VALIDATE_EMAIL) === FALSE) {
-      return NULL;
-    }
-
-    $user = $this->userStorage->loadByProperties(['mail' => $email]);
-
-    if (empty($user)) {
-      $user = $this->userStorage->create([
-        'mail' => $email,
-        'name' => explode('@', $email)[0],
-        'pass' => \Drupal::service('password')->hash(random_bytes(16)),
-      ]);
-
-      $user->save();
-    }
-    else {
-      $user = reset($user);
-    }
-
-    return $user;
-  }
-
-  /**
    * Process licenses for each component of the model.
    *
    * @param array $license_data
@@ -151,7 +115,7 @@ final class ModelUpdater {
    * @return array
    *   The license array structured for a model entity.
    */
-  private function processLicenses(array $license_data): array {
+  private function processComponentLicenses(array $license_data): array {
     $licenses = [];
 
     foreach ($license_data as $component_data) {
@@ -159,11 +123,19 @@ final class ModelUpdater {
         ->componentManager
         ->getComponentByName($component_data['name']);
 
-      $licenses[$component->id] = [
-        'license' => $component_data['license_name'],
-        'license_path' => $component_data['license_path'],
-        'component_path' => $component_data['location'],
-      ];
+      $licenses[$component->id] = [];
+
+      foreach (['license', 'license_path', 'component_path'] as $key) {
+        if (isset($component_data[$key])) {
+          // Set key but leave blank if unlicensed.
+          if ($key === 'license' && $component_data[$key] === 'unlicensed') {
+            $licenses[$component->id][$key] = '';
+          }
+          else {
+            $licenses[$component->id][$key] = $component_data[$key];
+          }
+        }
+      }
     }
 
     return $licenses;

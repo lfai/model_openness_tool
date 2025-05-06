@@ -1,17 +1,20 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Drupal\mof\Form;
 
 use Drupal\Core\Form\FormStateInterface;
 
+/**
+ * @file
+ * Provides form processing for evaluating model openness and license compliance.
+ */
 final class ModelEvaluateForm extends ModelForm {
 
   /**
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state): array {
+    // Return evaluation results if available, otherwise display user input form.
     return $form_state->get('evaluation') ?: parent::buildForm($form, $form_state);
   }
 
@@ -19,32 +22,34 @@ final class ModelEvaluateForm extends ModelForm {
    * {@inheritdoc}
    */
   public function form(array $form, FormStateInterface $form_state): array {
-    $form += parent::form($form, $form_state);
-    $form['#title'] = $this->t('Evaluate model');
+    if (!$this->session->isStarted()) {
+      $this->session->start();
+    }
 
-    // Hide elements that aren't needed for evaluation only.
-    $hide = [
-      'label',
-      'description',
-      'version',
-      'organization',
-      'type',
-      'architecture',
-      'treatment',
-      'origin',
-      'revision_information',
-      'github',
-      'huggingface',
-      'status',
-    ];
+    $model_data = null;
+    if ($this->session->has('model_session_data')) {
+      $model_data = $this->session->get('model_session_data');
+    }
 
-    foreach ($hide as $field_name) {
-      if (isset($form[$field_name])) {
-        $form[$field_name]['#access'] = FALSE;
+    // If we have session data and the form is not being rebuilt from
+    // submitted values, repopulate the model entity.
+    if ($model_data && !$form_state->isSubmitted()) {
+      // Create new or update existing entity.
+      if (!$this->entity || $this->entity->isNew()) {
+        $this->entity = $this->entityTypeManager->getStorage('model')->create();
+      }
+
+      foreach ($model_data as $field => $value) {
+        if ($this->entity->hasField($field)) {
+          $this->entity->set($field, $value);
+        }
       }
     }
 
-    return $form; 
+    $form += parent::form($form, $form_state);
+    $form['#attached']['library'][] = 'mof/model-evaluate';
+
+    return $form;
   }
 
   /**
@@ -54,9 +59,10 @@ final class ModelEvaluateForm extends ModelForm {
     $actions = parent::actions($form, $form_state);
     $actions['submit']['#value'] = $this->t('Evaluate');
 
-    if ($this->session->get('model_data') !== NULL) {
+    if ($this->session->get('model_session_data') !== NULL) {
       $actions['reset'] = [
         '#type' => 'submit',
+        '#limit_validation_errors' => [],
         '#value' => $this->t('Start over'),
         '#submit' => [[$this, 'resetForm']],
       ];
@@ -72,11 +78,11 @@ final class ModelEvaluateForm extends ModelForm {
     parent::submitForm($form, $form_state);
     $this
       ->session
-      ->set('model_evaluation', TRUE);
+      ->set('model_session_evaluation', TRUE);
     $this
       ->session
-      ->set('model_data', $form_state
-      ->getValue('license_data'));
+      ->set('model_session_data', $form_state
+      ->getValues());
     $form_state
       ->setRebuild(TRUE);
     $form_state
@@ -104,8 +110,8 @@ final class ModelEvaluateForm extends ModelForm {
    *   The current state of the form.
    */
   public function resetForm(array &$form, FormStateInterface $form_state): void {
-    $this->session->remove('model_evaluation');
-    $this->session->remove('model_data');
+    $this->session->remove('model_session_evaluation');
+    $this->session->remove('model_session_data');
   }
 
 }

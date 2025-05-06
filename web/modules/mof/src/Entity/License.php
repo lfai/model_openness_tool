@@ -54,6 +54,16 @@ use Drupal\mof\LicenseInterface;
 final class License extends ContentEntityBase implements LicenseInterface {
 
   /**
+   * Converts a license entity to its license id when casted to a string.
+   *
+   * @return string
+   *   The License ID.
+   */
+  public function __toString(): string {
+    return $this->getLicenseId();
+  }
+
+  /**
    * {@inheritdoc}
    */
   public function getName(): string {
@@ -77,6 +87,20 @@ final class License extends ContentEntityBase implements LicenseInterface {
   /**
    * {@inheritdoc}
    */
+  public function isFsfApproved(): bool {
+    return (bool)$this->get('fsf_libre')->value;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function isDeprecated(): bool {
+    return (bool)$this->get('deprecated_license_id')->value;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function getContentType(): ?string {
     return $this->get('content_type')->value ?? NULL;
   }
@@ -89,7 +113,9 @@ final class License extends ContentEntityBase implements LicenseInterface {
       'name' => $this->getName(),
       'licenseId' => $this->getLicenseId(),
       'isOsiApproved' => $this->isOsiApproved(),
+      'isFsfLibre' => $this->isFsfApproved(),
       'ContentType' => $this->getContentType(),
+      'isDeprecated' => $this->isDeprecated(),
     ];
   }
 

@@ -40,7 +40,6 @@ services:
     class: Drupal\mof\ModelSerializer
     arguments:
       - '@serializer'
-      - '@model_evaluator'
       - '@component.manager'
       - '@logger.channel.mot'
 
@@ -58,13 +57,10 @@ services:
     arguments:
       - '@config.factory'
 
-  github:
-    class: Drupal\mof\GitHubService
+  badge_generator:
+    class: Drupal\mof\BadgeGenerator
     arguments:
-      - '@http_client'
-      - '@current_user'
-      - '@entity_type.manager'
-      - '@logger.factory'
+      - '@model_evaluator'
 
   mof.event_subscriber:
     class: Drupal\mof\EventSubscriber\GitHubSubscriber

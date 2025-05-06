@@ -18,13 +18,6 @@ entity.model.evaluate_model:
   menu_name: main
   weight: 3
 
-entity.model.submit_model:
-  title: 'Submit Model'
-  description: 'Submit your model'
-  route_name: entity.model.add_form
-  menu_name: main
-  weight: 6
-
 entity.model.admin:
   title: 'Admin'
   description: 'Administer models'
