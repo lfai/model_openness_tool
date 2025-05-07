@@ -316,6 +316,23 @@ abstract class ModelForm extends ContentEntityForm {
             '#return_value' => $cid,
             '#parents' => ['component', $cid],
           ],
+          'component_path' => [
+            '#type' => 'textfield',
+            '#parents' => ['component_data', $cid, 'component_path'],
+            '#description' => $this->t('The file system path to the component. (e.g. /path/to/component)'),
+            '#default_value' => $model_licenses['components'][$cid]['component_path'] ?? '',
+            '#placeholder' => $this->t('Enter file system path to the component'),
+            '#attributes' => [
+              'autocomplete' => 'off',
+            ],
+            '#states' => [
+              'visible' => [
+                [
+                  ":input[name=\"component[{$cid}]\"]" => ['checked' => true],
+                ],
+              ],
+            ],
+          ],
           'global' => [
             '#type' => 'checkbox',
             '#parents' => ['global', $cid],
@@ -374,25 +391,7 @@ abstract class ModelForm extends ContentEntityForm {
               ],
             ],
           ],
-          'component_path' => [
-            '#type' => 'textfield',
-            '#parents' => ['component_data', $cid, 'component_path'],
-            '#description' => $this->t('The file system path to the component. (e.g. /path/to/component)'),
-            '#default_value' => $model_licenses['components'][$cid]['component_path'] ?? '',
-            '#placeholder' => $this->t('Enter file system path to the component'),
-            '#attributes' => [
-              'autocomplete' => 'off',
-            ],
-            '#states' => [
-              'visible' => [
-                [
-                  ":input[name=\"component[{$cid}]\"]" => ['checked' => true],
-                  ":input[name=\"global[{$cid}]\"]" => ['checked' => false],
-                ],
-              ],
-            ],
-          ],
-        ],
+         ],
       ];
     }
 
