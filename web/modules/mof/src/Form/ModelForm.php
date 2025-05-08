@@ -322,6 +322,7 @@ abstract class ModelForm extends ContentEntityForm {
             '#description' => $this->t('The file system path to the component. (e.g. /path/to/component)'),
             '#default_value' => $model_licenses['components'][$cid]['component_path'] ?? '',
             '#placeholder' => $this->t('Enter file system path to the component'),
+            '#weight' => 100,
             '#attributes' => [
               'autocomplete' => 'off',
             ],
@@ -336,7 +337,7 @@ abstract class ModelForm extends ContentEntityForm {
           'global' => [
             '#type' => 'checkbox',
             '#parents' => ['global', $cid],
-            '#title' => $this->t('Does this component use the global license?'),
+            '#title' => $this->t('Check if this component uses a component-specific license'),
             '#default_value' => in_array($cid, $model_components) && empty($model_licenses['components'][$cid]) ? true : false,
             '#states' => [
               'visible' => [
@@ -368,7 +369,13 @@ abstract class ModelForm extends ContentEntityForm {
               'visible' => [
                 [
                   ":input[name=\"component[{$cid}]\"]" => ['checked' => true],
-                  ":input[name=\"global[{$cid}]\"]" => ['checked' => false],
+                  ":input[name=\"global[{$cid}]\"]" => ['checked' => true],
+                ],
+                'or',
+                [
+                  ":input[name=\"component[{$cid}]\"]" => ['checked' => true],
+                  ":input[name=\"license[distribution][included]\"]" => ['checked' => false],
+                  ":input[name=\"license[{$group}][included]\"]" => ['checked' => false],
                 ],
               ],
             ],
@@ -386,12 +393,18 @@ abstract class ModelForm extends ContentEntityForm {
               'visible' => [
                 [
                   ":input[name=\"component[{$cid}]\"]" => ['checked' => true],
-                  ":input[name=\"global[{$cid}]\"]" => ['checked' => false],
+                  ":input[name=\"global[{$cid}]\"]" => ['checked' => true],
+                ],
+                'or',
+                [
+                  ":input[name=\"component[{$cid}]\"]" => ['checked' => true],
+                  ":input[name=\"license[distribution][included]\"]" => ['checked' => false],
+                  ":input[name=\"license[{$group}][included]\"]" => ['checked' => false],
                 ],
               ],
             ],
           ],
-         ],
+        ],
       ];
     }
 
