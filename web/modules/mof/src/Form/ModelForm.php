@@ -132,6 +132,7 @@ abstract class ModelForm extends ContentEntityForm {
       '#description' => $this->t('Enter the name of the global/distribution-wide license (e.g. Apache-2.0).'),
       '#weight' => 1,
       '#attributes' => ['list' => 'license-datalist-0'],
+      '#placeholder' => $this->t('Begin typing to find a license'),
       '#default_value' => $model_licenses['global']['distribution']['name'] ?? '',
       '#states' => [
         'visible' => [
@@ -165,6 +166,7 @@ abstract class ModelForm extends ContentEntityForm {
       '#description' => $this->t('Enter the name of the code component license (e.g. Apache-2.0).'),
       '#weight' => 1,
       '#attributes' => ['list' => 'license-datalist-code'],
+      '#placeholder' => $this->t('Begin typing to find a license'),
       '#default_value' => $model_licenses['global']['code']['name'] ?? '',
       '#states' => [
         'visible' => [
@@ -198,6 +200,7 @@ abstract class ModelForm extends ContentEntityForm {
       '#description' => $this->t('Enter the name of the data component license (e.g. Apache-2.0).'),
       '#default_value' => $model_licenses['global']['data']['name'] ?? '',
       '#attributes' => ['list' => 'license-datalist-data'],
+      '#placeholder' => $this->t('Begin typing to find a license'),
       '#weight' => 1,
       '#states' => [
         'visible' => [
@@ -232,6 +235,7 @@ abstract class ModelForm extends ContentEntityForm {
       '#default_value' => $model_licenses['global']['document']['name'] ?? '',
       '#weight' => 1,
       '#attributes' => ['list' => 'license-datalist-document'],
+      '#placeholder' => $this->t('Begin typing to find a license'),
       '#states' => [
         'visible' => [
           ':input[name="license[document][included]"]' => ['checked' => true],
