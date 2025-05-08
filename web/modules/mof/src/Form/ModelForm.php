@@ -440,55 +440,6 @@ abstract class ModelForm extends ContentEntityForm {
   }
 
   /**
-   * {@inheritdoc}
-   */
-  public function save(array $form, FormStateInterface $form_state): int {
-    $result = parent::save($form, $form_state);
-    return $result;
-
-    /*
-    try {
-      $status = $this
-        ->modelEvaluator
-        ->setModel($this->entity)
-        ->evaluate();
-
-      foreach ($status as $class => $missing_components) {
-        if (empty($missing_components)) {
-          $this
-            ->messenger()
-            ->addStatus($this->t('Model qualified for class @class', ['@class' => $class]));
-        }
-      }
-    }
-    catch (\Exception $e) {
-      $this->messenger()->addError($e->getMessage());
-    }
-
-    $logger_args = [
-      '%label' => $this->entity->label(),
-      'link' => $this->entity->toLink($this->t('View'))->toString(),
-    ];
-
-    switch ($result) {
-      case SAVED_NEW:
-        $this->logger('mof')->notice('New model (%label) has been created.', $logger_args);
-        break;
-
-      case SAVED_UPDATED:
-        $this->logger('mof')->notice('The model (%label) has been updated.', $logger_args);
-        break;
-
-      default:
-        throw new \LogicException('Could not save the model.');
-    }
-
-    $form_state->setRedirectUrl($this->entity->toUrl());
-    return $result;
-    */
-  }
-
-  /**
    * Build an HTML5 datalist for the specific content type or component.
    */
   final protected function buildDataList(int|string $type): array {
