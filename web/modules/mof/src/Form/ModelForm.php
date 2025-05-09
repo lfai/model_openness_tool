@@ -342,7 +342,7 @@ abstract class ModelForm extends ContentEntityForm {
             '#type' => 'checkbox',
             '#parents' => ['global', $cid],
             '#title' => $this->t('Check if this component uses a component-specific license'),
-            '#default_value' => in_array($cid, $model_components) && empty($model_licenses['components'][$cid]) ? true : false,
+            '#default_value' => in_array($cid, $model_components) && isset($model_licenses['components'][$cid]['license']),
             '#states' => [
               'visible' => [
                 [
@@ -419,18 +419,34 @@ abstract class ModelForm extends ContentEntityForm {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state): void {
-    $globals = array_filter($form_state->getValue('global'));
+    // Gather global licenses attached to the model.
+    $global_license = array_filter($form_state->getValue('license'), fn($a) => $a['included'] !== 0);
+
+    // Gather included components and associated data.
     $included_components = array_filter($form_state->getValue('component'));
     $component_data = $form_state->getValue('component_data');
 
+    // Gather component-specific licenses.
+    $component_specific = array_filter($form_state->getValue('global'));
+
+    // Build license data.
     $license_data = [
-      'global' => array_filter($form_state->getValue('license'), fn($a) => $a['included'] !== 0),
+      'global' => $global_license,
       'components' => [],
     ];
 
+    // Determine if component has a component-specific license or if it's inherited.
     foreach ($included_components as $cid) {
-      if (!isset($globals[$cid])) {
+      // Component-specific.
+      if (empty($global_license) || isset($component_specific[$cid])) {
         $license_data['components'][$cid] = $component_data[$cid];
+      }
+      // Inherits global license.
+      else {
+        // Check if component has a path set.
+        if ($component_data[$cid]['component_path'] !== '') {
+          $license_data['components'][$cid]['component_path'] = $component_data[$cid]['component_path'];
+        }
       }
     }
 
