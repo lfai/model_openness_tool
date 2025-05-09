@@ -153,7 +153,7 @@ final class ModelController extends ControllerBase {
       $response->setContent($yaml);
       $response->headers->set('Content-Type', 'application/yaml');
       $response->headers->set('Content-Length', (string)strlen($yaml));
-      $response->headers->set('Content-Disposition', 'attachment; filename="mof.yml"');
+      $response->headers->set('Content-Disposition', 'attachment; filename="' . $model->label() . '.yml"');
     }
     catch (\RuntimeException $e) {
       $response->setContent($e->getMessage());
@@ -174,7 +174,7 @@ final class ModelController extends ControllerBase {
       $response->setContent($json);
       $response->headers->set('Content-Type', 'application/json');
       $response->headers->set('Content-Length', (string)strlen($json));
-      $response->headers->set('Content-Disposition', 'attachment; filename="mof.json"');
+      $response->headers->set('Content-Disposition', 'attachment; filename="' . $model->label() . '.json"');
     }
     catch (\RuntimeException $e) {
       $response->setContent($e->getMessage());
