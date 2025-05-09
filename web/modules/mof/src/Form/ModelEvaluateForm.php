@@ -96,8 +96,8 @@ final class ModelEvaluateForm extends ModelForm {
    * {@inheritdoc}
    */
   public function save(array $form, FormStateInterface $form_state): int {
-    // We do not save the model when using `evaluate model` form.
-    // Models are only saved when using `submit model` form.
+    // Do not save the model when using `evaluate model` form.
+    // We instead provide a YAML download link in the model view builder.
     return 0;
   }
 

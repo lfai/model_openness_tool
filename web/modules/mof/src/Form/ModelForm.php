@@ -132,6 +132,7 @@ abstract class ModelForm extends ContentEntityForm {
       '#description' => $this->t('Enter the name of the global/distribution-wide license (e.g. Apache-2.0).'),
       '#weight' => 1,
       '#attributes' => ['list' => 'license-datalist-0'],
+      '#placeholder' => $this->t('Begin typing to find a license'),
       '#default_value' => $model_licenses['global']['distribution']['name'] ?? '',
       '#states' => [
         'visible' => [
@@ -165,6 +166,7 @@ abstract class ModelForm extends ContentEntityForm {
       '#description' => $this->t('Enter the name of the code component license (e.g. Apache-2.0).'),
       '#weight' => 1,
       '#attributes' => ['list' => 'license-datalist-code'],
+      '#placeholder' => $this->t('Begin typing to find a license'),
       '#default_value' => $model_licenses['global']['code']['name'] ?? '',
       '#states' => [
         'visible' => [
@@ -198,6 +200,7 @@ abstract class ModelForm extends ContentEntityForm {
       '#description' => $this->t('Enter the name of the data component license (e.g. Apache-2.0).'),
       '#default_value' => $model_licenses['global']['data']['name'] ?? '',
       '#attributes' => ['list' => 'license-datalist-data'],
+      '#placeholder' => $this->t('Begin typing to find a license'),
       '#weight' => 1,
       '#states' => [
         'visible' => [
@@ -232,6 +235,7 @@ abstract class ModelForm extends ContentEntityForm {
       '#default_value' => $model_licenses['global']['document']['name'] ?? '',
       '#weight' => 1,
       '#attributes' => ['list' => 'license-datalist-document'],
+      '#placeholder' => $this->t('Begin typing to find a license'),
       '#states' => [
         'visible' => [
           ':input[name="license[document][included]"]' => ['checked' => true],
@@ -322,6 +326,7 @@ abstract class ModelForm extends ContentEntityForm {
             '#description' => $this->t('The file system path to the component. (e.g. /path/to/component)'),
             '#default_value' => $model_licenses['components'][$cid]['component_path'] ?? '',
             '#placeholder' => $this->t('Enter file system path to the component'),
+            '#weight' => 100,
             '#attributes' => [
               'autocomplete' => 'off',
             ],
@@ -336,8 +341,8 @@ abstract class ModelForm extends ContentEntityForm {
           'global' => [
             '#type' => 'checkbox',
             '#parents' => ['global', $cid],
-            '#title' => $this->t('Does this component use the global license?'),
-            '#default_value' => in_array($cid, $model_components) && empty($model_licenses['components'][$cid]) ? true : false,
+            '#title' => $this->t('Check if this component uses a component-specific license'),
+            '#default_value' => in_array($cid, $model_components) && isset($model_licenses['components'][$cid]['license']),
             '#states' => [
               'visible' => [
                 [
@@ -368,7 +373,13 @@ abstract class ModelForm extends ContentEntityForm {
               'visible' => [
                 [
                   ":input[name=\"component[{$cid}]\"]" => ['checked' => true],
-                  ":input[name=\"global[{$cid}]\"]" => ['checked' => false],
+                  ":input[name=\"global[{$cid}]\"]" => ['checked' => true],
+                ],
+                'or',
+                [
+                  ":input[name=\"component[{$cid}]\"]" => ['checked' => true],
+                  ":input[name=\"license[distribution][included]\"]" => ['checked' => false],
+                  ":input[name=\"license[{$group}][included]\"]" => ['checked' => false],
                 ],
               ],
             ],
@@ -386,12 +397,18 @@ abstract class ModelForm extends ContentEntityForm {
               'visible' => [
                 [
                   ":input[name=\"component[{$cid}]\"]" => ['checked' => true],
-                  ":input[name=\"global[{$cid}]\"]" => ['checked' => false],
+                  ":input[name=\"global[{$cid}]\"]" => ['checked' => true],
+                ],
+                'or',
+                [
+                  ":input[name=\"component[{$cid}]\"]" => ['checked' => true],
+                  ":input[name=\"license[distribution][included]\"]" => ['checked' => false],
+                  ":input[name=\"license[{$group}][included]\"]" => ['checked' => false],
                 ],
               ],
             ],
           ],
-         ],
+        ],
       ];
     }
 
@@ -402,73 +419,40 @@ abstract class ModelForm extends ContentEntityForm {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state): void {
-    $globals = array_filter($form_state->getValue('global'));
+    // Gather global licenses attached to the model.
+    $global_license = array_filter($form_state->getValue('license'), fn($a) => $a['included'] !== 0);
+
+    // Gather included components and associated data.
     $included_components = array_filter($form_state->getValue('component'));
     $component_data = $form_state->getValue('component_data');
 
+    // Gather component-specific licenses.
+    $component_specific = array_filter($form_state->getValue('global'));
+
+    // Build license data.
     $license_data = [
-      'global' => array_filter($form_state->getValue('license'), fn($a) => $a['included'] !== 0),
+      'global' => $global_license,
       'components' => [],
     ];
 
+    // Determine if component has a component-specific license or if it's inherited.
     foreach ($included_components as $cid) {
-      if (!isset($globals[$cid])) {
+      // Component-specific.
+      if (empty($global_license) || isset($component_specific[$cid])) {
         $license_data['components'][$cid] = $component_data[$cid];
+      }
+      // Inherits global license.
+      else {
+        // Check if component has a path set.
+        if ($component_data[$cid]['component_path'] !== '') {
+          $license_data['components'][$cid]['component_path'] = $component_data[$cid]['component_path'];
+        }
       }
     }
 
     $form_state->setValue('components', $included_components);
     $form_state->setValue('license_data', ['licenses' => $license_data]);
     parent::submitForm($form, $form_state);
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function save(array $form, FormStateInterface $form_state): int {
-    $result = parent::save($form, $form_state);
-    return $result;
-
-    /*
-    try {
-      $status = $this
-        ->modelEvaluator
-        ->setModel($this->entity)
-        ->evaluate();
-
-      foreach ($status as $class => $missing_components) {
-        if (empty($missing_components)) {
-          $this
-            ->messenger()
-            ->addStatus($this->t('Model qualified for class @class', ['@class' => $class]));
-        }
-      }
-    }
-    catch (\Exception $e) {
-      $this->messenger()->addError($e->getMessage());
-    }
-
-    $logger_args = [
-      '%label' => $this->entity->label(),
-      'link' => $this->entity->toLink($this->t('View'))->toString(),
-    ];
-
-    switch ($result) {
-      case SAVED_NEW:
-        $this->logger('mof')->notice('New model (%label) has been created.', $logger_args);
-        break;
-
-      case SAVED_UPDATED:
-        $this->logger('mof')->notice('The model (%label) has been updated.', $logger_args);
-        break;
-
-      default:
-        throw new \LogicException('Could not save the model.');
-    }
-
-    $form_state->setRedirectUrl($this->entity->toUrl());
-    return $result;
-    */
   }
 
   /**
