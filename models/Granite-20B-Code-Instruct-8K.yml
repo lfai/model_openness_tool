@@ -3,51 +3,51 @@ framework:
   version: '1.0'
   date: '2024-12-15'
 release:
-  name: Granite-34B-Code-Instruct
-  version: 34B
-  date: '2024-11-15'
-  license: {  }
+  name: Granite-20B-Code-Instruct-8K
+  version: 20B
+  date: '2025-05-09'
   type: code
   architecture: 'transformer decoder'
-  origin: Granite-34B-Code-Base
+  origin: Granite-20B-Code-Base-8K
   producer: IBM
   contact: ''
   repository: 'https://github.com/ibm-granite/granite-code-models'
-  huggingface: 'https://huggingface.co/ibm-granite/granite-34b-code-instruct'
+  huggingface: 'https://huggingface.co/ibm-granite/granite-20b-code-instruct-8k'
+  license:
+    distribution:
+      name: Apache-2.0
+      path: ''
   components:
     -
       name: 'Model architecture'
       description: "Well commented code for the model's architecture"
-      license: Apache-2.0
     -
       name: 'Model parameters (Final)'
       description: 'Trained model parameters, weights and biases'
-      license: Apache-2.0
     -
       name: 'Model parameters (Intermediate)'
       description: 'Trained model parameters, weights and biases'
-      license: Apache-2.0
     -
       name: Datasets
       description: 'Training, validation and testing datasets used for the model'
-      license: unlicensed
+      license: MIT
     -
       name: 'Model metadata'
       description: 'Any model metadata including training configuration and optimizer states'
-      license: unlicensed
     -
       name: 'Model card'
       description: 'Model details including performance metrics, intended use, and limitations'
-      license: unlicensed
     -
       name: 'Data card'
       description: 'Documentation for datasets including source, characteristics, and preprocessing details'
-      license: unlicensed
     -
       name: 'Technical report'
       description: 'Technical report detailing capabilities and usage instructions for the model'
-      license: unlicensed
     -
       name: 'Research paper'
       description: 'Research paper detailing the development and capabilities of the model'
-      license: unlicensed
+      component_path: 'https://arxiv.org/abs/2405.04324'
+      license: CC-BY-4.0
+    -
+      name: 'Evaluation results'
+      description: 'The results from evaluating the model'
