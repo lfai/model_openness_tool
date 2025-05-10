@@ -48,10 +48,10 @@ Then:
 
 We also need to take into account a few special cases:
 
-- If paper is included, the technical report is optional.
-- The paper may be replaced by a detailed tech report (note: the easiest in this case is for you to claim on the input form that the paper is included.)
-- The evaluation results may be included in the technical report, research paper, or model card (in any of those cases, evaluation results will be considered included.)
-- If the model card contains data info, the data card is optional (note: the easiest in this case is for you to claim on the input form that the data card is included.)
+- If the paper is included, the technical report is optional. (note: in this case the technical report should be recorded as included on the input form.)
+- The paper may be replaced by a detailed technical report (note: in this case the paper should be recorded as included on the input form.)
+- The evaluation results may be included in the technical report, research paper, or model card (in any of those cases, evaluation results should be recorded as included on the input form.)
+- If the model card contains the data info, the data card is optional (note: in this case the data card should be recorded as include on the input form.)
 
 ## Viewing Model Rankings
 
@@ -59,8 +59,7 @@ Access the MOT's web interface to view a detailed list of all models submitted, 
 
 ## Contributing new models or changes to existing models using GitHub
 
-Anyone can submit changes to the MOT data through GitHub. New models
-can also be submitted for addition this way. Simply submit your new or updated model file (e.g., `<your-model>.yml`) via a Pull Request against [the MOT GitHub repository](https://github.com/lfai/model_openness_tool/).
+Anyone can submit changes (new models or changes to existing ones) to the MOT data through GitHub. Simply submit your new or updated model file (e.g., `<your-model>.yml`) via a Pull Request against [the MOT GitHub repository](https://github.com/lfai/model_openness_tool/).
 
 ## Contributing to the MOT
 
