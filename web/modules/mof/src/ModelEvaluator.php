@@ -332,7 +332,7 @@ final class ModelEvaluator implements ModelEvaluatorInterface {
       return 0;
     }
 
-    if ($class === 3 && $evaluate[3]['conditional'] === true) {
+    if ($class === 3 && $evaluate[3]['conditional'] === true && $evaluate[3]['components']['missing'] == null) {
       return 100;
     }
 
