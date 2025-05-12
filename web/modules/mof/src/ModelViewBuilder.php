@@ -138,7 +138,7 @@ final class ModelViewBuilder extends EntityViewBuilder {
       ];
     }
 
-    if ($evaluation[3]['conditional']) {
+    if ($evaluation['not-type-appropriate'] != null) {
       $list = ['#theme' => 'item_list', '#items' => []];
 
       $message = $this->modelEvaluator->getConditionalMessage();

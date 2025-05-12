@@ -15,10 +15,6 @@ final class ModelEvaluator implements ModelEvaluatorInterface {
 
   use StringTranslationTrait;
 
-  // If any of these component IDs have a
-  // open source license then the model qualifies for class 3.
-  const CLASS_3_CIDS = [10, 11, 12, 13, 14];
-
   /** @var \Drupal\mof\Entity\Model. */
   private ?ModelInterface $model = NULL;
 
@@ -50,6 +46,7 @@ final class ModelEvaluator implements ModelEvaluatorInterface {
     $evaluation = $required_components = [];
     $model_components = $this->model->getComponents();
     $model_licenses = $this->model->getLicenses();
+    $evaluation['not-type-appropriate'] = [];
 
     for ($class = 3; $class >= 1; $class--) {
       $evaluation[$class]['components'] = [
@@ -78,20 +75,20 @@ final class ModelEvaluator implements ModelEvaluatorInterface {
         $component = $this->componentManager->getComponent($cid);
         $license = $this->resolveLicense($cid, $model_licenses) ?? 'unlicensed';
 
-        // Cast contentType to array to ensure consistent iterations
-        // ('string' becomes ['string'], an array stays as-is).
-        $types = (array) $component->contentType;
+        $type = $component->contentType;
 
-        // Does the component have a type-specific license? and if it's open.
-        $type_specific = $this->isTypeSpecific($license, $types);
-        $is_open = $this->isOpenSourceLicense($component, $license);
+        // Does the component have a type-appropriate license? and is it open?
+        $type_appropriate = $this->isTypeAppropriate($license, $type);
+        $is_open = $this->isOpenSourceLicense($license);
 
-        if ($type_specific && $is_open) {
+        if ($type_appropriate && $is_open) {
           $evaluation[$class]['components']['included'][] = $cid;
         }
         else if ($is_open) {
           $evaluation[$class]['components']['included'][] = $cid;
-          // Display warning.
+          if (!in_array($cid, $evaluation['not-type-appropriate'])) {
+            $evaluation['not-type-appropriate'][] = $cid;
+          }
         }
         else if ($license === 'unlicensed') {
           $evaluation[$class]['components']['unlicensed'][] = $cid;
@@ -105,36 +102,26 @@ final class ModelEvaluator implements ModelEvaluatorInterface {
       }
     }
 
-    // Check if class 3 has a conditional pass.
-    $evaluation[3]['conditional'] = false;
-    foreach ($evaluation[3]['licenses'] as $cid => $license) {
-      if (in_array($cid, self::CLASS_3_CIDS)) {
-        $component = $this->componentManager->getComponent($cid);
-        $evaluation[3]['conditional'] = $this->isOpenSourceLicense($component, $license);
-        if ($evaluation[3]['conditional']) break;
-      }
-    }
-
     return $evaluation;
   }
 
   /**
-   * Check if a license is specific to any of the given component types.
+   * Check if a license is appropriate for the given component type.
    *
-   * Flattens type-specific license arrays and checks if the provided license ID exists among them.
+   * Get type-appropriate license arrays and checks if the provided license ID exists among them.
    *
    * @param string $license
    *   The license ID to check (e.g., 'MIT').
    *
-   * @param array $types
-   *   The component's content types (e.g., ['code', 'data']).
+   * @param string $type
+   *   The component's content type (i.e., 'code', 'data', or 'document').
    *
    * @return bool
    *   TRUE if the license ID is type-specific, FALSE otherwise.
    */
-  private function isTypeSpecific(string $license, array $types): bool {
-    $licenses = array_merge(...array_map([$this->licenseHandler, 'getLicensesByType'], $types));
-    return in_array($license, array_column($licenses, 'licenseId'), true);
+  private function isTypeAppropriate(string $license, string $type): bool {
+    $licenses = $this->licenseHandler->getLicensesByType($type);
+    return array_filter($licenses, fn($l) => $l->getLicenseId() === $license) != null;
   }
 
   /**
@@ -160,16 +147,11 @@ final class ModelEvaluator implements ModelEvaluatorInterface {
     // If no component-specific license,
     // check global (type-specific or distribution) licenses.
     $component = $this->componentManager->getComponent($cid);
-
-    // Cast contentType to array to ensure consistent iterations
-    // ('string' becomes ['string'], an array stays as-is).
-    $types = (array) $component->contentType;
+    $type = $component->contentType;
 
     // Check component-type-specific first.
-    foreach ($types as $type) {
-      if (!empty($licenses['global'][$type]['name'])) {
-        return $licenses['global'][$type]['name'];
-      }
+    if (!empty($licenses['global'][$type]['name'])) {
+      return $licenses['global'][$type]['name'];
     }
 
     // Fallback to distribution-wide global license.
@@ -245,49 +227,28 @@ final class ModelEvaluator implements ModelEvaluatorInterface {
   }
 
   /**
-   * Class 3 has a conditional pass if these components have an open source license but we will
-   * inform the user that a type-appropriate license should be used.
-   *
-   *  - `Model parameters (Final)` (10)
-   *  - `Technical report` (11)
-   *  - `Evaluation results` (12)
-   *  - `Model card` (13)
-   *  - `Data card` (14)
+   * Class has a conditional pass if some of its components have an open source license but not a
+   * type-appropriate one in which case we inform the user that a type-appropriate license should be used.
    *
    * @return \Drupal\Core\StringTranslation\TranslatableMarkup[]
    *   An array of translatable string messages.
    */
   public function getConditionalMessage(): array {
     $messages = [
-      $this->t('This model has an open source license on the following components, it should be using a type-appropriate license:'),
-    ];
-
-    $component_messages = [
-      10 => $this->t('Model parameters (Final) of type data.'),
-      11 => $this->t('Technical report of type documentation.'),
-      12 => $this->t('Evaluation results of type documentation.'),
-      13 => $this->t('Model card of type documentation.'),
-      14 => $this->t('Data card of type documentation.'),
+      $this->t('The following components have an open license but should have a type-appropriate open license:'),
     ];
 
     $evaluation = $this->evaluate();
-    foreach ($evaluation[3]['licenses'] as $cid => $license) {
-      if (in_array($cid, static::CLASS_3_CIDS)) {
-        $component = $this->componentManager->getComponent($cid);
-        if ($this->isOpenSourceLicense($component, $license)) {
-          $messages[] = $component_messages[$cid];
-        }
-      }
+    foreach ($evaluation['not-type-appropriate'] as $cid) {
+      $component = $this->componentManager->getComponent($cid);
+      $messages[] = $this->t($component->name . ' of type ' . $component->contentType);
     }
 
     return $messages;
   }
 
   /**
-   * Determine if a component is using an open source license.
-   *
-   * @param \Drupal\mof\Component $component
-   *   The MOF component we're checking.
+   * Determine if a license is an open source license.
    *
    * @param string $license
    *   The license name.
@@ -296,24 +257,10 @@ final class ModelEvaluator implements ModelEvaluatorInterface {
    *   TRUE if license is open-source.
    *   FALSE otherwise.
    */
-  private function isOpenSourceLicense(Component $component, string $license): bool {
-    $component_types = (array) $component->contentType;
-
-    foreach ($component_types as $type) {
-      if ($type === 'document' && $this->licenseHandler->isFsfApproved($license)) {
-        return true;
-      }
-
-      if ($type === 'data' && $this->licenseHandler->isOpenData($license)) {
-        return true;
-      }
-
-      if ($type === 'code' && $this->licenseHandler->isOsiApproved($license)) {
-        return true;
-      }
-    }
-
-    return false;
+  private function isOpenSourceLicense(string $license): bool {
+    return $this->licenseHandler->isFsfApproved($license)
+      || $this->licenseHandler->isOpenData($license)
+      || $this->licenseHandler->isOsiApproved($license);
   }
 
   /**
@@ -330,10 +277,6 @@ final class ModelEvaluator implements ModelEvaluatorInterface {
 
     if (empty($evaluate)) {
       return 0;
-    }
-
-    if ($class === 3 && $evaluate[3]['conditional'] === true && $evaluate[3]['components']['missing'] == null && $evaluate[3]['components']['invalid'] == null) {
-      return 100;
     }
 
     $total = 0;
