@@ -120,8 +120,7 @@ final class ModelEvaluator implements ModelEvaluatorInterface {
    *   TRUE if the license ID is type-specific, FALSE otherwise.
    */
   private function isTypeAppropriate(string $license, string $type): bool {
-    $licenses = $this->licenseHandler->getLicensesByType($type);
-    return array_filter($licenses, fn($l) => $l->getLicenseId() === $license) != null;
+    return in_array($license, array_map('strval', $this->licenseHandler->getLicensesByType($type)));
   }
 
   /**
