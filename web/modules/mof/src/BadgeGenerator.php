@@ -24,8 +24,7 @@ final class BadgeGenerator implements BadgeGeneratorInterface {
     for ($i = 3, $j = 3; $i >= 1; $i--, $j--) {
       $progress = $this->modelEvaluator->getProgress($i);
 
-      // Conditional is a Pass
-      if ($progress === 100.00 || ($i === 3 && $evals[$i]['conditional'] === TRUE && $evals[$i]['components']['missing'] == null && $evals[$i]['components']['invalid'] == null)) {
+      if ($progress === 100.00) {
         $status = $this->t('Qualified');
         $text_color = '#fff';
         $background_color = '#4c1';
