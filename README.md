@@ -48,7 +48,7 @@ Then:
 
 We also need to take into account a few special cases:
 
-- If the paper is included, the technical report is optional. (note: in this case the technical report should be recorded as included on the input form.)
+- If the paper is included, the technical report is optional.
 - The paper may be replaced by a detailed technical report (note: in this case the paper should be recorded as included on the input form.)
 - The evaluation results may be included in the technical report, research paper, or model card (in any of those cases, evaluation results should be recorded as included on the input form.)
 - If the model card contains the data info, the data card is optional (note: in this case the data card should be recorded as include on the input form.)
