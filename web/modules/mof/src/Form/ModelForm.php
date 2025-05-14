@@ -131,7 +131,7 @@ abstract class ModelForm extends ContentEntityForm {
       '#title' => $this->t('Distribution-wide license'),
       '#description' => $this->t('Enter the name of the global/distribution-wide license (e.g. Apache-2.0).'),
       '#weight' => 1,
-      '#attributes' => ['list' => 'license-datalist-0'],
+      '#attributes' => ['list' => 'license-datalist-all'],
       '#placeholder' => $this->t('Begin typing to find a license'),
       '#default_value' => $model_licenses['global']['distribution']['name'] ?? '',
       '#states' => [
@@ -282,7 +282,8 @@ abstract class ModelForm extends ContentEntityForm {
       '#weight' => 3,
     ];
 
-    $form['datalist'][0] = $this->buildDataList(0);
+    // We need a datalist of all available licenses for global/ distribution-wide.
+    $form['datalist']['all'] = $this->buildDataList();
 
     // Build a datalist for each license type.
     foreach (['code', 'data', 'document'] as $type) {
@@ -292,17 +293,9 @@ abstract class ModelForm extends ContentEntityForm {
     // Process each component.
     foreach ($this->componentManager->getComponents() as $component) {
       $cid = $component->id;
+      $type = $component->contentType;
 
-      // If a component belongs to more than one content_type
-      // we need to build a separate datalist for the component.
-      if (is_array($component->contentType)) {
-        $form['datalist'][$cid] = $this->buildDataList($cid);
-      }
-
-      // Use the first content type for form placement.
-      $group = is_array($component->contentType) ? $component->contentType[0] : $component->contentType;
-
-      $form['components'][$group][$cid] = [
+      $form['components'][$type][$cid] = [
         '#type' => 'container',
         '#attributes' => [
           'class' => ['component-wrapper'],
@@ -347,7 +340,7 @@ abstract class ModelForm extends ContentEntityForm {
               'visible' => [
                 [
                   ":input[name=\"component[{$cid}]\"]" => ['checked' => true],
-                  ":input[name=\"license[{$group}][included]\"]" => ['checked' => true],
+                  ":input[name=\"license[{$type}][included]\"]" => ['checked' => true],
                 ],
                 'or',
                 [
@@ -365,7 +358,7 @@ abstract class ModelForm extends ContentEntityForm {
             '#placeholder' => $this->t('Begin typing to find a license; leave blank if unlicensed'),
             '#attributes' => [
               'data-component-id' => $cid,
-              'list' => isset($form['datalist'][$cid]) ? "license-datalist-{$cid}" : "license-datalist-{$group}",
+              'list' => 'license-datalist-' . $type,
               'class' => ['license-input'],
               'autocomplete' => 'off',
             ],
@@ -379,7 +372,7 @@ abstract class ModelForm extends ContentEntityForm {
                 [
                   ":input[name=\"component[{$cid}]\"]" => ['checked' => true],
                   ":input[name=\"license[distribution][included]\"]" => ['checked' => false],
-                  ":input[name=\"license[{$group}][included]\"]" => ['checked' => false],
+                  ":input[name=\"license[{$type}][included]\"]" => ['checked' => false],
                 ],
               ],
             ],
@@ -403,7 +396,7 @@ abstract class ModelForm extends ContentEntityForm {
                 [
                   ":input[name=\"component[{$cid}]\"]" => ['checked' => true],
                   ":input[name=\"license[distribution][included]\"]" => ['checked' => false],
-                  ":input[name=\"license[{$group}][included]\"]" => ['checked' => false],
+                  ":input[name=\"license[{$type}][included]\"]" => ['checked' => false],
                 ],
               ],
             ],
@@ -456,39 +449,41 @@ abstract class ModelForm extends ContentEntityForm {
   }
 
   /**
-   * Build an HTML5 datalist for the specific content type or component.
+   * Build an HTML5 datalist of licenses.
+   *
+   * @param string|null $type
+   *   The content type ("code", "document" or "data").
+   *   Pass null to return all licenses, regardless of type.
+   *
+   * @return array Drupal render array describing the HTML datalist.
    */
-  final protected function buildDataList(int|string $type): array {
+  final protected function buildDataList(?string $type = null): array {
     $licenses = [];
 
     $datalist = [
       '#type' => 'html_tag',
       '#tag' => 'datalist',
-      '#attributes' => ['id' => "license-datalist-{$type}"],
+      '#attributes' => ['id' => 'license-datalist-' . ($type ?? 'all')],
       'licenses' => [],
     ];
 
-    // Collect licenses for the individual component.
-    if (is_int($type)) {
-      // Component IDs are always greater than zero.
-      if ($type > 0) {
-        $licenses = $this->componentManager->getComponent($type)->getLicenses();
-      }
-      // If $type is 0 (zero) then build a list of all available licenses.
-      else {
-        $licenses = $this->licenseHandler->licenses;
-      }
-    }
-    // Collect all licenses by content type: 'code' 'document' or 'data'
-    else {
-      $licenses = $this->licenseHandler->getLicensesByType($type);
-    }
+    // Fetch licenses based on type or get all licenses.
+    $licenses = $type === null
+      ? $this->licenseHandler->licenses
+      : $this->licenseHandler->getLicensesByType($type);
 
-    // Special case for 'code' components.
-    // Include all OSI-approved licenses.
-    if ($type === 'code' || (is_int($type) && $type > 0 && $this->componentManager->getComponent($type)->contentType === 'code')) {
-      $licenses = array_unique([...$licenses, ...$this->licenseHandler->getOsiApproved()], SORT_STRING);
-    }
+    // Add open source licenses based on type.
+    $open_licenses = match ($type) {
+      'code' => $this->licenseHandler->getOsiApproved(),
+      'data' => array_filter(
+        $this->licenseHandler->licenses,
+        fn($license) => in_array((string)$license, $this->licenseHandler::OPEN_DATA_LICENSES)
+      ),
+      default => [],
+    };
+
+    // Merge and remove duplicates.
+    $licenses = array_unique([...$licenses, ...$open_licenses], SORT_STRING);
 
     // Sort licenses by name.
     uasort($licenses, fn($a, $b) => strcasecmp($a->getName(), $b->getName()));

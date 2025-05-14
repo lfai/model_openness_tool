@@ -59,7 +59,7 @@ final class LicenseHandler implements LicenseHandlerInterface {
    *
    * @return array List of isFsfLibre licesnses.
    */
-  private function getFsfApproved(): array {
+  public function getFsfApproved(): array {
     return array_filter($this->licenses, fn($l) => $l->isFsfApproved());
   }
 
