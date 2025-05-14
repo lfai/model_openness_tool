@@ -103,8 +103,8 @@ final class ModelEvaluator implements ModelEvaluatorInterface {
     }
 
     // The technical report (cid 11) MAY be omitted if a research paper (cid 21) is provided
-    $techreport = array_search(11, $evaluation[3]['components']['missing']);
-    if ($techreport !== false) {
+    $techreport = array_search(11, $evaluation[3]['components']['included']);
+    if (!$techreport) {
       $status = false;
       if (array_search(21, $evaluation[1]['components']['included']) !== false) {
         $status = 'included';
@@ -113,11 +113,14 @@ final class ModelEvaluator implements ModelEvaluatorInterface {
       } elseif (array_search(21, $evaluation[1]['components']['unlicensed']) !== false) {
           $status = 'unlicensed';
       }
-      if ($status !== false) { // should always be true
-        // remove tech report from missing
-        array_splice($evaluation[3]['components']['missing'], $techreport, 1);
+      if ($status !== false) { // the research paper is provided
+        // remove tech report from missing if it's listed as such
+        $techreport = array_search(11, $evaluation[3]['components']['missing']);
+        if ($techreport !== false) {
+          array_splice($evaluation[3]['components']['missing'], $techreport, 1);
+        }
         $techreport = array_search(11, $evaluation[2]['components']['missing']);
-        if ($techreport !== false) { // should always be true
+        if ($techreport !== false) {
           array_splice($evaluation[2]['components']['missing'], $techreport, 1);
         }
         // add research paper to classes 2 and 3
