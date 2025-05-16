@@ -102,6 +102,39 @@ final class ModelEvaluator implements ModelEvaluatorInterface {
       }
     }
 
+    // The technical report (cid 11) MAY be omitted if a research paper (cid 21) is provided
+    $techreport = array_search(11, $evaluation[3]['components']['included']);
+    if (!$techreport) {
+      $status = false;
+      if (array_search(21, $evaluation[1]['components']['included']) !== false) {
+        $status = 'included';
+      } elseif (array_search(21, $evaluation[1]['components']['invalid']) !== false) {
+        $status = 'invalid';
+      } elseif (array_search(21, $evaluation[1]['components']['unlicensed']) !== false) {
+          $status = 'unlicensed';
+      }
+      if ($status !== false) { // the research paper is provided
+        // remove tech report from missing if it's listed as such
+        $techreport = array_search(11, $evaluation[3]['components']['missing']);
+        if ($techreport !== false) {
+          array_splice($evaluation[3]['components']['missing'], $techreport, 1);
+        }
+        $techreport = array_search(11, $evaluation[2]['components']['missing']);
+        if ($techreport !== false) {
+          array_splice($evaluation[2]['components']['missing'], $techreport, 1);
+        }
+        $techreport = array_search(11, $evaluation[1]['components']['missing']);
+        if ($techreport !== false) {
+          array_splice($evaluation[1]['components']['missing'], $techreport, 1);
+        }
+        // add research paper to classes 2 and 3
+        $evaluation[3]['components'][$status][] = 21;
+        $evaluation[3]['licenses'][21] = $evaluation[1]['licenses'][21];
+        $evaluation[2]['components'][$status][] = 21;
+        $evaluation[2]['licenses'][21] = $evaluation[1]['licenses'][21];
+      }
+    }
+
     return $evaluation;
   }
 
@@ -279,12 +312,32 @@ final class ModelEvaluator implements ModelEvaluatorInterface {
     }
 
     $total = 0;
+    $included = 0;
     for ($i = 3; $i >= $class; $i--) {
-      $required = $this->componentManager->getRequired($i);
-      $total += sizeof($required);
+      $required = sizeof($this->componentManager->getRequired($i));
+      $total += $required;
+      $included = sizeof($evaluate[$i]['components']['included']);
+      if ($included < $total) { // stop here if class isn't met
+        break;
+      }
+    }
+    // If the lower class isn't met set progress to 0
+    if ($i > $class) { 
+      return 0;
     }
 
-    return (sizeof($evaluate[$class]['components']['included']) / $total) * 100;
+    // The tech report can be omitted if the research paper is provided which
+    // means that for Class 1 we have one fewer required component
+    // (and not for classes 2 and 3 where either the tech report or the research paper is counted)
+    if ($class == 1) $total--;
+
+    $progress = ($included / $total) * 100;
+
+    // In case both the tech report and the research paper are provided we end up with more than
+    // is required so limit reporting value to 100%
+    if ($progress > 100) $progress = 100;
+
+    return $progress;
   }
 
 }
