@@ -41,9 +41,6 @@ release:
       name: 'Data card'
       description: 'Documentation for datasets including source, characteristics, and preprocessing details'
     -
-      name: 'Technical report'
-      description: 'Technical report detailing capabilities and usage instructions for the model'
-    -
       name: 'Research paper'
       description: 'Research paper detailing the development and capabilities of the model'
       component_path: 'https://arxiv.org/abs/2405.04324'
