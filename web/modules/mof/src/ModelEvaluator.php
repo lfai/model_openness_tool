@@ -123,6 +123,10 @@ final class ModelEvaluator implements ModelEvaluatorInterface {
         if ($techreport !== false) {
           array_splice($evaluation[2]['components']['missing'], $techreport, 1);
         }
+        $techreport = array_search(11, $evaluation[1]['components']['missing']);
+        if ($techreport !== false) {
+          array_splice($evaluation[1]['components']['missing'], $techreport, 1);
+        }
         // add research paper to classes 2 and 3
         $evaluation[3]['components'][$status][] = 21;
         $evaluation[3]['licenses'][21] = $evaluation[1]['licenses'][21];
