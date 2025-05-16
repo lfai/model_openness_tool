@@ -3,16 +3,16 @@ framework:
   version: '1.0'
   date: '2024-12-15'
 release:
-  name: Granite-34B-Code-Instruct
-  version: 34B
+  name: Granite-8B-Code-Instruct
+  version: 8B
   date: '2025-05-08'
   type: code
   architecture: 'transformer decoder'
-  origin: Granite-34B-Code-Base
+  origin: Granite-8B-Code-Base
   producer: IBM
   contact: ''
   repository: 'https://github.com/ibm-granite/granite-code-models'
-  huggingface: 'https://huggingface.co/ibm-granite/granite-34b-code-instruct-8k'
+  huggingface: 'https://huggingface.co/ibm-granite/granite-8b-code-instruct-4k'
   license:
     distribution:
       name: Apache-2.0
@@ -43,5 +43,8 @@ release:
     -
       name: 'Research paper'
       description: 'Research paper detailing the development and capabilities of the model'
-      component_path: 'https://arxiv.org/abs/2405.04324'
       license: CC-BY-4.0
+      component_path: 'https://arxiv.org/abs/2405.04324'
+    -
+      name: 'Evaluation results'
+      description: 'The results from evaluating the model'

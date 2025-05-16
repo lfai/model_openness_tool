@@ -3,16 +3,16 @@ framework:
   version: '1.0'
   date: '2024-12-15'
 release:
-  name: Granite-20B-Code-Instruct-8K
-  version: 20B
+  name: Granite-3B-Code-Instruct
+  version: 3B
   date: '2025-05-09'
   type: code
   architecture: 'transformer decoder'
-  origin: Granite-20B-Code-Base-8K
+  origin: Granite-3B-Code-Base
   producer: IBM
   contact: ''
   repository: 'https://github.com/ibm-granite/granite-code-models'
-  huggingface: 'https://huggingface.co/ibm-granite/granite-20b-code-instruct-8k'
+  huggingface: 'https://huggingface.co/ibm-granite/granite-3b-code-instruct-2k'
   license:
     distribution:
       name: Apache-2.0
