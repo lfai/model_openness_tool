@@ -109,7 +109,7 @@ jobs:
               ssh $DEPLOY_USER@$DEPLOY_HOST << EOF
               cd $DEPLOY_PATH
               rm -rf ./models/.processed
-              EOF
+            EOF
             fi
             ssh $DEPLOY_USER@$DEPLOY_HOST << EOF
               cd $DEPLOY_PATH
