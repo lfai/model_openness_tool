@@ -13,6 +13,10 @@ on:
         required: true
         type: environment
         default: 'Stage'
+      force-update:
+        description: 'Force update of all models'
+        type: boolean
+        defaultValue: false
 
 jobs:
   setup-check:
@@ -95,9 +99,18 @@ jobs:
           echo "sync=$([ -s models.txt ] && echo true || echo false)" >> $GITHUB_ENV
 
       - name: Sync models
-        if: ${{ env.sync == 'true' }}
+        if: ${{ env.sync == 'true' || inputs.force-update == 'true' }}
         run: |
-            rsync -az --files-from=models.txt ./ $DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH/
+            if ${{ env.sync }}; then
+              rsync -az --files-from=models.txt ./ $DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH/
+            fi
+            if ${{ inputs.force-update }};then
+              echo "Forcing update of all models."
+              ssh $DEPLOY_USER@$DEPLOY_HOST << EOF
+              cd $DEPLOY_PATH
+              rm -rf ./models/.processed
+              EOF
+            fi
             ssh $DEPLOY_USER@$DEPLOY_HOST << EOF
               cd $DEPLOY_PATH
               ./vendor/bin/drush scr scripts/sync_models.php
