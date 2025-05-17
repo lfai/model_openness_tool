@@ -99,7 +99,7 @@ jobs:
           echo "sync=$([ -s models.txt ] && echo true || echo false)" >> $GITHUB_ENV
 
       - name: Sync models
-        if: ${{ env.sync == 'true' || inputs.force-update == 'true' }}
+        if: ${{ env.sync == 'true' || inputs.force-update }}
         run: |
             if ${{ env.sync }}; then
               rsync -az --files-from=models.txt ./ $DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH/
