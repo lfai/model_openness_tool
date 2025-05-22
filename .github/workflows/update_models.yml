@@ -15,6 +15,7 @@ on:
         default: 'Stage'
       force-update:
         description: 'Force update of all models'
+        required: true
         type: boolean
         defaultValue: false
 
