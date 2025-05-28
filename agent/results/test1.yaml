@@ -1,0 +1,104 @@
+run-number: 1
+tester: Nick Chase
+prompt-version: 0.1
+model-used: OpenAI ChatGPT 04-mini
+model-analyzed: DeepSeek-V3
+results-md: |
+
+  ```yaml
+  framework:
+    name: "Model Openness Framework"
+    version: "1.0"
+    date: "2025-05-25"
+
+  release:
+    name: "DeepSeek-V3"
+    version: "671B"
+    date: "2024-12-27"
+    license: "MIT"
+    type: "language"
+    architecture: "Mixture-of-Experts (MoE) with Multi-head Latent Attention (MLA) and DeepSeekMoE"  
+    origin: "research"
+    producer: "DeepSeek AI"
+    contact: "service@deepseek.com"
+    repository: "https://github.com/deepseek-ai/DeepSeek-V3"
+    huggingface: "https://huggingface.co/deepseek-ai/DeepSeek-V3"
+    components:
+      -
+        name: "Model architecture"
+        description: "Well commented code for the model’s architecture including MLA and DeepSeekMoE modules"
+        license: "MIT"
+      -
+        name: "Inference code"
+        description: "Code used for running the model to make predictions"
+        license: "MIT"
+      -
+        name: "Supporting libraries and tools"
+        description: "Libraries and tools used for inference and deployment (e.g., SGLang, LMDeploy, TensorRT-LLM, vLLM, LightLLM)"
+        license: "MIT"
+      -
+        name: "Model parameters (Final)"
+        description: "Trained model parameters (weights and biases) for DeepSeek-V3"
+        license: "LICENSE-MODEL"
+      -
+        name: "Evaluation data"
+        description: "Data used for evaluating the model across benchmarks (e.g., MMLU, BBH, etc.)"
+        license: "unlicensed"
+      -
+        name: "Model metadata"
+        description: "Training configuration, optimizer state, and multi-token prediction module weights"
+        license: "MIT"
+      -
+        name: "Model card"
+        description: "High-level details including capabilities, limitations, and intended uses"
+        license: "unlicensed"
+      -
+        name: "Technical report"
+        description: "DeepSeek-V3 technical report published on arXiv"
+        license: "arXiv.org perpetual non-exclusive license 1.0"
+      -
+        name: "Research paper"
+        description: "Publication detailing the development of DeepSeek-V3"
+        license: "arXiv.org perpetual non-exclusive license 1.0"
+      -
+        name: "Evaluation results"
+        description: "Benchmark results and performance metrics"
+        license: "unlicensed"
+  ```
+
+  **Sources and Mapping:**
+
+  -   **framework.date** (the date of filling the form): set to today’s date, May 25 2025.
+      
+  -   **release.name** “DeepSeek-V3” and **version** “671B” come from the GitHub model summary, which states 671B total parameters [GitHub](https://github.com/deepseek-ai/DeepSeek-V3).
+      
+  -   **release.date** “2024-12-27” is the publication date of the DeepSeek-V3 technical report on arXiv [arXiv](https://arxiv.org/abs/2412.19437?utm_source=chatgpt.com).
+      
+  -   **release.license** “MIT” is pulled from the repository’s code license listing on GitHub [GitHub](https://github.com/deepseek-ai/DeepSeek-V3).
+      
+  -   **release.type** “language” is the model’s category as an LLM.
+      
+  -   **release.architecture** is described in the repo introduction, specifying MoE with MLA and DeepSeekMoE [GitHub](https://github.com/deepseek-ai/DeepSeek-V3).
+      
+  -   **release.origin** is marked “research,” reflecting that DeepSeek-V3 was developed by DeepSeek AI’s research team.
+      
+  -   **release.producer** “DeepSeek AI” is the GitHub organization and company behind the model [GitHub](https://github.com/deepseek-ai/DeepSeek-V3).
+      
+  -   **release.contact** “service@deepseek.com” is cited from the Hugging Face model page’s contact section for DeepSeek-V3-0324 [Hugging Face](https://huggingface.co/deepseek-ai/DeepSeek-V3-0324?utm_source=chatgpt.com).
+      
+  -   **release.repository** is the GitHub URL for DeepSeek-V3 [GitHub](https://github.com/deepseek-ai/DeepSeek-V3).
+      
+  -   **release.huggingface** is taken from the GitHub downloads table linking to Hugging Face [GitHub](https://github.com/deepseek-ai/DeepSeek-V3).
+      
+  -   **Components & licenses**:
+      
+      -   Code components (architecture, inference code, supporting libraries, metadata) carry the MIT license as shown in the repo’s LICENSE-CODE file [GitHub](https://github.com/deepseek-ai/DeepSeek-V3).
+          
+      -   **Model parameters** use the custom “LICENSE-MODEL” defined in the repository’s LICENSE-MODEL file [Hugging Face](https://huggingface.co/deepseek-ai/DeepSeek-V3/blob/main/LICENSE-MODEL?utm_source=chatgpt.com).
+          
+      -   **Evaluation data**, **model card**, and **evaluation results** are marked “unlicensed” following the example pattern when no explicit license is provided.
+          
+      -   **Technical report** and **research paper** both fall under ArXiv’s perpetual non-exclusive license, as indicated on the arXiv page [arXiv](https://arxiv.org/abs/2412.19437?utm_source=chatgpt.com).
+
+comments: |
+  This is reasonably close but doesn't include a Global license.  It also mistakes the license file name for the license name.
