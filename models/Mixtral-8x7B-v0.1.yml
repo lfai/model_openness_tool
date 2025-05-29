@@ -5,7 +5,7 @@ framework:
 release:
   name: Mixtral-8x7B-v0.1
   version: 47B
-  date: '2025-05-22'
+  date: '2025-05-29'
   type: language
   architecture: decoder
   origin: Mistral
