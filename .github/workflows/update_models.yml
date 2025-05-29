@@ -99,13 +99,18 @@ jobs:
         run: |
           echo "sync=$([ -s models.txt ] && echo true || echo false)" >> $GITHUB_ENV
 
-      - name: Sync models
-        if: ${{ env.sync == 'true' || inputs.force-update }}
+      - name: Set force update trigger
+        if: ${{ inputs.force-update }}
         run: |
-            if ${{ env.sync }}; then
+          echo "force-update=true" >> $GITHUB_ENV
+
+      - name: Sync models
+        if: ${{ env.sync == 'true' || env.force-update == 'true' }}
+        run: |
+            if ${{ env.sync == 'true' }}; then
               rsync -az --files-from=models.txt ./ $DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH/
             fi
-            if ${{ inputs.force-update }};then
+            if ${{ env.force-update == 'true' }};then
               echo "Forcing update of all models."
               ssh $DEPLOY_USER@$DEPLOY_HOST << EOF
               cd $DEPLOY_PATH
