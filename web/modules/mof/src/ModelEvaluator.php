@@ -326,11 +326,13 @@ final class ModelEvaluator implements ModelEvaluatorInterface {
       return 0;
     }
 
-    // The tech report can be omitted if the research paper is provided which
+    // The tech report (cid 11) MAY be omitted if a research paper (cid 21) is provided which
     // means that for Class 1 we have one fewer required component
     // (and not for classes 2 and 3 where either the tech report or the research paper is counted)
-    if ($class == 1) $total--;
-
+    if ($class == 1 && ! array_search(11, $evaluate[1]['components']['included'])
+        && array_search(21, $evaluate[1]['components']['included'])) {
+        $total--;
+    }
     $progress = ($included / $total) * 100;
 
     // In case both the tech report and the research paper are provided we end up with more than
