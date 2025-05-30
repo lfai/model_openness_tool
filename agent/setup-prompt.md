@@ -1,19 +1,3 @@
-# Introduction and instructions
-
-*Current version: 0.1 (Please increment when making changes)*
-
-We are creating an agent that will update the Model Openness Tool.  
-We're starting by running the prompt manually to make sure that it works.
-
-To test, run these prompts in order:
-
-1. Setup prompt
-2. Instructions prompt
-3. Model request prompt
-
-## Setup prompt
-
-```yaml
 I'm trying to update information about various open source LLMs for the Model Openness Tool.  Read this page, including the tooltips:  https://mot-dev.isitopen.ai/model/evaluate
 
 This page ultimately populates a YAML document, such as:
@@ -77,16 +61,3 @@ release:
       license: unlicensed
 
 Analyze the form and correlate the YAML properties with the form fields.
-```
-
-## Instructions prompt
-
-```yaml
-Excellent.  Now I want you to analyze an open source model.  Do any research you have to answer all of these questions about the model and fill out the YAML document.  If you don't know the answer, look it up online. DO NOT MAKE ANYTHING UP.  Output the full YAML document, then follow up with an explanation of where you found each piece of information.  This task is very important to my career.  
-
-Do you understand?
-```
-
-## Model request prompt
-
-Here just give the LLM the name of a model, such as `DeepSeek-R1` and it will output the YAML document.
