@@ -5,19 +5,22 @@ framework:
 release:
   name: Mistral-7B-Instruct-v0.3
   version: 7B
-  date: '2024-10-03'
-  license: {  }
+  date: '2025-05-16'
   type: language
   architecture: decoder
   origin: Mistral
   producer: Mistral
   contact: ''
+  repository: ''
   huggingface: 'https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.3'
+  license:
+    distribution:
+      name: Apache-2.0
+      path: ''
   components:
     -
       name: 'Model architecture'
       description: "Well commented code for the model's architecture"
-      license: Apache-2.0
     -
       name: 'Inference code'
       description: 'Code used for running the model to make predictions'
@@ -30,7 +33,6 @@ release:
     -
       name: 'Model parameters (Final)'
       description: 'Trained model parameters, weights and biases'
-      license: Apache-2.0
     -
       name: 'Evaluation data'
       description: 'Data used for evaluating the model'
@@ -38,11 +40,9 @@ release:
     -
       name: 'Model metadata'
       description: 'Any model metadata including training configuration and optimizer states'
-      license: unlicensed
     -
       name: 'Model card'
       description: 'Model details including performance metrics, intended use, and limitations'
-      license: unlicensed
     -
       name: 'Technical report'
       description: 'Technical report detailing capabilities and usage instructions for the model'
