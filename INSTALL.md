@@ -16,6 +16,8 @@ cd mot
 composer install
 ```
 
+If you encounter installation errors, please be sure the following PHP extensions are enabled in your `php.ini` file: `gd`, `zip`, `pdo_sqlite`.
+
 ## Local development environment
 
 The production environment uses an external database which requires special settings but for development purposes you can simply use the built-in default Drupal sql.lite setup which is enough to test code changes locally.
