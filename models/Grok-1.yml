@@ -5,13 +5,15 @@ framework:
 release:
   name: Grok-1
   version: 314B
-  date: '2024-10-03'
-  license: {  }
+  date: '2025-05-22'
   type: language
   architecture: undisclosed
   origin: ''
   producer: xAI
   contact: ''
+  repository: ''
+  huggingface: xai-org/grok-1
+  license: {  }
   components:
     -
       name: 'Model architecture'

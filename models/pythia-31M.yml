@@ -5,13 +5,15 @@ framework:
 release:
   name: pythia-31M
   version: 31M
-  date: '2024-10-03'
-  license: {  }
+  date: '2025-05-22'
   type: language
   architecture: transformer
   origin: ''
   producer: EleutherAI
   contact: ''
+  repository: ''
+  huggingface: EleutherAI/pythia-31m
+  license: {  }
   components:
     -
       name: 'Model architecture'

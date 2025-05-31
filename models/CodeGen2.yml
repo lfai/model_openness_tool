@@ -5,13 +5,15 @@ framework:
 release:
   name: CodeGen2
   version: 16B
-  date: '2024-10-03'
-  license: {  }
+  date: '2025-05-22'
   type: code
   architecture: 'transformer decoder'
   origin: ''
   producer: Salesforce
   contact: ''
+  repository: ''
+  huggingface: Salesforce/codegen2-16B_P
+  license: {  }
   components:
     -
       name: 'Model parameters (Final)'

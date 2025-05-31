@@ -5,13 +5,15 @@ framework:
 release:
   name: pythia-70M
   version: 70M
-  date: '2024-10-03'
-  license: {  }
+  date: '2025-05-22'
   type: language
   architecture: transformer
   origin: Eagle
   producer: EleutherAI
   contact: ''
+  repository: ''
+  huggingface: EleutherAI/pythia-70m
+  license: {  }
   components:
     -
       name: 'Model architecture'

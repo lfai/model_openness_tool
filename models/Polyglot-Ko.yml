@@ -5,36 +5,57 @@ framework:
 release:
   name: Polyglot-Ko
   version: 12.8B
-  date: '2025-01-28'
-  license: {  }
+  date: '2025-05-30'
   type: ''
   architecture: decoder
   origin: ''
   producer: EleutherAI
   contact: ''
+  repository: ''
   huggingface: 'https://huggingface.co/EleutherAI/polyglot-ko-12.8b'
+  license:
+    distribution:
+      name: Apache-2.0
+      path: ''
   components:
     -
       name: 'Model architecture'
       description: "Well commented code for the model's architecture"
-      license: 'Apache license 2.0'
+    -
+      name: 'Data preprocessing code'
+      description: 'Code for data cleansing, normalization, and augmentation'
+    -
+      name: 'Training code'
+      description: 'Code used for training the model'
+    -
+      name: 'Inference code'
+      description: 'Code used for running the model to make predictions'
+    -
+      name: 'Evaluation code'
+      description: 'Code used for evaluating the model'
+    -
+      name: 'Model parameters (Final)'
+      description: 'Trained model parameters, weights and biases'
     -
       name: Datasets
       description: 'Training, validation and testing datasets used for the model'
-      license: unlicensed
+    -
+      name: 'Evaluation data'
+      description: 'Data used for evaluating the model'
     -
       name: 'Model card'
       description: 'Model details including performance metrics, intended use, and limitations'
-      license: unlicensed
+    -
+      name: 'Data card'
+      description: 'Documentation for datasets including source, characteristics, and preprocessing details'
     -
       name: 'Technical report'
       description: 'Technical report detailing capabilities and usage instructions for the model'
-      license: unlicensed
     -
       name: 'Research paper'
       description: 'Research paper detailing the development and capabilities of the model'
-      license: unlicensed
+      component_path: 'https://arxiv.org/abs/2306.02254'
+      license: CC-BY-SA-4.0
     -
       name: 'Evaluation results'
       description: 'The results from evaluating the model'
-      license: unlicensed

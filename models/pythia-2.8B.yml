@@ -5,13 +5,15 @@ framework:
 release:
   name: pythia-2.8B
   version: 2.8B
-  date: '2024-10-03'
-  license: {  }
+  date: '2025-05-22'
   type: language
   architecture: transformer
   origin: ''
   producer: EleutherAI
   contact: ''
+  repository: ''
+  huggingface: EleutherAI/pythia-2.8b
+  license: {  }
   components:
     -
       name: 'Model architecture'
