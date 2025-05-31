@@ -5,13 +5,15 @@ framework:
 release:
   name: Mistral-7B-v0.1
   version: 7B
-  date: '2024-10-03'
-  license: {  }
+  date: '2025-05-22'
   type: ''
   architecture: decoder
   origin: Mistral
   producer: Mistral
   contact: ''
+  repository: ''
+  huggingface: mistralai/Mistral-7B-v0.1
+  license: {  }
   components:
     -
       name: 'Model architecture'

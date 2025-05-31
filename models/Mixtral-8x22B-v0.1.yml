@@ -5,13 +5,15 @@ framework:
 release:
   name: Mixtral-8x22B-v0.1
   version: 22B
-  date: '2024-10-03'
-  license: {  }
+  date: '2025-05-22'
   type: language
   architecture: decoder
   origin: Mistral
   producer: Mistral
   contact: ''
+  repository: ''
+  huggingface: mistralai/Mixtral-8x22B-v0.1
+  license: {  }
   components:
     -
       name: 'Model architecture'

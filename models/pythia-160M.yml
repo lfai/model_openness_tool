@@ -5,13 +5,15 @@ framework:
 release:
   name: pythia-160M
   version: 160M
-  date: '2024-10-03'
-  license: {  }
+  date: '2025-05-22'
   type: language
   architecture: transformer
   origin: ''
   producer: EleutherAI
   contact: ''
+  repository: ''
+  huggingface: EleutherAI/pythia-160m
+  license: {  }
   components:
     -
       name: 'Model architecture'
