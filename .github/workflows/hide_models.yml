@@ -30,7 +30,7 @@ jobs:
           deploy_path: ${{ secrets.DEPLOY_PATH }}
           deploy_key: ${{ secrets.DEPLOY_KEY }}
 
-  update-models:
+  hide-models:
     runs-on: ubuntu-latest
     needs: setup-check
     environment: ${{ inputs.environment || 'Production' }}
@@ -83,7 +83,7 @@ jobs:
         run: |
             ssh $DEPLOY_USER@$DEPLOY_HOST << EOF
               cd $DEPLOY_PATH
-              ./vendor/bin/drush scr scripts/hide_models.php
+              ./vendor/bin/drush scr scripts/hide-models.php
               ./vendor/bin/drush cr
             EOF
 
