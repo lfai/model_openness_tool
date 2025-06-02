@@ -66,3 +66,22 @@ To submit bug fixes and improvements to the MOT software please follow these ste
 Note that all changes to the code should carry a sign-off.
 
 See the [INSTALL.md](INSTALL.md) file for more information on how to setup your environment to run MOT.
+
+## Legal stuff
+
+To handle the legal aspects of contributions, we use the `Developer's
+Certificate of Origin 1.1 (DCO)](DCO1.1.txt) approach like many other
+open source projects use nowadays.
+
+We simply ask that when you submit a patch for review, you include a
+sign-off statement in the commit message.
+
+Here is an example Signed-off-by line, which indicates that the
+submitter accepts the DCO:
+
+::
+
+    Signed-off-by: John Doe <john.doe@example.com>
+
+You can include this automatically when you commit a change to your
+local git repository using ``git commit -s``.
