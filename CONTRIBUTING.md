@@ -79,9 +79,9 @@ sign-off statement in the commit message.
 Here is an example Signed-off-by line, which indicates that the
 submitter accepts the DCO:
 
-::
-
-    Signed-off-by: John Doe <john.doe@example.com>
+   ```
+   Signed-off-by: John Doe <john.doe@example.com>
+   ```
 
 You can include this automatically when you commit a change to your
 local git repository using ``git commit -s``.
