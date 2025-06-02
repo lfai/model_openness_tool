@@ -69,7 +69,7 @@ See the [INSTALL.md](INSTALL.md) file for more information on how to setup your 
 
 ## Legal stuff
 
-To handle the legal aspects of contributions, we use the `Developer's
+To handle the legal aspects of contributions, we use the [Developer's
 Certificate of Origin 1.1 (DCO)](DCO1.1.txt) approach like many other
 open source projects use nowadays.
 
