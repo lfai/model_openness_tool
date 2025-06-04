@@ -53,6 +53,11 @@ instructions on their respective websites:
    ```
 
   This will check for any issues with your model file before you submit it.
+  
+  Note: make sure you have created a .env, use below command to create a empty .env file.
+  ```shell
+   touch .env
+```
 
 ## Contributing to the MOT software
 
