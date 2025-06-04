@@ -34,7 +34,7 @@ Start MOT:
 php web/core/scripts/drupal quick-start
 ```
 
-A browser window should open with the MOT website. The database is empty though.
+A browser window should open with the MOT website, you can find the login credentials in the output for the above command. The database is empty though.
 
 *IMPORTANT NOTE*: When submitting PRs from this setup be careful not to include the `web/sites/default/settings.php` file.
 
