@@ -283,7 +283,7 @@ final class ModelViewBuilder extends EntityViewBuilder {
           $license_link = [
             '#type' => 'link',
             '#title' => $license,
-            '#url' => \Drupal\Core\Url::fromUri($license_url),
+            '#url' => $license_url,
             '#attributes' => ['target' => '_blank'],
           ];
           $build["{$status}_components"]['#items'][] = [
@@ -296,7 +296,7 @@ final class ModelViewBuilder extends EntityViewBuilder {
           $name_link = [
             '#type' => 'link',
             '#title' => $component->name,
-            '#url' => \Drupal\Core\Url::fromUri($name_url),
+            '#url' => $name_url,
             '#attributes' => ['target' => '_blank'],
           ];
           $build["{$status}_components"]['#items'][] = [
