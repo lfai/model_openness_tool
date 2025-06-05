@@ -232,10 +232,26 @@ final class ModelViewBuilder extends EntityViewBuilder {
 
     foreach ($components as $component) {
       $license = $evaluation[$class]['licenses'][$component->id] ?? null;
-      
+
       //Gets license and name URLs from the model array, null if not available.
       $license_url = $model['license_data'][0]['licenses']['components'][$component->id]['license_path'] ?? null;
       $name_url = $model['license_data'][0]['licenses']['components'][$component->id]['component_path'] ?? null;
+
+      // If the URL is invalid, set it to null.
+      try {
+        $license_url = Url::fromUri($license_url);
+      }
+      catch (\Exception $e) {
+        $license_url = null; 
+      }
+
+      // If the URL is invalid, set it to null.
+      try {
+        $name_url = Url::fromUri($name_url);
+      }
+      catch (\Exception $e) {
+        $name_url = null;
+      }
 
      if ($license) {
         //Both license and name URLs are available
@@ -243,13 +259,13 @@ final class ModelViewBuilder extends EntityViewBuilder {
           $license_link = [
             '#type' => 'link',
             '#title' => $license,
-            '#url' => \Drupal\Core\Url::fromUri($license_url),
+            '#url' => $license_url,
             '#attributes' => ['target' => '_blank'],
           ];
           $name_link = [
             '#type' => 'link',
             '#title' => $component->name,
-            '#url' => \Drupal\Core\Url::fromUri($name_url),
+            '#url' => $name_url,
             '#attributes' => ['target' => '_blank'],
           ];
           $build["{$status}_components"]['#items'][] = [
