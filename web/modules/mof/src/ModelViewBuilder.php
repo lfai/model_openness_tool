@@ -232,7 +232,68 @@ final class ModelViewBuilder extends EntityViewBuilder {
 
     foreach ($components as $component) {
       $license = $evaluation[$class]['licenses'][$component->id] ?? null;
-      $build["{$status}_components"]['#items'][] = $component->name . ($license ? " [{$license}]" : '');
+      
+      //Gets license and name URLs from the model array, null if not available.
+      $license_url = $model['license_data'][0]['licenses']['components'][$component->id]['license_path'] ?? null;
+      $name_url = $model['license_data'][0]['licenses']['components'][$component->id]['component_path'] ?? null;
+
+     if ($license) {
+        //Both license and name URLs are available
+        if ($license_url and $name_url) {
+          $license_link = [
+            '#type' => 'link',
+            '#title' => $license,
+            '#url' => \Drupal\Core\Url::fromUri($license_url),
+            '#attributes' => ['target' => '_blank'],
+          ];
+          $name_link = [
+            '#type' => 'link',
+            '#title' => $component->name,
+            '#url' => \Drupal\Core\Url::fromUri($name_url),
+            '#attributes' => ['target' => '_blank'],
+          ];
+          $build["{$status}_components"]['#items'][] = [
+            'name_link' => $name_link,
+            'bracket_open' => [
+              '#markup' => ' [',
+            ],
+            'license_link' => $license_link,
+            'bracket_close' => [
+              '#markup' => ']',
+            ],
+          ];
+        } elseif ($license_url) {
+          // URL only, no name link
+          $license_link = [
+            '#type' => 'link',
+            '#title' => $license,
+            '#url' => \Drupal\Core\Url::fromUri($license_url),
+            '#attributes' => ['target' => '_blank'],
+          ];
+          $build["{$status}_components"]['#items'][] = [
+            '#markup' => $component->name . ' [',
+            'license_link' => $license_link,
+            '#suffix' => ']',
+          ];
+        } elseif ($name_url) {
+          // Name only, no URL
+          $name_link = [
+            '#type' => 'link',
+            '#title' => $component->name,
+            '#url' => \Drupal\Core\Url::fromUri($name_url),
+            '#attributes' => ['target' => '_blank'],
+          ];
+          $build["{$status}_components"]['#items'][] = [
+            'name_link' => $name_link,
+            '#suffix' => ' [' . $license . ']',
+          ];
+        } else {
+          $build["{$status}_components"]['#items'][] = $component->name . ' [' . $license . ']';
+        }
+      } else {
+          // No license, just the component name
+        $build["{$status}_components"]['#items'][] = $component->name;
+        }
     }
 
     return $build;
