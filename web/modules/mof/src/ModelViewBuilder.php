@@ -105,6 +105,7 @@ final class ModelViewBuilder extends EntityViewBuilder {
       ];
     }
 
+    $model = $build['#model']->toArray();
     $this->modelEvaluator->setModel($build['#model']);
     $evaluation = $this->modelEvaluator->evaluate();
     $badges = $this->badgeGenerator->generate($build['#model']);
@@ -126,13 +127,13 @@ final class ModelViewBuilder extends EntityViewBuilder {
         'badge' => $badges[$class],
         'evaluation' => [
           'included' => $this
-            ->buildComponentList($class, $evaluation, 'included'),
+            ->buildComponentList($class, $evaluation, 'included', $model),
           'unspecified' => $this
-            ->buildComponentList($class, $evaluation, 'unlicensed'),
+            ->buildComponentList($class, $evaluation, 'unlicensed', $model),
           'invalid' => $this
-            ->buildComponentList($class, $evaluation, 'invalid'),
+            ->buildComponentList($class, $evaluation, 'invalid', $model),
           'missing' => $this
-            ->buildComponentList($class, $evaluation, 'missing'),
+            ->buildComponentList($class, $evaluation, 'missing', $model),
           '#weight' => 10,
         ],
       ];
@@ -188,11 +189,13 @@ final class ModelViewBuilder extends EntityViewBuilder {
    *   An evaluated model array containing component and license data.
    * @param string $status
    *   A value of "missing" or "included" or "invalid" or "unlicensed".
+   * @param array  $model
+   * The model array containing license and component paths.
    *
    * @return array
    *   A drupal render array of components.
    */
-  private function buildComponentList(int $class, array $evaluation, string $status): array {
+  private function buildComponentList(int $class, array $evaluation, string $status, array $model): array {
     $build = [];
 
     if (!in_array($status, ['missing', 'invalid', 'included', 'unlicensed'])) {
