@@ -1,6 +1,6 @@
 ## Prerequisites
 
-The MOT is built on [Drupal](https://www.drupal.org). You need to have [PHP](https://www.php.net) and [composer](https://getcomposer.org/) installed.
+The MOT is built on [Drupal](https://www.drupal.org). You need to have [PHP](https://www.php.net) and [composer](https://getcomposer.org/) installed. PHP 8.4 is not supported, make sure to install stable PHP 8.3.
 
 
 ## Clone the repository
