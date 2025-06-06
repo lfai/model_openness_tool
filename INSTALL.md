@@ -1,6 +1,6 @@
 ## Prerequisites
 
-The MOT is built on [Drupal](https://www.drupal.org). You need to have [PHP](https://www.php.net) and [composer](https://getcomposer.org/) installed.
+The MOT is built on [Drupal](https://www.drupal.org). You need to have [PHP](https://www.php.net) and [composer](https://getcomposer.org/) installed. PHP 8.4 is not supported, make sure to install stable PHP 8.3.
 
 
 ## Clone the repository
@@ -34,7 +34,7 @@ Start MOT:
 php web/core/scripts/drupal quick-start
 ```
 
-A browser window should open with the MOT website. The database is empty though.
+A browser window should open with the MOT website, you can find the login credentials in the output for the above command. The database is empty though.
 
 *IMPORTANT NOTE*: When submitting PRs from this setup be careful not to include the `web/sites/default/settings.php` file.
 
