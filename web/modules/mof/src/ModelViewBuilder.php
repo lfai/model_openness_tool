@@ -105,6 +105,7 @@ final class ModelViewBuilder extends EntityViewBuilder {
       ];
     }
 
+    $model = $build['#model']->toArray();
     $this->modelEvaluator->setModel($build['#model']);
     $evaluation = $this->modelEvaluator->evaluate();
     $badges = $this->badgeGenerator->generate($build['#model']);
@@ -126,13 +127,13 @@ final class ModelViewBuilder extends EntityViewBuilder {
         'badge' => $badges[$class],
         'evaluation' => [
           'included' => $this
-            ->buildComponentList($class, $evaluation, 'included'),
+            ->buildComponentList($class, $evaluation, 'included', $model),
           'unspecified' => $this
-            ->buildComponentList($class, $evaluation, 'unlicensed'),
+            ->buildComponentList($class, $evaluation, 'unlicensed', $model),
           'invalid' => $this
-            ->buildComponentList($class, $evaluation, 'invalid'),
+            ->buildComponentList($class, $evaluation, 'invalid', $model),
           'missing' => $this
-            ->buildComponentList($class, $evaluation, 'missing'),
+            ->buildComponentList($class, $evaluation, 'missing', $model),
           '#weight' => 10,
         ],
       ];
@@ -188,11 +189,13 @@ final class ModelViewBuilder extends EntityViewBuilder {
    *   An evaluated model array containing component and license data.
    * @param string $status
    *   A value of "missing" or "included" or "invalid" or "unlicensed".
+   * @param array  $model
+   * The model array containing license and component paths.
    *
    * @return array
    *   A drupal render array of components.
    */
-  private function buildComponentList(int $class, array $evaluation, string $status): array {
+  private function buildComponentList(int $class, array $evaluation, string $status, array $model): array {
     $build = [];
 
     if (!in_array($status, ['missing', 'invalid', 'included', 'unlicensed'])) {
@@ -229,7 +232,84 @@ final class ModelViewBuilder extends EntityViewBuilder {
 
     foreach ($components as $component) {
       $license = $evaluation[$class]['licenses'][$component->id] ?? null;
-      $build["{$status}_components"]['#items'][] = $component->name . ($license ? " [{$license}]" : '');
+
+      //Gets license and name URLs from the model array, null if not available.
+      $license_url = $model['license_data'][0]['licenses']['components'][$component->id]['license_path'] ?? null;
+      $name_url = $model['license_data'][0]['licenses']['components'][$component->id]['component_path'] ?? null;
+
+      // If the URL is invalid, set it to null.
+      try {
+        $license_url = Url::fromUri($license_url);
+      }
+      catch (\Exception $e) {
+        $license_url = null; 
+      }
+
+      // If the URL is invalid, set it to null.
+      try {
+        $name_url = Url::fromUri($name_url);
+      }
+      catch (\Exception $e) {
+        $name_url = null;
+      }
+
+     if ($license) {
+        //Both license and name URLs are available
+        if ($license_url and $name_url) {
+          $license_link = [
+            '#type' => 'link',
+            '#title' => $license,
+            '#url' => $license_url,
+            '#attributes' => ['target' => '_blank'],
+          ];
+          $name_link = [
+            '#type' => 'link',
+            '#title' => $component->name,
+            '#url' => $name_url,
+            '#attributes' => ['target' => '_blank'],
+          ];
+          $build["{$status}_components"]['#items'][] = [
+            'name_link' => $name_link,
+            'bracket_open' => [
+              '#markup' => ' [',
+            ],
+            'license_link' => $license_link,
+            'bracket_close' => [
+              '#markup' => ']',
+            ],
+          ];
+        } elseif ($license_url) {
+          // URL only, no name link
+          $license_link = [
+            '#type' => 'link',
+            '#title' => $license,
+            '#url' => $license_url,
+            '#attributes' => ['target' => '_blank'],
+          ];
+          $build["{$status}_components"]['#items'][] = [
+            '#markup' => $component->name . ' [',
+            'license_link' => $license_link,
+            '#suffix' => ']',
+          ];
+        } elseif ($name_url) {
+          // Name only, no URL
+          $name_link = [
+            '#type' => 'link',
+            '#title' => $component->name,
+            '#url' => $name_url,
+            '#attributes' => ['target' => '_blank'],
+          ];
+          $build["{$status}_components"]['#items'][] = [
+            'name_link' => $name_link,
+            '#suffix' => ' [' . $license . ']',
+          ];
+        } else {
+          $build["{$status}_components"]['#items'][] = $component->name . ' [' . $license . ']';
+        }
+      } else {
+          // No license, just the component name
+        $build["{$status}_components"]['#items'][] = $component->name;
+        }
     }
 
     return $build;
