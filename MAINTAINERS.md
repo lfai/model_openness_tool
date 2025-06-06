@@ -5,7 +5,7 @@ project. Every pull request in this repository must be approved by
 at least one Maintainer.
 
 This file contains the canonical list of MOT Maintainers. It is
-manually mirrored to the [Maintainers] GitHub team, which confers
+manually mirrored to the Maintainers GitHub team, which confers
 permissions in this repository.
 
 ## Current Maintainers
@@ -35,8 +35,8 @@ To nominate a candidate, send a PR adding the candidate's name to the list of
 [Current Maintainers]. If the candidate is not the author, have the candidate
 approve the PR as well.
 
-Once the PR is approved and merged, an existing Maintainer will [add] the
-candidate to the [Maintainers] GitHub team.
+Once the PR is approved and merged, an existing Maintainer will add the
+candidate to the Maintainers GitHub team.
 
 [add]: https://docs.github.com/en/organizations/organizing-members-into-teams/adding-organization-members-to-a-team
 
@@ -63,12 +63,8 @@ Maintainers] to [Retired Maintainers]. If the candidate is not the author,
 request review from the candidate to inform them of their removal. Approval from
 the candidate is *not* required, though it is desirable.
 
-Once the PR is approved and merged, a Maintainer will [remove] the person from
-the [Specification Maintainers] GitHub team.
-
-[remove]: https://docs.github.com/en/organizations/organizing-members-into-teams/removing-organization-members-from-a-team
+Once the PR is approved and merged, a Maintainer will remove the person from
+the Maintainers GitHub team.
 
 [Current Maintainers]: #current-maintainers
 [Retired Maintainers]: #retired-maintainers
-[SLSA Governance]: https://github.com/slsa-framework/governance/blob/main/5._Governance.md
-[Specification Maintainers]: https://github.com/orgs/slsa-framework/teams/specification-maintainers
