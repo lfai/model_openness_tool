@@ -144,7 +144,7 @@ abstract class ModelForm extends ContentEntityForm {
     $form['license']['distribution']['path'] = [
       '#type' => 'textfield',
       '#title' => $this->t('License URL'),
-      '#description' => $this->t('Enter the URL for the license (e.g. https://some.tld/license).'),
+      '#description' => $this->t('Enter the URL for the license (e.g. https://example.com/license).'),
       '#default_value' => $model_licenses['global']['distribution']['path'] ?? '',
       '#weight' => 2,
       '#states' => [
@@ -178,7 +178,7 @@ abstract class ModelForm extends ContentEntityForm {
     $form['license']['code']['path'] = [
       '#type' => 'textfield',
       '#title' => $this->t('License URL'),
-      '#description' => $this->t('Enter the URL for the license (e.g. https://some.tld/license).'),
+      '#description' => $this->t('Enter the URL for the license (e.g. https://example.com/license).'),
       '#default_value' => $model_licenses['global']['code']['path'] ?? '',
       '#weight' => 2,
       '#states' => [
@@ -212,7 +212,7 @@ abstract class ModelForm extends ContentEntityForm {
     $form['license']['data']['path'] = [
       '#type' => 'textfield',
       '#title' => $this->t('License URL'),
-      '#description' => $this->t('Enter the URL for the license (e.g. https://some.tld/license).'),
+      '#description' => $this->t('Enter the URL for the license (e.g. https://example.com/license).'),
       '#default_value' => $model_licenses['global']['data']['path'] ?? '',
       '#weight' => 2,
       '#states' => [
@@ -246,7 +246,7 @@ abstract class ModelForm extends ContentEntityForm {
     $form['license']['document']['path'] = [
       '#type' => 'textfield',
       '#title' => $this->t('License URL'),
-      '#description' => $this->t('Enter the URL for the license (e.g. https://some.tld/license).'),
+      '#description' => $this->t('Enter the URL for the license (e.g. https://example.com/license).'),
       '#default_value' => $model_licenses['global']['document']['path'] ?? '',
       '#weight' => 2,
       '#states' => [
@@ -316,7 +316,7 @@ abstract class ModelForm extends ContentEntityForm {
           'component_path' => [
             '#type' => 'textfield',
             '#parents' => ['component_data', $cid, 'component_path'],
-            '#description' => $this->t('The URL for the component (e.g. https://some.tld/component).'),
+            '#description' => $this->t('The URL for the component (e.g. https://example.com/component).'),
             '#default_value' => $model_licenses['components'][$cid]['component_path'] ?? '',
             '#placeholder' => $this->t('Enter the component URL'),
             '#weight' => 100,
@@ -380,7 +380,7 @@ abstract class ModelForm extends ContentEntityForm {
           'license_path' => [
             '#type' => 'textfield',
             '#parents' => ['component_data', $cid, 'license_path'],
-            '#description' => $this->t('The URL for the license (e.g. https://some.tld/license).'),
+            '#description' => $this->t('The URL for the license (e.g. https://example.com/license).'),
             '#default_value' => $model_licenses['components'][$cid]['license_path'] ?? '',
             '#placeholder' => $this->t('Enter the license URL'),
             '#attributes' => [
