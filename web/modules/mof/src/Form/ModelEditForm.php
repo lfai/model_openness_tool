@@ -15,8 +15,16 @@ final class ModelEditForm extends ModelForm {
     $form += parent::form($form, $form_state);
     $form['#attributes']['novalidate'] = 'novalidate';
 
+    $is_admin = $this->currentUser()->hasPermission('administer model');
+
     // Only admins can approve models.
-    $form['status']['#access'] = $this->currentUser()->hasPermission('administer model');
+    $form['status']['#access'] = $is_admin;
+
+    // Show a message for non-admins indicating their changes will not be saved,
+    // but rather a PR should be submitted from the YAML.
+    if (!$is_admin) {
+      // @todo Show a message here.
+    }
 
     return $form;
   }
@@ -36,11 +44,12 @@ final class ModelEditForm extends ModelForm {
    */
   public function submitForm(array &$form, FormStateInterface $form_state): void {
     parent::submitForm($form, $form_state);
-    if (!$this->entity->isNew()) {
-      $form_state->setRedirectUrl($this->entity->toUrl());
+    if ($this->currentUser()->hasPermission('administer model')) {
+      $form_state->setRedirect('entity.model.canonical', ['model' => $this->entity->id()]);
     }
     else {
-      $form_state->setRedirect('entity.model.admin_collection');
+      $response = $this->entity->download();
+      $form_state->setResponse($response);
     }
   }
 
@@ -51,6 +60,16 @@ final class ModelEditForm extends ModelForm {
     $actions = parent::actions($form, $form_state);
     $actions['submit']['#value'] = $this->t('Submit');
     return $actions;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function save(array $form, FormStateInterface $form_state) {
+    // Save model entity only if we're an admin.
+    if ($this->currentUser()->hasPermission('administer model')) {
+      return parent::save($form, $form_state);
+    }
   }
 
 }

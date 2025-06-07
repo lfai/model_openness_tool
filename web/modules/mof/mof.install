@@ -84,3 +84,19 @@ function mof_update_10405() {
   }
 }
 
+/**
+ * Implements hook_update_N().
+ *
+ * Remove the 'submit model' permission from any roles that have it.
+ * This permission is no longer needed as we moved to pull-requests for
+ * model submissions.
+ */
+function mof_update_10406() {
+  foreach (\Drupal\user\Entity\Role::loadMultiple() as $role) {
+    if ($role->hasPermission('submit model')) {
+      $role->revokePermission('submit model');
+      $role->save();
+    }
+  }
+}
+

@@ -3,7 +3,6 @@
 namespace Drupal\mof\Controller;
 
 use Drupal\mof\ModelInterface;
-use Drupal\mof\ModelSerializerInterface;
 use Drupal\mof\ModelEvaluatorInterface;
 use Drupal\mof\BadgeGeneratorInterface;
 use Drupal\Core\Controller\ControllerBase;
@@ -19,9 +18,6 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 
 
 final class ModelController extends ControllerBase {
-
-  /** @var \Drupal\mof\ModelSerializerInterface. */
-  private readonly ModelSerializerInterface $modelSerializer;
 
   /** @var \Drupal\mof\ModelEvaluatorInterface. */
   private readonly ModelEvaluatorInterface $modelEvaluator;
@@ -40,7 +36,6 @@ final class ModelController extends ControllerBase {
    */
   public static function create(ContainerInterface $container) {
     $instance = parent::create($container);
-    $instance->modelSerializer = $container->get('model_serializer');
     $instance->modelEvaluator = $container->get('model_evaluator');
     $instance->badgeGenerator = $container->get('badge_generator');
     $instance->renderer = $container->get('renderer');
@@ -146,42 +141,26 @@ final class ModelController extends ControllerBase {
    * Return a yaml representation of the model.
    */
   public function yaml(ModelInterface $model): Response {
-    $response = new Response();
-
     try {
-      $yaml = $this->modelSerializer->toYaml($model);
-      $response->setContent($yaml);
-      $response->headers->set('Content-Type', 'application/yaml');
-      $response->headers->set('Content-Length', (string)strlen($yaml));
-      $response->headers->set('Content-Disposition', 'attachment; filename="' . $model->label() . '.yml"');
+      return $model->download('yaml');
     }
-    catch (\RuntimeException $e) {
+    catch (\InvalidArgumentException $e) {
       $response->setContent($e->getMessage());
       $response->setStatusCode(Response::HTTP_UNPROCESSABLE_ENTITY);
     }
-
-    return $response;
   }
 
   /**
    * Return a json file representation of the model.
    */
   public function json(ModelInterface $model): Response {
-    $response = new Response();
-
     try {
-      $json = $this->modelSerializer->toJson($model);
-      $response->setContent($json);
-      $response->headers->set('Content-Type', 'application/json');
-      $response->headers->set('Content-Length', (string)strlen($json));
-      $response->headers->set('Content-Disposition', 'attachment; filename="' . $model->label() . '.json"');
+      return $model->download('json');
     }
-    catch (\RuntimeException $e) {
+    catch (\InvalidArgumentException $e) {
       $response->setContent($e->getMessage());
       $response->setStatusCode(Response::HTTP_UNPROCESSABLE_ENTITY);
     }
-
-    return $response;
   }
 
   /**
