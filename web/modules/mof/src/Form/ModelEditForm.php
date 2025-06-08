@@ -6,6 +6,14 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Ajax\AjaxResponse;
 use Drupal\Core\Ajax\HtmlCommand;
 
+/**
+ * @file
+ * Handles form processing logic for editing a model entity.
+ *
+ * Any user can edit an existing model, but only administrators can save
+ * changes directly. For non-admin users, the edited model will be exported
+ * as a YAML file for manual review and submission.
+ */
 final class ModelEditForm extends ModelForm {
 
   /**
@@ -15,16 +23,8 @@ final class ModelEditForm extends ModelForm {
     $form += parent::form($form, $form_state);
     $form['#attributes']['novalidate'] = 'novalidate';
 
-    $is_admin = $this->currentUser()->hasPermission('administer model');
-
     // Only admins can approve models.
-    $form['status']['#access'] = $is_admin;
-
-    // Show a message for non-admins indicating their changes will not be saved,
-    // but rather a PR should be submitted from the YAML.
-    if (!$is_admin) {
-      // @todo Show a message here.
-    }
+    $form['status']['#access'] = $this->isAdmin();
 
     return $form;
   }
@@ -44,10 +44,12 @@ final class ModelEditForm extends ModelForm {
    */
   public function submitForm(array &$form, FormStateInterface $form_state): void {
     parent::submitForm($form, $form_state);
-    if ($this->currentUser()->hasPermission('administer model')) {
+    if ($this->isAdmin()) {
+      // Redirect user to evaluation/ model view page.
       $form_state->setRedirect('entity.model.canonical', ['model' => $this->entity->id()]);
     }
     else {
+      // Download YAML-formatted model.
       $response = $this->entity->download();
       $form_state->setResponse($response);
     }
@@ -58,7 +60,11 @@ final class ModelEditForm extends ModelForm {
    */
   protected function actions(array $form, FormStateInterface $form_state) {
     $actions = parent::actions($form, $form_state);
-    $actions['submit']['#value'] = $this->t('Submit');
+
+    $actions['submit']['#value'] = $this->isAdmin()
+      ? $this->t('Save')
+      : $this->t('Download YAML');
+
     return $actions;
   }
 
@@ -67,9 +73,18 @@ final class ModelEditForm extends ModelForm {
    */
   public function save(array $form, FormStateInterface $form_state) {
     // Save model entity only if we're an admin.
-    if ($this->currentUser()->hasPermission('administer model')) {
+    if ($this->isAdmin()) {
       return parent::save($form, $form_state);
     }
+  }
+
+  /**
+   * Check if the current user is an admin.
+   *
+   * @return bool TRUE if admin, FALSE if not admin.
+   */
+  private function isAdmin(): bool {
+    return $this->currentUser()->hasPermission('administer model');
   }
 
 }
