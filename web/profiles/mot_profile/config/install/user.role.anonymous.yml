@@ -14,3 +14,4 @@ is_admin: false
 permissions:
   - 'access content'
   - 'view model collection'
+  - 'view licenses'

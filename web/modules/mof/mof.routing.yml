@@ -115,3 +115,19 @@ mof.model_badge:
   requirements:
     _entity_access: model.view
     class: '1|2|3'
+
+entity.license.collection:
+  path: '/licenses'
+  defaults:
+    _entity_list: 'license'
+    _title: 'Licenses'
+  requirements:
+    _permission: 'view licenses'
+
+entity.license.admin_collection:
+  path: '/admin/licenses'
+  defaults:
+    _entity_list: 'license'
+    _title: 'License Administration'
+  requirements:
+    _permission: 'administer licenses'    
