@@ -260,13 +260,13 @@ final class ModelViewBuilder extends EntityViewBuilder {
             '#type' => 'link',
             '#title' => $license,
             '#url' => $license_url,
-            '#attributes' => ['target' => '_blank'],
+            #'#attributes' => ['target' => '_blank'],
           ];
           $name_link = [
             '#type' => 'link',
             '#title' => $component->name,
             '#url' => $name_url,
-            '#attributes' => ['target' => '_blank'],
+            #'#attributes' => ['target' => '_blank'],
           ];
           $build["{$status}_components"]['#items'][] = [
             'name_link' => $name_link,
@@ -284,7 +284,7 @@ final class ModelViewBuilder extends EntityViewBuilder {
             '#type' => 'link',
             '#title' => $license,
             '#url' => $license_url,
-            '#attributes' => ['target' => '_blank'],
+            #'#attributes' => ['target' => '_blank'],
           ];
           $build["{$status}_components"]['#items'][] = [
             '#markup' => $component->name . ' [',
@@ -297,7 +297,7 @@ final class ModelViewBuilder extends EntityViewBuilder {
             '#type' => 'link',
             '#title' => $component->name,
             '#url' => $name_url,
-            '#attributes' => ['target' => '_blank'],
+            #'#attributes' => ['target' => '_blank'],
           ];
           $build["{$status}_components"]['#items'][] = [
             'name_link' => $name_link,
