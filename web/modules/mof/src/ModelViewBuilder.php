@@ -233,25 +233,20 @@ final class ModelViewBuilder extends EntityViewBuilder {
     foreach ($components as $component) {
       $license = $evaluation[$class]['licenses'][$component->id] ?? null;
 
-      //Try component type specific global license URL first.
-      $global_license_url = $model['license_data'][0]['licenses']['global'][$component->contentType]['path'] ?? null;
-
-      //Fallback to distribution wide global license URL.
-      if (!$global_license_url) {
-        $global_license_url = $model['license_data'][0]['licenses']['global']['distribution']['path'] ?? null;
+      //Sets the license URL based on available model license data.
+      //Component specific license has highest precedence,
+      if (isset($model['license_data'][0]['licenses']['components'][$component->id]['license_path'])) {
+        $license_url = $model['license_data'][0]['licenses']['components'][$component->id]['license_path'] ?? null;
+      } 
+      // Component type specific global license URL has second highest precedence
+      elseif (isset($model['license_data'][0]['licenses']['global'][$component->contentType]['path'])){
+        $license_url = $model['license_data'][0]['licenses']['global'][$component->contentType]['path'] ?? null;
+      // Distribution wide global license URL has lowest precedence
+      } elseif (isset($model['license_data'][0]['licenses']['global']['distribution']['path'])) {
+        $license_url = $model['license_data'][0]['licenses']['global']['distribution']['path'] ?? null;
       }
-
-      // Try to get the component specific license URL.
-      $component_license_url = $model['license_data'][0]['licenses']['components'][$component->id]['license_path'] ?? null;
-
-      if ($component_license_url) {
-        // If the component has a license URL, use it.
-        $license_url = $component_license_url;
-      } elseif ($global_license_url) {
-        // If the component does not have a license URL, use the global license URL.
-        $license_url = $global_license_url;
-      } else {
-        // No license URL available.
+      // If no license URL is set, set it to null.
+      else {
         $license_url = null;
       }
 
@@ -286,16 +281,6 @@ final class ModelViewBuilder extends EntityViewBuilder {
      if ($license) {
         //Both license and name URLs are available
         if ($license_url and $name_url) {
-          // $license_link = [
-          //   '#type' => 'link',
-          //   '#title' => $license,
-          //   '#url' => $license_url,
-          // ];
-          // $name_link = [
-          //   '#type' => 'link',
-          //   '#title' => $component->name,
-          //   '#url' => $name_url,
-          // ];
           $build["{$status}_components"]['#items'][] = [
             'name_link' => $name_link,
             'bracket_open' => [
@@ -306,29 +291,20 @@ final class ModelViewBuilder extends EntityViewBuilder {
               '#markup' => ']',
             ],
           ];
+        // Only license URL is available
         } elseif ($license_url) {
-          // URL only, no name link
-          // $license_link = [
-          //   '#type' => 'link',
-          //   '#title' => $license,
-          //   '#url' => $license_url,
-          // ];
           $build["{$status}_components"]['#items'][] = [
             '#markup' => $component->name . ' [',
             'license_link' => $license_link,
             '#suffix' => ']',
           ];
+        // Only name URL is available
         } elseif ($name_url) {
-          // Name only, no license URL
-          // $name_link = [
-          //   '#type' => 'link',
-          //   '#title' => $component->name,
-          //   '#url' => $name_url,
-          // ];
           $build["{$status}_components"]['#items'][] = [
             'name_link' => $name_link,
             '#suffix' => ' [' . $license . ']',
           ];
+        // No URLs available, just the component name and license
         } else {
           $build["{$status}_components"]['#items'][] = $component->name . ' [' . $license . ']';
         }
