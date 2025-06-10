@@ -233,20 +233,38 @@ final class ModelViewBuilder extends EntityViewBuilder {
     foreach ($components as $component) {
       $license = $evaluation[$class]['licenses'][$component->id] ?? null;
 
-      //Gets license and name URLs from the model array, null if not available.
-      $license_url = $model['license_data'][0]['licenses']['components'][$component->id]['license_path'] ?? null;
+      //Try component type specific global license URL first.
+      $global_license_url = $model['license_data'][0]['licenses']['global'][$component->contentType]['path'] ?? null;
 
-      // If the component license URL is not set, use the global distribution path.
-      if (!$license_url) {
-        $license_url = $model['license_data'][0]['licenses']['global']['distribution']['path'] ?? null;
+      //Fallback to distribution wide global license URL.
+      if (!$global_license_url) {
+        $global_license_url = $model['license_data'][0]['licenses']['global']['distribution']['path'] ?? null;
       }
 
+      // Try to get the component specific license URL.
+      $component_license_url = $model['license_data'][0]['licenses']['components'][$component->id]['license_path'] ?? null;
+
+      if ($component_license_url) {
+        // If the component has a license URL, use it.
+        $license_url = $component_license_url;
+      } elseif ($global_license_url) {
+        // If the component does not have a license URL, use the global license URL.
+        $license_url = $global_license_url;
+      } else {
+        // No license URL available.
+        $license_url = null;
+      }
 
       $name_url = $model['license_data'][0]['licenses']['components'][$component->id]['component_path'] ?? null;
 
       // If the URL is invalid, set it to null.
       try {
         $license_url = Url::fromUri($license_url);
+        $license_link = [
+          '#type' => 'link',
+          '#title' => $license,
+          '#url' => $license_url,
+        ];
       }
       catch (\Exception $e) {
         $license_url = null; 
@@ -255,6 +273,11 @@ final class ModelViewBuilder extends EntityViewBuilder {
       // If the URL is invalid, set it to null.
       try {
         $name_url = Url::fromUri($name_url);
+        $name_link = [
+          '#type' => 'link',
+          '#title' => $component->name,
+          '#url' => $name_url,
+        ];
       }
       catch (\Exception $e) {
         $name_url = null;
@@ -263,16 +286,16 @@ final class ModelViewBuilder extends EntityViewBuilder {
      if ($license) {
         //Both license and name URLs are available
         if ($license_url and $name_url) {
-          $license_link = [
-            '#type' => 'link',
-            '#title' => $license,
-            '#url' => $license_url,
-          ];
-          $name_link = [
-            '#type' => 'link',
-            '#title' => $component->name,
-            '#url' => $name_url,
-          ];
+          // $license_link = [
+          //   '#type' => 'link',
+          //   '#title' => $license,
+          //   '#url' => $license_url,
+          // ];
+          // $name_link = [
+          //   '#type' => 'link',
+          //   '#title' => $component->name,
+          //   '#url' => $name_url,
+          // ];
           $build["{$status}_components"]['#items'][] = [
             'name_link' => $name_link,
             'bracket_open' => [
@@ -285,23 +308,23 @@ final class ModelViewBuilder extends EntityViewBuilder {
           ];
         } elseif ($license_url) {
           // URL only, no name link
-          $license_link = [
-            '#type' => 'link',
-            '#title' => $license,
-            '#url' => $license_url,
-          ];
+          // $license_link = [
+          //   '#type' => 'link',
+          //   '#title' => $license,
+          //   '#url' => $license_url,
+          // ];
           $build["{$status}_components"]['#items'][] = [
             '#markup' => $component->name . ' [',
             'license_link' => $license_link,
             '#suffix' => ']',
           ];
         } elseif ($name_url) {
-          // Name only, no URL
-          $name_link = [
-            '#type' => 'link',
-            '#title' => $component->name,
-            '#url' => $name_url,
-          ];
+          // Name only, no license URL
+          // $name_link = [
+          //   '#type' => 'link',
+          //   '#title' => $component->name,
+          //   '#url' => $name_url,
+          // ];
           $build["{$status}_components"]['#items'][] = [
             'name_link' => $name_link,
             '#suffix' => ' [' . $license . ']',
