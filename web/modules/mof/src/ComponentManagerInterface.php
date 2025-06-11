@@ -12,5 +12,6 @@ interface ComponentManagerInterface {
 
   public function getRequired(int $class): array;
 
+  public function getOptional(int $class): array;
 }
 
