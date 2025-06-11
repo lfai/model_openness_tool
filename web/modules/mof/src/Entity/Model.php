@@ -12,6 +12,7 @@ use Drupal\Core\Field\FieldStorageDefinitionInterface;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\mof\ModelInterface;
 use Drupal\user\EntityOwnerTrait;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Defines the model entity type.
@@ -204,6 +205,50 @@ final class Model extends RevisionableContentEntityBase implements ModelInterfac
   public function setStatus(string $status): self {
     $this->set('status', $status);
     return $this;
+  }
+
+  /**
+   * Download a YAML or JSON representation of this model.
+   *
+   * @param string $format The file format: 'json' or 'yaml'.
+   *
+   * @return \Symfony\Component\HttpFoundation\Response
+   */
+  public function download(string $format = 'yaml'): Response {
+    $response = new Response();
+    $serializer = \Drupal::service('model_serializer');
+
+    $map = [
+      'json' => [
+        'content_type' => 'application/json',
+        'extension' => '.json',
+        'serialize' => fn() => $serializer->toJson($this),
+      ],
+      'yaml' => [
+        'content_type' => 'application/yaml',
+        'extension' => '.yaml',
+        'serialize' => fn() => $serializer->toYaml($this),
+      ],
+    ];
+
+    $mapper = match ($format) {
+      'json', 'yaml' => $map[$format],
+      default => throw new \InvalidArgumentException("Unsupported file format: {$format}"),
+    };
+
+    try {
+      $encoded_model = $mapper['serialize']();
+      $response->setContent($encoded_model);
+      $response->headers->set('Content-Type', $mapper['content_type']);
+      $response->headers->set('Content-Length', (string)strlen($encoded_model));
+      $response->headers->set('Content-Disposition', "attachment; filename=\"{$this->label()}{$mapper['extension']}\"");
+    }
+    catch (\RuntimeException $e) {
+      $response->setContent($e->getMessage());
+      $response->setStatusCode(Response::HTTP_UNPROCESSABLE_ENTITY);
+    }
+
+    return $response;
   }
 
   /**

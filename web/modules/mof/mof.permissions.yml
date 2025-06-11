@@ -14,7 +14,3 @@ administer licenses:
 view model collection:
   title: 'View model list'
   description: 'Access model collection list'
-
-submit model:
-  title: 'Submit model'
-  description: 'Access to submit models for full evaluation'

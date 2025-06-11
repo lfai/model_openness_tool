@@ -30,19 +30,22 @@ class ModelAccessHandler extends EntityAccessControlHandler {
       $account = $this->prepareUser();
     }
 
+    // Allow access to all operations if user has `administer model` perms.
     if ($account->hasPermission('administer model')) {
       return AccessResult::allowed();
     }
 
     switch ($operation) {
     case 'view':
-      $is_owner = AccessResult::allowedIf($this->isOwner($entity, $account));
-      return AccessResult::allowedIf($entity->getStatus() === Model::STATUS_APPROVED)->orIf($is_owner);
-    
     case 'update':
+      // Note that users can edit/update the model form, but if they're anonymous
+      // form submissions will not be saved to the database.
+      // @see Drupal\mof\Form\ModelEditForm::save().
+      return AccessResult::allowedIf($entity->getStatus() === Model::STATUS_APPROVED);
+
     case 'delete':
-      $is_owner = AccessResult::allowedIf($this->isOwner($entity, $account));
-      return AccessResult::allowedIf(!$entity->getOwner()->isAnonymous())->andIf($is_owner);
+    default:
+      return AccessResult::forbidden();
     }
 
     return $result;
@@ -56,14 +59,7 @@ class ModelAccessHandler extends EntityAccessControlHandler {
     array $context,
     $entity_bundle = NULL
   ) {
-    return AccessResult::allowedIfHasPermission($account, 'submit model');
-  }
-
-  /**
-   * Return true if the owner of $entity matches the $account owner.
-   */
-  protected function isOwner(EntityInterface $entity, AccountInterface $account) {
-    return $entity->getOwner()->id() === $account->id();
+    return AccessResult::allowedIfHasPermission('administer model');
   }
 
 }
