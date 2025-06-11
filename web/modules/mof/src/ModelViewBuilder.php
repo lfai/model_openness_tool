@@ -230,6 +230,18 @@ final class ModelViewBuilder extends EntityViewBuilder {
       $this->modelComponents,
       fn($c) => in_array($c->id, $evaluation[$class]['components'][$status]));
 
+    // append optionals to included
+    if ($status == 'included') {
+      $optionals = array_filter(
+        $this->modelComponents,
+        fn($c) => in_array($c->id, $evaluation[$class]['components']['optional']));
+
+      $components = [
+        ...$components,
+        ...$optionals
+      ];
+    }
+
     foreach ($components as $component) {
       $license = $evaluation[$class]['licenses'][$component->id] ?? null;
 
