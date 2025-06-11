@@ -44,8 +44,6 @@ final class ModelEvaluator implements ModelEvaluatorInterface {
     }
 
     $evaluation = $required_components = $optional_components = [];
-    $model_components = $this->model->getComponents();
-    $model_licenses = $this->model->getLicenses();
     $evaluation['not-type-appropriate'] = [];
 
     for ($class = 3; $class >= 1; $class--) {
@@ -70,77 +68,8 @@ final class ModelEvaluator implements ModelEvaluatorInterface {
         ...$this->componentManager->getOptional($class)
       ];
 
-      foreach ($required_components as $cid) {
-        // Skip if component is not included.
-        if (!in_array($cid, $model_components)) {
-          $evaluation[$class]['components']['missing'][] = $cid;
-          continue;
-        }
-
-        // Get the component and resolve the license for the component.
-        $component = $this->componentManager->getComponent($cid);
-        $license = $this->resolveLicense($cid, $model_licenses) ?? 'unlicensed';
-
-        $type = $component->contentType;
-
-        // Does the component have a type-appropriate license? and is it open?
-        $type_appropriate = $this->isTypeAppropriate($license, $type);
-        $is_open = $this->isOpenSourceLicense($license);
-
-        if ($type_appropriate && $is_open) {
-          $evaluation[$class]['components']['included'][] = $cid;
-        }
-        else if ($is_open) {
-          $evaluation[$class]['components']['included'][] = $cid;
-          if (!in_array($cid, $evaluation['not-type-appropriate'])) {
-            $evaluation['not-type-appropriate'][] = $cid;
-          }
-        }
-        else if ($license === 'unlicensed') {
-          $evaluation[$class]['components']['unlicensed'][] = $cid;
-          // Display warning.
-        }
-        else {
-          $evaluation[$class]['components']['invalid'][] = $cid;
-        }
-
-        $evaluation[$class]['licenses'][$cid] = $license;
-      }
-
-      foreach($optional_components as $cid) {
-        // Skip if component is not included.
-        if (!in_array($cid, $model_components)) {
-          continue;
-        }
-        // Get the component and resolve the license for the component.
-        $component = $this->componentManager->getComponent($cid);
-        $license = $this->resolveLicense($cid, $model_licenses) ?? 'unlicensed';
-
-        $type = $component->contentType;
-
-        // Does the component have a type-appropriate license? and is it open?
-        $type_appropriate = $this->isTypeAppropriate($license, $type);
-        $is_open = $this->isOpenSourceLicense($license);
-
-        if ($type_appropriate && $is_open) {
-          $evaluation[$class]['components']['optional'][] = $cid;
-        }
-        else if ($is_open) {
-          $evaluation[$class]['components']['optional'][] = $cid;
-          if (!in_array($cid, $evaluation['not-type-appropriate'])) {
-            $evaluation['not-type-appropriate'][] = $cid;
-          }
-        }
-        else if ($license === 'unlicensed') {
-          $evaluation[$class]['components']['unlicensed'][] = $cid;
-          // Display warning.
-        }
-        else {
-          $evaluation[$class]['components']['invalid'][] = $cid;
-        }
-
-        $evaluation[$class]['licenses'][$cid] = $license;
-      }
+      $this->evaluateComponents($evaluation, $class, $required_components, 'included');
+      $this->evaluateComponents($evaluation, $class, $optional_components, 'optional');
     }
 
     // The technical report (cid 11) MAY be omitted if a research paper (cid 21) is provided
@@ -175,8 +104,67 @@ final class ModelEvaluator implements ModelEvaluatorInterface {
         $evaluation[2]['licenses'][21] = $evaluation[1]['licenses'][21];
       }
     }
-
     return $evaluation;
+  }
+
+  /**
+   * Evaluate the given components.
+   *
+   * @param array &$evaluation
+   *   The evaluation results.
+   *
+   * @param int $class
+   *   The class being evaluated.
+   *
+   * @param array $components
+   *   The components to evaluate.
+   *
+   * @param string $status
+   *   The components status (i.e., 'included' or 'optional')
+   *
+   * @return void
+   */
+  private function evaluateComponents(array &$evaluation, int $class, array $components, string $status): void {
+
+    $model_components = $this->model->getComponents();
+    $model_licenses = $this->model->getLicenses();
+
+    foreach ($components as $cid) {
+      // Skip if component is not included.
+      if (!in_array($cid, $model_components)) {
+        if ($status == 'included') {
+          $evaluation[$class]['components']['missing'][] = $cid;
+        }
+        continue;
+      }
+
+      // Get the component and resolve the license for the component.
+      $component = $this->componentManager->getComponent($cid);
+      $license = $this->resolveLicense($cid, $model_licenses) ?? 'unlicensed';
+
+      $type = $component->contentType;
+
+      // Does the component have a type-appropriate license? and is it open?
+      $type_appropriate = $this->isTypeAppropriate($license, $type);
+      $is_open = $this->isOpenSourceLicense($license);
+
+      if ($type_appropriate && $is_open) {
+        $evaluation[$class]['components'][$status][] = $cid;
+      }
+      else if ($is_open) {
+        $evaluation[$class]['components'][$status][] = $cid;
+        if (!in_array($cid, $evaluation['not-type-appropriate'])) {
+          $evaluation['not-type-appropriate'][] = $cid;
+        }
+      }
+      else if ($license === 'unlicensed') {
+        $evaluation[$class]['components']['unlicensed'][] = $cid;
+      }
+      else {
+        $evaluation[$class]['components']['invalid'][] = $cid;
+      }
+      $evaluation[$class]['licenses'][$cid] = $license;
+    }
   }
 
   /**
