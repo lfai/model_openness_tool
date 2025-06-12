@@ -231,8 +231,9 @@ final class License extends ContentEntityBase implements LicenseInterface {
         'document' => t('Documentation'),
         'data' => t('Data'),
       ])
+      ->setCardinality(3) // Allow up to 3 values
       ->setDisplayOptions('form', [
-        'type' => 'options_select',
+        'type' => 'options_buttons',
         'weight' => -60,
       ])
       ->setDisplayConfigurable('form', TRUE)
