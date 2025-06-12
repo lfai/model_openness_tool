@@ -10,3 +10,4 @@ The main objective is to create a fundamental AI agent that can later serve as t
 * Improving file search method
 * Add huggingface supports
 * Improve input prompt
+* Created testbench
