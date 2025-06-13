@@ -26,6 +26,15 @@ final class LicenseImporter {
    */
   private function setLicenseData(LicenseInterface $license, array $data) {
     try {
+
+      // Convert content_type to array if it's a string.
+      $content_type = $data['ContentType'] ?? '';
+      if (is_string($content_type) && !empty($content_type)) {
+        $content_type = [$content_type];
+      } elseif (!is_array($content_type)) {
+        $content_type = [];
+      }
+
       $license
         ->set('name', $data['name'])
         ->set('license_id', $data['licenseId'])
@@ -36,7 +45,7 @@ final class LicenseImporter {
         ->set('fsf_libre', $data['isFsfLibre'] ?? '')
         ->set('details_url', $data['detailsUrl'])
         ->set('see_also', $data['seeAlso'])
-        ->set('content_type', $data['ContentType'] ?? '')
+        ->set('content_type', $content_type)
         ->save();
     }
     catch (EntityStorageException $e) {

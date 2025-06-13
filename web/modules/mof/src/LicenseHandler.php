@@ -91,7 +91,7 @@ final class LicenseHandler implements LicenseHandlerInterface {
    *
    */
   public function getLicensesByType(string $type): array {
-    return array_filter($this->licenses, fn($l) => $l->getContentType() === $type);
+    return array_filter($this->licenses, fn($l) => in_array($type, $l->getContentType()));
   }
 
   /**

@@ -102,8 +102,14 @@ final class License extends ContentEntityBase implements LicenseInterface {
   /**
    * {@inheritdoc}
    */
-  public function getContentType(): ?string {
-    return $this->get('content_type')->value ?? NULL;
+  public function getContentType(): array {
+    $values = [];
+    foreach ($this->get('content_type') as $item) {
+      if (!empty($item->value)) {
+        $values[] = $item->value;
+      }
+    }
+    return $values;
   }
 
   /**

@@ -47,9 +47,9 @@ interface LicenseInterface extends ContentEntityInterface {
   /**
    * Get license content type.
    *
-   * @return string Accepted values: 'code', 'document', and 'data' or NULL if not set
+   * @return string An array of values which may include 'code', 'document', and 'data'
    */
-  public function getContentType(): ?string;
+  public function getContentType(): array;
 
   /**
    * Transform license entity to an array.
