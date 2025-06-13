@@ -37,5 +37,5 @@ entity.model.admin_collection:
 
 entity.license.collection:
   title: 'Licenses'
-  route_name: entity.license.collection
+  route_name: entity.license.admin_collection
   base_route: entity.model.admin_collection

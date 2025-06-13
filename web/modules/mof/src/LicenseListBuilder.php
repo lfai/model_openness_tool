@@ -20,7 +20,7 @@ final class LicenseListBuilder extends EntityListBuilder {
    * {@inheritdoc}
    */
   public function buildHeader(): array {
-    return [
+    $header = [
       'name' => [
         'data' => $this->t('Name'),
         'field' => 'name',
@@ -31,17 +31,31 @@ final class LicenseListBuilder extends EntityListBuilder {
         'field' => 'license_id',
         'specifier' => 'license_id',
       ],
-    ] + parent::buildHeader();
+    ];
+
+    // Conditionally add the Operations column header for users with the administer licenses permission.
+    if (\Drupal::currentUser()->hasPermission('administer licenses')) {
+      $header += parent::buildHeader();
+    }
+
+    return $header;
   }
 
   /**
    * {@inheritdoc}
    */
   public function buildRow(EntityInterface $entity): array {
-    return [
+    $row = [
       'name' => $entity->getName(),
       'license_id' => $entity->getLicenseId(),
-    ] + parent::buildRow($entity);
+    ];
+
+    // Conditionally add the Operations column rows for users with the administer licenses permission.
+    if (\Drupal::currentUser()->hasPermission('administer licenses')) {
+      $row += parent::buildRow($entity);
+    }
+
+    return $row;
   }
 
   /**
@@ -72,4 +86,3 @@ final class LicenseListBuilder extends EntityListBuilder {
   }
 
 }
-

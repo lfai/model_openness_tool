@@ -14,7 +14,7 @@ entity.license.add:
   route_name: entity.license.add_form
   title: 'Add license'
   appears_on:
-    - entity.license.collection
+    - entity.license.admin_collection
 
 entity.model.community_preferred:
   route_name: entity.model.add_form

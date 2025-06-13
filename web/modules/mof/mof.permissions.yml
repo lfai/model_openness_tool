@@ -2,8 +2,13 @@ administer model:
   title: 'Administer models'
   restrict access: true
 
+view licenses:
+  title: 'View licenses'
+  description: 'Allow users to view licenses.'
+
 administer licenses:
   title: 'Administer licenses'
+  description: 'Allow users to administer licenses.'
   restrict access: true
 
 view model collection:

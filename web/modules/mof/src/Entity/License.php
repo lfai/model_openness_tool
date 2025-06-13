@@ -43,7 +43,8 @@ use Drupal\mof\LicenseInterface;
  *     "uuid" = "uuid",
  *   },
  *   links = {
- *     "collection" = "/admin/licenses",
+ *     "collection" = "/licenses",
+ *     "admin-collection" = "/admin/licenses",
  *     "add-form" = "/admin/license/add",
  *     "edit-form" = "/admin/license/{license}/edit",
  *     "delete-form" = "/admin/license/{license}/delete",

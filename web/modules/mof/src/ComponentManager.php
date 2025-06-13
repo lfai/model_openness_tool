@@ -58,5 +58,12 @@ final class ComponentManager implements ComponentManagerInterface {
     return array_column($components, 'id');
   }
 
-}
+  /**
+   * Get component IDs optional for the specified class.
+   */
+  public function getOptional(int $class): array {
+    $components = array_filter($this->components, fn($c) => $c->class === $class && $c->required === false);
+    return array_column($components, 'id');
+  }
 
+}

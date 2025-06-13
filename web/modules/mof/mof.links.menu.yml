@@ -11,6 +11,13 @@ entity.model.models:
   menu_name: main
   weight: 0
 
+entity.license.models:
+  title: 'Licenses'
+  description: 'List licenses'
+  route_name: entity.license.collection
+  menu_name: main
+  weight: 2
+
 entity.model.evaluate_model:
   title: 'Evaluate Model'
   description: 'Evaluate your model'
