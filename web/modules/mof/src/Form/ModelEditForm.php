@@ -63,7 +63,7 @@ final class ModelEditForm extends ModelForm {
 
     $actions['submit']['#value'] = $this->isAdmin()
       ? $this->t('Save')
-      : $this->t('Download YAML');
+      : $this->t('Evaluate');
 
     return $actions;
   }
