@@ -145,8 +145,8 @@ final class ModelEvaluator implements ModelEvaluatorInterface {
       $type = $component->contentType;
 
       // Does the component have a type-appropriate license? and is it open?
-      $type_appropriate = $this->isTypeAppropriate($license, $type);
-      $is_open = $this->isOpenSourceLicense($license);
+      $type_appropriate = $this->licenseHandler->isTypeAppropriate($license, $type);
+      $is_open = $this->licenseHandler->isOpenSourceLicense($license);
 
       if ($type_appropriate && $is_open) {
         $evaluation[$class]['components'][$status][] = $cid;
@@ -165,24 +165,6 @@ final class ModelEvaluator implements ModelEvaluatorInterface {
       }
       $evaluation[$class]['licenses'][$cid] = $license;
     }
-  }
-
-  /**
-   * Check if a license is appropriate for the given component type.
-   *
-   * Get type-appropriate license arrays and checks if the provided license ID exists among them.
-   *
-   * @param string $license
-   *   The license ID to check (e.g., 'MIT').
-   *
-   * @param string $type
-   *   The component's content type (i.e., 'code', 'data', or 'document').
-   *
-   * @return bool
-   *   TRUE if the license ID is type-specific, FALSE otherwise.
-   */
-  private function isTypeAppropriate(string $license, string $type): bool {
-    return in_array($license, array_map('strval', $this->licenseHandler->getLicensesByType($type)));
   }
 
   /**
@@ -306,22 +288,6 @@ final class ModelEvaluator implements ModelEvaluatorInterface {
     }
 
     return $messages;
-  }
-
-  /**
-   * Determine if a license is an open source license.
-   *
-   * @param string $license
-   *   The license name.
-   *
-   * @return bool
-   *   TRUE if license is open-source.
-   *   FALSE otherwise.
-   */
-  private function isOpenSourceLicense(string $license): bool {
-    return $this->licenseHandler->isFsfApproved($license)
-      || $this->licenseHandler->isOpenData($license)
-      || $this->licenseHandler->isOsiApproved($license);
   }
 
   /**

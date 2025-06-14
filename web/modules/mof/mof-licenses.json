@@ -130,7 +130,7 @@
          ],
          "isOsiApproved":true,
          "isFsfLibre":true,
-         "ContentType":"code"
+         "ContentType":["code","document"]
       },
       {
          "reference":"https://spdx.org/licenses/ECL-1.0.html",
@@ -421,6 +421,20 @@
          "isOsiApproved":false,
          "isFsfLibre":true,
          "ContentType":"document"
+      },
+      {
+         "reference":"https://openmdw.ai/license/",
+         "isDeprecatedLicenseId":false,
+         "detailsUrl":"https://openmdw.ai",
+         "referenceNumber":999,
+         "name":"OpenMDW v1.0",
+         "licenseId":"OpenMDW-1.0",
+         "seeAlso":[
+            "https://openmdw.ai"
+         ],
+         "isOsiApproved":true,
+         "isFsfLibre":false,
+         "ContentType":["document","data","code"]
       }
    ],
    "releaseDate":"2024-03-25"
