@@ -91,7 +91,7 @@ final class LicenseHandler implements LicenseHandlerInterface {
    *
    */
   public function getLicensesByType(string $type): array {
-    return array_filter($this->licenses, fn($l) => $l->getContentType() === $type);
+    return array_filter($this->licenses, fn($l) => in_array($type, $l->getContentType()));
   }
 
   /**
@@ -142,5 +142,37 @@ final class LicenseHandler implements LicenseHandlerInterface {
     return in_array($license, self::OPEN_DATA_LICENSES);
   }
 
-}
+  /**
+   * Determine if a license is an open source license.
+   *
+   * @param string $license
+   *   The license name.
+   *
+   * @return bool
+   *   TRUE if license is open-source.
+   *   FALSE otherwise.
+   */
+  public function isOpenSourceLicense(string $license): bool {
+    return $this->isFsfApproved($license)
+      || $this->isOpenData($license)
+      || $this->isOsiApproved($license);
+  }
 
+  /**
+   * Check if a license is appropriate for the given component type.
+   *
+   * Get type-appropriate license arrays and checks if the provided license ID exists among them.
+   *
+   * @param string $license
+   *   The license ID to check (e.g., 'MIT').
+   *
+   * @param string $type
+   *   The component's content type (i.e., 'code', 'data', or 'document').
+   *
+   * @return bool
+   *   TRUE if the license ID is type-specific, FALSE otherwise.
+   */
+  public function isTypeAppropriate(string $license, string $type): bool {
+    return in_array($license, array_map('strval', $this->getLicensesByType($type)));
+  }
+}
