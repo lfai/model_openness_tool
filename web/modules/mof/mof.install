@@ -84,3 +84,59 @@ function mof_update_10405() {
   }
 }
 
+/**
+ * Implements hook_update_N().
+ *
+ * Update license entity content_type field to allow multiple values.
+ * Migrate existing data to the new database table.
+ */
+function mof_update_10407() {
+  $entity_type_id = 'license';
+  $field = 'content_type';
+
+  // Setup services and gather what we need.
+  $entity_def_update_manager = \Drupal::service('entity.definition_update_manager');
+  $entity_def = \Drupal::entityTypeManager()->getDefinition($entity_type_id);
+  $field_def = \Drupal::service('entity_field.manager')->getBaseFieldDefinitions($entity_type_id)[$field];
+
+  // Install the new content_type field storage definition.
+  $entity_def_update_manager
+    ->installFieldStorageDefinition('content_type', $entity_type_id, 'mof', $field_def);
+
+  // Migrate existing data to new table.
+  $database = \Drupal::database();
+  $table_name = "{$entity_type_id}__{$field}";
+  if ($database->schema()->tableExists($table_name)) {
+    $query = $database
+      ->select('license', 'l')
+      ->fields('l', ['id', 'content_type'])
+      ->condition('content_type', NULL, 'IS NOT NULL');
+
+    $results = $query->execute()->fetchAll();
+    foreach ($results as $row) {
+      $database
+        ->insert($table_name)
+        ->fields([
+          'bundle' => 'license',
+          'deleted' => 0,
+          'entity_id' => $row->id,
+          'revision_id' => $row->id,
+          'langcode' => 'en',
+          'delta' => 0,
+          "{$field}_value" => $row->content_type,
+        ])
+        ->execute();
+    }
+  }
+
+  // Drop the content_type column from the license table.
+  if ($database->schema()->fieldExists($entity_type_id, $field)) {
+    $database->schema()->dropField($entity_type_id, $field);
+  }
+
+  // Clear caches.
+  \Drupal::service('entity_field.manager')->clearCachedFieldDefinitions();
+
+  return t('Updated @field.', ['@field' => $field]);
+}
+
