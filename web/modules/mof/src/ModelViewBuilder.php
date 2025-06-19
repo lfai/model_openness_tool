@@ -266,27 +266,31 @@ final class ModelViewBuilder extends EntityViewBuilder {
 
       // If the URL is invalid, set it to null.
       try {
-        $license_url = Url::fromUri($license_url);
-        $license_link = [
-          '#type' => 'link',
-          '#title' => $license,
-          '#url' => $license_url,
-        ];
+        if ($license_url) {
+          $license_url = Url::fromUri($license_url);
+          $license_link = [
+            '#type' => 'link',
+            '#title' => $license,
+            '#url' => $license_url,
+          ];
+        }
       }
-      catch (\Exception $e) {
+      catch (\InvalidArgumentException $e) {
         $license_url = null; 
       }
 
       // If the URL is invalid, set it to null.
       try {
-        $name_url = Url::fromUri($name_url);
-        $name_link = [
-          '#type' => 'link',
-          '#title' => $component->name,
-          '#url' => $name_url,
-        ];
+        if ($name_url) {
+          $name_url = Url::fromUri($name_url);
+          $name_link = [
+            '#type' => 'link',
+            '#title' => $component->name,
+            '#url' => $name_url,
+          ];
+        }
       }
-      catch (\Exception $e) {
+      catch (\InvalidArgumentException $e) {
         $name_url = null;
       }
 
