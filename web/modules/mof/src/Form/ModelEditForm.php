@@ -19,12 +19,26 @@ final class ModelEditForm extends ModelForm {
   /**
    * {@inheritdoc}
    */
+  public function buildForm(array $form, FormStateInterface $form_state): array {
+    // Return evaluation results if available, otherwise display user input form.
+    return $form_state->get('evaluation') ?: parent::buildForm($form, $form_state);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function form(array $form, FormStateInterface $form_state): array {
     $form += parent::form($form, $form_state);
     $form['#attributes']['novalidate'] = 'novalidate';
 
     // Only admins can approve models.
     $form['status']['#access'] = $this->isAdmin();
+
+    // Start a session if we're a regular or anonymous user editing this model.
+    // Changes will be saved to a session and not saved directly to the database.
+    if (!$this->isAdmin() && !$this->session->isStarted()) {
+      $this->session->start();
+    }
 
     return $form;
   }
@@ -45,13 +59,26 @@ final class ModelEditForm extends ModelForm {
   public function submitForm(array &$form, FormStateInterface $form_state): void {
     parent::submitForm($form, $form_state);
     if ($this->isAdmin()) {
-      // Redirect user to evaluation/ model view page.
+      // Redirect admin user to evaluation/ model view page.
       $form_state->setRedirect('entity.model.canonical', ['model' => $this->entity->id()]);
     }
     else {
-      // Download YAML-formatted model.
-      $response = $this->entity->download();
-      $form_state->setResponse($response);
+      // Build session data for model evaluation.
+      $this->entity->enforceIsNew(TRUE);
+      $this
+        ->session
+        ->set('model_session_evaluation', TRUE);
+      $this
+        ->session
+        ->set('model_session_data', $form_state
+        ->getValues());
+      $form_state
+        ->setRebuild(TRUE);
+      $form_state
+        ->set('evaluation', $this
+        ->entityTypeManager
+        ->getViewBuilder('model')
+        ->view($this->entity));
     }
   }
 
