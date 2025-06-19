@@ -10,6 +10,7 @@ use Drupal\Core\Messenger\MessengerInterface;
 use Drupal\Core\Language\LanguageManagerInterface;
 use Drupal\Core\Theme\Registry;
 use Drupal\Core\Url;
+use Drupal\Core\Link;
 use Drupal\Component\Utility\SortArray;
 use Drupal\mof\Entity\Model;
 use Drupal\mof\ModelEvaluatorInterface;
@@ -245,85 +246,53 @@ final class ModelViewBuilder extends EntityViewBuilder {
     foreach ($components as $component) {
       $license = $evaluation[$class]['licenses'][$component->id] ?? null;
 
-      //Sets the license URL based on available model license data.
-      //Component specific license has highest precedence,
-      if (isset($model['license_data'][0]['licenses']['components'][$component->id]['license_path'])) {
-        $license_url = $model['license_data'][0]['licenses']['components'][$component->id]['license_path'] ?? null;
-      } 
-      // Component type specific global license URL has second highest precedence
-      elseif (isset($model['license_data'][0]['licenses']['global'][$component->contentType]['path'])){
-        $license_url = $model['license_data'][0]['licenses']['global'][$component->contentType]['path'] ?? null;
-      // Distribution wide global license URL has lowest precedence
-      } elseif (isset($model['license_data'][0]['licenses']['global']['distribution']['path'])) {
-        $license_url = $model['license_data'][0]['licenses']['global']['distribution']['path'] ?? null;
-      }
-      // If no license URL is set, set it to null.
-      else {
-        $license_url = null;
-      }
+      // License paths in order of precedence.
+      $license_paths = [
+        $model['license_data'][0]['licenses']['components'][$component->id]['license_path'] ?? null,
+        $model['license_data'][0]['licenses']['global'][$component->contentType]['path'] ?? null,
+        $model['license_data'][0]['licenses']['global']['distribution']['path'] ?? null,
+      ];
 
+      $license_url = array_reduce($license_paths, fn($carry, $path) => $carry ?? $path, null);
       $name_url = $model['license_data'][0]['licenses']['components'][$component->id]['component_path'] ?? null;
 
-      // If the URL is invalid, set it to null.
-      try {
-        $license_url = Url::fromUri($license_url);
-        $license_link = [
-          '#type' => 'link',
-          '#title' => $license,
-          '#url' => $license_url,
-        ];
+      if ($license) {
+        try {
+          if ($license_url) {
+            $url = Url::fromUri($license_url);
+            $license_item = Link::fromTextAndUrl($license, $url)->toRenderable();
+          }
+          else {
+            $license_item = ['#markup' => $license];
+          }
+        }
+        catch (\InvalidArgumentException $e) {
+          // Fallback to plaintext if $license_url is malformed.
+          $license_item = ['#markup' => $license];
+        }
+
+        $license_item['#prefix'] = ' [';
+        $license_item['#suffix'] = '] ';
       }
-      catch (\Exception $e) {
-        $license_url = null; 
+      else {
+        $license_item = ['#markup' => ''];
       }
 
-      // If the URL is invalid, set it to null.
       try {
-        $name_url = Url::fromUri($name_url);
-        $name_link = [
-          '#type' => 'link',
-          '#title' => $component->name,
-          '#url' => $name_url,
-        ];
+        if ($name_url) {
+          $url = Url::fromUri($name_url);
+          $component_item = Link::fromTextAndUrl($component->name, $url)->toRenderable();
+        }
+        else {
+          $component_item = ['#markup' => $component->name];
+        }
       }
-      catch (\Exception $e) {
-        $name_url = null;
+      catch (\InvalidArgumentException $e) {
+        // Fallback to plaintext if $name_url is malformed.
+        $component_item = ['#markup' => $component->name];
       }
 
-     if ($license) {
-        //Both license and name URLs are available
-        if ($license_url and $name_url) {
-          $build["{$status}_components"]['#items'][] = [
-            'name_link' => $name_link,
-            'bracket_open' => [
-              '#markup' => ' [',
-            ],
-            'license_link' => $license_link,
-            'bracket_close' => [
-              '#markup' => ']',
-            ],
-          ];
-        // Only license URL is available
-        } elseif ($license_url) {
-          $build["{$status}_components"]['#items'][] = [
-            '#markup' => $component->name . ' [',
-            'license_link' => $license_link,
-            '#suffix' => ']',
-          ];
-        // Only name URL is available
-        } elseif ($name_url) {
-          $build["{$status}_components"]['#items'][] = [
-            'name_link' => $name_link,
-            '#suffix' => ' [' . $license . ']',
-          ];
-        // No URLs available, just the component name and license
-        } else {
-          $build["{$status}_components"]['#items'][] = $component->name . ' [' . $license . ']';
-        }
-      } else {
-          // No license, just the component name
-        $build["{$status}_components"]['#items'][] = $component->name;
-        }
+      $build["{$status}_components"]['#items'][] = [$component_item, $license_item];
     }
 
     return $build;
