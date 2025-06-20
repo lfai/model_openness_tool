@@ -72,9 +72,7 @@ final class ModelViewBuilder extends EntityViewBuilder {
    * {@inheritdoc}
    */
   public function build(array $build) {
-    // When evaluating a model via the Evaluate Model form
-    // there is no model ID when rendered. Skip the following.
-    if ($build['#model']->id() !== NULL) {
+    if (!$build['#model']->isNew()) {
       if ($build['#model']->getStatus() === Model::STATUS_UNAPPROVED) {
         $this->messenger->addWarning($this->t('This model is awaiting approval'));
       }
