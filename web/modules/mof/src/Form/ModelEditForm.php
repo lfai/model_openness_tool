@@ -6,7 +6,23 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Ajax\AjaxResponse;
 use Drupal\Core\Ajax\HtmlCommand;
 
+/**
+ * @file
+ * Handles form processing logic for editing a model entity.
+ *
+ * Any user can edit an existing model, but only administrators can save
+ * changes directly. For non-admin users, the edited model will be exported
+ * as a YAML file for manual review and submission.
+ */
 final class ModelEditForm extends ModelForm {
+
+  /**
+   * {@inheritdoc}
+   */
+  public function buildForm(array $form, FormStateInterface $form_state): array {
+    // Return evaluation results if available, otherwise display user input form.
+    return $form_state->get('evaluation') ?: parent::buildForm($form, $form_state);
+  }
 
   /**
    * {@inheritdoc}
@@ -16,7 +32,13 @@ final class ModelEditForm extends ModelForm {
     $form['#attributes']['novalidate'] = 'novalidate';
 
     // Only admins can approve models.
-    $form['status']['#access'] = $this->currentUser()->hasPermission('administer model');
+    $form['status']['#access'] = $this->isAdmin();
+
+    // Start a session if we're a regular or anonymous user editing this model.
+    // Changes will be saved to a session and not saved directly to the database.
+    if (!$this->isAdmin() && !$this->session->isStarted()) {
+      $this->session->start();
+    }
 
     return $form;
   }
@@ -36,11 +58,27 @@ final class ModelEditForm extends ModelForm {
    */
   public function submitForm(array &$form, FormStateInterface $form_state): void {
     parent::submitForm($form, $form_state);
-    if (!$this->entity->isNew()) {
-      $form_state->setRedirectUrl($this->entity->toUrl());
+    if ($this->isAdmin()) {
+      // Redirect admin user to evaluation/ model view page.
+      $form_state->setRedirect('entity.model.canonical', ['model' => $this->entity->id()]);
     }
     else {
-      $form_state->setRedirect('entity.model.admin_collection');
+      // Build session data for model evaluation.
+      $this->entity->enforceIsNew(TRUE);
+      $this
+        ->session
+        ->set('model_session_evaluation', TRUE);
+      $this
+        ->session
+        ->set('model_session_data', $form_state
+        ->getValues());
+      $form_state
+        ->setRebuild(TRUE);
+      $form_state
+        ->set('evaluation', $this
+        ->entityTypeManager
+        ->getViewBuilder('model')
+        ->view($this->entity));
     }
   }
 
@@ -49,8 +87,31 @@ final class ModelEditForm extends ModelForm {
    */
   protected function actions(array $form, FormStateInterface $form_state) {
     $actions = parent::actions($form, $form_state);
-    $actions['submit']['#value'] = $this->t('Submit');
+
+    $actions['submit']['#value'] = $this->isAdmin()
+      ? $this->t('Save')
+      : $this->t('Evaluate');
+
     return $actions;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function save(array $form, FormStateInterface $form_state) {
+    // Save model entity only if we're an admin.
+    if ($this->isAdmin()) {
+      return parent::save($form, $form_state);
+    }
+  }
+
+  /**
+   * Check if the current user is an admin.
+   *
+   * @return bool TRUE if admin, FALSE if not admin.
+   */
+  private function isAdmin(): bool {
+    return $this->currentUser()->hasPermission('administer model');
   }
 
 }
