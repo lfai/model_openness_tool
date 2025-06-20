@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Drupal\mof;
 
@@ -14,6 +12,11 @@ use Drupal\Core\StringTranslation\TranslatableMarkup;
 final class ModelEvaluator implements ModelEvaluatorInterface {
 
   use StringTranslationTrait;
+
+  // Define constants for component IDs.
+  // Technical Report may be omitted if a Research Paper is provided.
+  const TECHNICAL_REPORT_CID = 11;
+  const RESEARCH_PAPER_CID = 21;
 
   /** @var \Drupal\mof\Entity\Model. */
   private ?ModelInterface $model = NULL;
@@ -62,6 +65,7 @@ final class ModelEvaluator implements ModelEvaluatorInterface {
         ...$required_components,
         ...$this->componentManager->getRequired($class)
       ];
+
       // Combine optional components from each previous class to the current class.
       $optional_components = [
         ...$optional_components,
@@ -72,38 +76,9 @@ final class ModelEvaluator implements ModelEvaluatorInterface {
       $this->evaluateComponents($evaluation, $class, $optional_components, 'optional');
     }
 
-    // The technical report (cid 11) MAY be omitted if a research paper (cid 21) is provided
-    $techreport = array_search(11, $evaluation[3]['components']['included']);
-    if (!$techreport) {
-      $status = false;
-      if (array_search(21, $evaluation[1]['components']['included']) !== false) {
-        $status = 'included';
-      } elseif (array_search(21, $evaluation[1]['components']['invalid']) !== false) {
-        $status = 'invalid';
-      } elseif (array_search(21, $evaluation[1]['components']['unlicensed']) !== false) {
-          $status = 'unlicensed';
-      }
-      if ($status !== false) { // the research paper is provided
-        // remove tech report from missing if it's listed as such
-        $techreport = array_search(11, $evaluation[3]['components']['missing']);
-        if ($techreport !== false) {
-          array_splice($evaluation[3]['components']['missing'], $techreport, 1);
-        }
-        $techreport = array_search(11, $evaluation[2]['components']['missing']);
-        if ($techreport !== false) {
-          array_splice($evaluation[2]['components']['missing'], $techreport, 1);
-        }
-        $techreport = array_search(11, $evaluation[1]['components']['missing']);
-        if ($techreport !== false) {
-          array_splice($evaluation[1]['components']['missing'], $techreport, 1);
-        }
-        // add research paper to classes 2 and 3
-        $evaluation[3]['components'][$status][] = 21;
-        $evaluation[3]['licenses'][21] = $evaluation[1]['licenses'][21];
-        $evaluation[2]['components'][$status][] = 21;
-        $evaluation[2]['licenses'][21] = $evaluation[1]['licenses'][21];
-      }
-    }
+    // The technical report (cid 11) MAY be omitted if a research paper (cid 21) is provided.
+    $this->handleTechnicalReportOmission($evaluation);
+
     return $evaluation;
   }
 
@@ -125,7 +100,6 @@ final class ModelEvaluator implements ModelEvaluatorInterface {
    * @return void
    */
   private function evaluateComponents(array &$evaluation, int $class, array $components, string $status): void {
-
     $model_components = $this->model->getComponents();
     $model_licenses = $this->model->getLicenses();
 
@@ -163,6 +137,7 @@ final class ModelEvaluator implements ModelEvaluatorInterface {
       else {
         $evaluation[$class]['components']['invalid'][] = $cid;
       }
+
       $evaluation[$class]['licenses'][$cid] = $license;
     }
   }
@@ -324,10 +299,12 @@ final class ModelEvaluator implements ModelEvaluatorInterface {
     // The tech report (cid 11) MAY be omitted if a research paper (cid 21) is provided which
     // means that for Class 1 we have one fewer required component
     // (and not for classes 2 and 3 where either the tech report or the research paper is counted)
-    if ($class == 1 && ! array_search(11, $evaluate[1]['components']['included'])
-        && array_search(21, $evaluate[1]['components']['included'])) {
-        $total--;
+    if ($class === 1
+    && $this->getComponentStatus($evaluate[1]['components'], self::TECHNICAL_REPORT_CID) !== 'included'
+    && $this->getComponentStatus($evaluate[1]['components'], self::RESEARCH_PAPER_CID) === 'included') {
+      $total--;
     }
+
     $progress = ($included / $total) * 100;
 
     // In case both the tech report and the research paper are provided we end up with more than
@@ -335,6 +312,103 @@ final class ModelEvaluator implements ModelEvaluatorInterface {
     if ($progress > 100) $progress = 100;
 
     return $progress;
+  }
+
+  /**
+   * Handles technical report omission if research paper is provided.
+   *
+   * @param array &$evaluation
+   *   The evaluation array to modify.
+   */
+  private function handleTechnicalReportOmission(array &$evaluation): void {
+    // Skip if technical report is included in class 3.
+    if ($this->getComponentStatus($evaluation[3]['components'], self::TECHNICAL_REPORT_CID) === 'included') {
+      return;
+    }
+
+    // Check research paper status in class 1.
+    $research_paper = $this->getComponentStatus($evaluation[1]['components'], self::RESEARCH_PAPER_CID);
+    if ($research_paper === null) {
+      return;
+    }
+
+    // Remove technical report from missing arrays in all classes.
+    foreach ([1, 2, 3] as $class) {
+      $this->removeFromMissing($evaluation, $class, self::TECHNICAL_REPORT_CID);
+    }
+
+    // Add research paper to classes 2 and 3 with the same status and license.
+    $license = $evaluation[1]['licenses'][self::RESEARCH_PAPER_CID] ?? '';
+    foreach ([2, 3] as $class) {
+      $this->addComponentToClass($evaluation, $class, self::RESEARCH_PAPER_CID, $research_paper, $license);
+    }
+  }
+
+  /**
+   * Get the status of a component in the provided components array.
+   *
+   * @param array $components
+   *   The components array to check.
+   *
+   * @param int $cid
+   *   The component ID to look for.
+   *
+   * @return string|null
+   *   Status ('included', 'invalid', 'unlicensed') or null if not found.
+   */
+  private function getComponentStatus(array $components, int $cid): ?string {
+    if (in_array($cid, $components['included'] ?? [], true)) {
+      return 'included';
+    }
+    if (in_array($cid, $components['invalid'] ?? [], true)) {
+      return 'invalid';
+    }
+    if (in_array($cid, $components['unlicensed'] ?? [], true)) {
+      return 'unlicensed';
+    }
+    return null;
+  }
+
+  /**
+   * Removes a component from the missing array of a specific class.
+   *
+   * @param array &$evaluation
+   *   The evaluation array to modify.
+   *
+   * @param int $class
+   *   Class 1, 2 or 3.
+   *
+   * @param int $cid
+   *   The component ID to remove.
+   */
+  private function removeFromMissing(array &$evaluation, int $class, int $cid): void {
+    $key = array_search($cid, $evaluation[$class]['components']['missing'] ?? [], true);
+    if ($key !== false) {
+      array_splice($evaluation[$class]['components']['missing'], $key, 1);
+    }
+  }
+
+  /**
+   * Add a component to a specific status in a class with its license.
+   *
+   * @param array &$evaluation
+   *   The evaluation array to modify.
+   *
+   * @param int $class
+   *   Class 1, 2, or 3.
+   *
+   * @param int $cid
+   *   The component ID to add.
+   *
+   * @param string $status
+   *   Status 'included', 'invalid', or 'unlicensed'.
+   *
+   * @param string $license
+   *   The license for the component.
+   */
+  private function addComponentToClass(array &$evaluation, int $class, int $cid, string $status, string $license): void {
+    $evaluation[$class]['components'][$status][] = $cid;
+    $evaluation[$class]['licenses'][$cid] = $license;
   }
 
 }
