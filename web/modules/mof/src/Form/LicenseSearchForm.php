@@ -51,6 +51,40 @@ final class LicenseSearchForm extends FormBase {
       '#default_value' => $req->get('license_id') ?? '',
     ];
 
+    $form['search']['content_type'] = [
+      '#type' => 'select',
+      '#title' => $this->t('Content Type'),
+      '#options' => [
+        '' => $this->t('Any'),
+        'code' => $this->t('Code'),
+        'document' => $this->t('Documentation'),
+        'data' => $this->t('Data'),
+      ],
+      '#default_value' => $req->get('content_type') ?? '',
+    ];
+
+    $form['search']['osi_approved'] = [
+      '#type' => 'select',
+      '#title' => $this->t('OSI Approved'),
+      '#options' => [
+        '' => $this->t('Any'),
+        '1' => $this->t('Yes'),
+        '0' => $this->t('No'),
+      ],
+      '#default_value' => $req->get('osi_approved') ?? '',
+    ];
+
+    $form['search']['fsf_libre'] = [
+      '#type' => 'select',
+      '#title' => $this->t('FSF Libre'),
+      '#options' => [
+        '' => $this->t('Any'),
+        '1' => $this->t('Yes'),
+        '0' => $this->t('No'),
+      ],
+      '#default_value' => $req->get('fsf_libre') ?? '',
+    ];
+
     $form['search']['actions']['wrapper'] = [
       '#type' => 'container',
     ];
@@ -92,6 +126,30 @@ final class LicenseSearchForm extends FormBase {
     else if (isset($query['license_id']) && !$license_id) {
       unset($query['license_id']);
     }
+
+    $content_type = $form_state->getValue('content_type') ?? FALSE;
+    if ($content_type) {
+      $query['content_type'] = $content_type;
+    }
+    else if (isset($query['content_type']) && !$content_type) {
+      unset($query['content_type']);
+    }
+
+    $osi_approved = $form_state->getValue('osi_approved') ?? FALSE;
+    if ($osi_approved !== '') {
+      $query['osi_approved'] = $osi_approved;
+    }
+    else if (isset($query['osi_approved']) && $osi_approved === '') {
+      unset($query['osi_approved']);
+    }
+
+    $fsf_libre = $form_state->getValue('fsf_libre') ?? FALSE;
+    if ($fsf_libre !== '') {
+      $query['fsf_libre'] = $fsf_libre;
+    }
+    else if (isset($query['fsf_libre']) && $fsf_libre === '') {
+      unset($query['fsf_libre']);
+    }    
 
     $form_state->setRedirect($this->request->attributes->get('_route'), $query);
   }

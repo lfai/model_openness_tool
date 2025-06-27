@@ -62,6 +62,21 @@ final class LicenseListBuilder extends EntityListBuilder {
         'field' => 'license_id',
         'specifier' => 'license_id',
       ],
+      'content_type' => [
+        'data' => $this->t('Content Type'),
+        'field' => 'content_type',
+        'specifier' => 'content_type',
+      ],
+      'osi_approved' => [
+        'data' => $this->t('OSI Approved'),
+        'field' => 'osi_approved',
+        'specifier' => 'osi_approved',
+      ],
+      'fsf_libre' => [
+        'data' => $this->t('FSF Libre'),
+        'field' => 'fsf_libre',
+        'specifier' => 'fsf_libre',
+      ],      
     ];
 
     // Conditionally add the Operations column header for users with the administer licenses permission.
@@ -79,6 +94,9 @@ final class LicenseListBuilder extends EntityListBuilder {
     $row = [
       'name' => $entity->getName(),
       'license_id' => $entity->getLicenseId(),
+      'content_type' => implode(', ', $entity->getContentType()),
+      'osi_approved' => $entity->isOsiApproved() ? $this->t('Yes') : $this->t('No'),
+      'fsf_libre' => $entity->isFsfApproved() ? $this->t('Yes') : $this->t('No'),      
     ];
 
     // Conditionally add the Operations column rows for users with the administer licenses permission.
@@ -112,6 +130,18 @@ final class LicenseListBuilder extends EntityListBuilder {
       $query->condition('license_id', "%{$license_id}%", 'LIKE');
     }
 
+    if ($content_type = $this->request->get('content_type')) {
+      $query->condition('content_type', $content_type);
+    }
+
+    if (($osi_approved = $this->request->get('osi_approved')) !== NULL) {
+      $query->condition('osi_approved', (bool) $osi_approved);
+    }
+
+    if (($fsf_libre = $this->request->get('fsf_libre')) !== NULL) {
+      $query->condition('fsf_libre', (bool) $fsf_libre);
+    }    
+
     if ($this->limit) {
       $query->pager($this->limit);
     }
@@ -139,6 +169,9 @@ final class LicenseListBuilder extends EntityListBuilder {
       'contexts' => [
         'url.query_args:name',
         'url.query_args:license_id',
+        'url.query_args:content_type',
+        'url.query_args:osi_approved',
+        'url.query_args:fsf_libre',        
         'url.query_args:page',
         'url.query_args:limit',
         'url.query_args:sort',
