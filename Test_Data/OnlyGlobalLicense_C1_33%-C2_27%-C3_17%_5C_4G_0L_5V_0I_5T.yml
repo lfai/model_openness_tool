@@ -1,0 +1,39 @@
+framework:
+  name: Model Openness Framework
+  version: '1.0'
+  date: '2024-12-15'
+release:
+  name: OnlyGlobalLicense_C1_33%-C2_27%-C3_17%_5C_4G_0L_5V_0I_5T
+  version: 4B
+  date: '2025-06-17'
+  type: multimodal
+  architecture: RNN
+  origin: Pre-Test
+  producer: Test2
+  contact: ''
+  repository: https://github.com
+  huggingface: https://huggingface.co
+  license:
+    distribution:
+      name: MulanPSL-2.0
+      path: https://example.com/global_license_0
+    code:
+      name: ECL-1.0
+      path: https://example.com/global_license_1
+    data:
+      name: ODC-By-1.0
+      path: https://example.com/global_license_2
+    document:
+      name: CC-BY-SA-3.0
+      path: https://example.com/global_license_3
+  components:
+  - name: Data preprocessing code
+    description: Code for data cleansing, normalization, and augmentation
+  - name: Inference code
+    description: Code used for running the model to make predictions
+  - name: Datasets
+    description: Training, validation and testing datasets used for the model
+  - name: Evaluation data
+    description: Data used for evaluating the model
+  - name: Model card
+    description: Model details including performance metrics, intended use, and limitations

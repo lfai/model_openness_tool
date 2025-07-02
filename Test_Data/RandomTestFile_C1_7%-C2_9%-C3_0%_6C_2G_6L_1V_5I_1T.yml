@@ -1,0 +1,55 @@
+framework:
+  name: Model Openness Framework
+  version: '1.0'
+  date: '2024-12-15'
+release:
+  name: RandomTestFile_C1_7%-C2_9%-C3_0%_6C_2G_6L_1V_5I_1T
+  version: 2B
+  date: '2025-06-17'
+  type: multimodal
+  architecture: RNN
+  origin: Pre-Test
+  producer: Test2
+  contact: ''
+  repository: https://github.com
+  huggingface: https://huggingface.co
+  license:
+    distribution:
+      name: MIT
+      path: https://example.com/global_license_1
+    document:
+      name: CC-BY-4.0
+      path: https://example.com/global_license_0
+  components:
+  - name: Data preprocessing code
+    description: Code for data cleansing, normalization, and augmentation
+    component_path: https://example.com/component_5
+    license: OGDL-Taiwan-1.0
+    license_path: https://example.com/license_5
+  - name: Training code
+    description: Code used for training the model
+    component_path: https://example.com/component_2
+    license: Sun-PPP-2000
+    license_path: https://example.com/license_2
+  - name: Supporting libraries and tools
+    description: Libraries and tools used in the model's development
+    component_path: https://example.com/component_3
+    license: GFDL-1.3-invariants-or-later
+    license_path: https://example.com/license_3
+  - name: Evaluation data
+    description: Data used for evaluating the model
+    component_path: https://example.com/component_0
+    license: CC-BY-SA-3.0
+    license_path: https://example.com/license_0
+  - name: Model metadata
+    description: Any model metadata including training configuration and optimizer
+      states
+    component_path: https://example.com/component_1
+    license: HPND-UC
+    license_path: https://example.com/license_1
+  - name: Research paper
+    description: Research paper detailing the development and capabilities of the
+      model
+    component_path: https://example.com/component_4
+    license: TORQUE-1.1
+    license_path: https://example.com/license_4
