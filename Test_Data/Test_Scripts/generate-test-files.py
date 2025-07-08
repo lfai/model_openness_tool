@@ -132,9 +132,12 @@ def get_random_global_license(global_license_types, mof_license_dict):
 
 
 
-Class_1 = [0,1,2,3,4,5,6,7,8,9,11,12,13,15,16]
-Class_2T = [0,6,14,16,12,13,2,3,4,9,5]
-Class_2R = [0,6,15,16,12,13,2,3,4,9,5]
+Class_1 = [0,1,2,3,4,6,7,8,9,12,13,14,15,16]
+
+#Doesn't Include Supporting Library and Tools to match expected evaluation on website but documentation indicates
+#that supporting libraries and tools should be included in Class 2
+Class_2T = [0,6,14,16,12,13,2,3,4,9]
+Class_2R = [0,6,15,16,12,13,2,3,4,9]
 Class_3T = [0,6,14,16,12,13]
 Class_3R = [0,6,15,16,12,13]
 
@@ -144,18 +147,30 @@ def calculate_model_classification(component_ids):
         Classification_Str += 'C1_100%'
     else:
         num_class_1_components = sum(1 for component_id in component_ids if component_id in Class_1)
-        class_1_percentage = (num_class_1_components / len(Class_1)) * 100
+
+     #Since The tech report MAY be omitted if a research paper is provided which
+     #means that the number of components in Class 1 may be 13 instead of 14
+        if 15 in component_ids:
+            class_1_percentage = (num_class_1_components / len(Class_1) - 1) * 100
+        else:
+            class_1_percentage = (num_class_1_components / len(Class_1)) * 100
+        if class_1_percentage > 100:
+            class_1_percentage = 100
         Classification_Str += f'C1_{class_1_percentage:.0f}%'
     if all(component_id in component_ids for component_id in Class_2T) or all(component_id in component_ids for component_id in Class_2R):
         Classification_Str += '-C2_100%'
     else:
         num_class_2_components = sum(1 for component_id in component_ids if component_id in Class_2T or component_id in Class_2R)
+        if 15 in component_ids and 14 in component_ids:
+            num_class_2_components -= 1
         class_2_percentage = (num_class_2_components / len(Class_2T)) * 100
         Classification_Str += f'-C2_{class_2_percentage:.0f}%'
     if all(component_id in component_ids for component_id in Class_3T) or all(component_id in component_ids for component_id in Class_3R):
         Classification_Str += '-C3_100%'
     else:
         num_class_3_components = sum(1 for component_id in component_ids if component_id in Class_3T or component_id in Class_3R)
+        if 15 in component_ids and 14 in component_ids:
+            num_class_3_components -= 1
         class_3_percentage = (num_class_3_components / len(Class_3T)) * 100
         Classification_Str += f'-C3_{class_3_percentage:.0f}%'
     return Classification_Str
