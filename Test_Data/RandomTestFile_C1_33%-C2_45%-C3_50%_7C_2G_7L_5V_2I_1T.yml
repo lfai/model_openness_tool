@@ -1,0 +1,60 @@
+framework:
+  name: Model Openness Framework
+  version: '1.0'
+  date: '2024-12-15'
+release:
+  name: RandomTestFile_C1_33%-C2_45%-C3_50%_7C_2G_7L_5V_2I_1T
+  version: 1B
+  date: '2025-06-17'
+  type: multimodal
+  architecture: RNN
+  origin: Pre-Test
+  producer: Test2
+  contact: ''
+  repository: https://github.com
+  huggingface: https://huggingface.co
+  license:
+    distribution:
+      name: CC-BY-SA-4.0
+      path: https://example.com/global_license_0
+    document:
+      name: CC0-1.0
+      path: https://example.com/global_license_1
+  components:
+  - name: Model architecture
+    description: Well commented code for the model's architecture
+    component_path: https://example.com/component_3
+    license: BSD-3-Clause-Clear
+    license_path: https://example.com/license_3
+  - name: Training code
+    description: Code used for training the model
+    component_path: https://example.com/component_1
+    license: MPL-1.1
+    license_path: https://example.com/license_1
+  - name: Evaluation code
+    description: Code used for evaluating the model
+    component_path: https://example.com/component_5
+    license: softSurfer
+    license_path: https://example.com/license_5
+  - name: Model parameters (Final)
+    description: Trained model parameters, weights and biases
+    component_path: https://example.com/component_0
+    license: CC-BY-SA-2.0-UK
+    license_path: https://example.com/license_0
+  - name: Evaluation data
+    description: Data used for evaluating the model
+    component_path: https://example.com/component_2
+    license: CC-BY-2.0
+    license_path: https://example.com/license_2
+  - name: Technical report
+    description: Technical report detailing capabilities and usage instructions for
+      the model
+    component_path: https://example.com/component_6
+    license: BSD-3-Clause-Attribution
+    license_path: https://example.com/license_6
+  - name: Research paper
+    description: Research paper detailing the development and capabilities of the
+      model
+    component_path: https://example.com/component_4
+    license: CDLA-Permissive-1.0
+    license_path: https://example.com/license_4

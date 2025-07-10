@@ -1,0 +1,58 @@
+framework:
+  name: Model Openness Framework
+  version: '1.0'
+  date: '2024-12-15'
+release:
+  name: OnlyComponentLicenese_C1_13%-C2_18%-C3_33%_8C_0G_8L_2V_6I_2T
+  version: 2B
+  date: '2025-06-17'
+  type: multimodal
+  architecture: RNN
+  origin: Pre-Test
+  producer: Test2
+  contact: ''
+  repository: https://github.com
+  huggingface: https://huggingface.co
+  license: {}
+  components:
+  - name: Model architecture
+    description: Well commented code for the model's architecture
+    component_path: https://example.com/component_1
+    license: MulanPSL-2.0
+    license_path: https://example.com/license_1
+  - name: Training code
+    description: Code used for training the model
+    component_path: https://example.com/component_7
+    license: AML-glslang
+    license_path: https://example.com/license_7
+  - name: Inference code
+    description: Code used for running the model to make predictions
+    component_path: https://example.com/component_2
+    license: cve-tou
+    license_path: https://example.com/license_2
+  - name: Supporting libraries and tools
+    description: Libraries and tools used in the model's development
+    component_path: https://example.com/component_4
+    license: CNRI-Python-GPL-Compatible
+    license_path: https://example.com/license_4
+  - name: Model parameters (Intermediate)
+    description: Trained model parameters, weights and biases
+    component_path: https://example.com/component_5
+    license: CC-BY-NC-SA-1.0
+    license_path: https://example.com/license_5
+  - name: Model card
+    description: Model details including performance metrics, intended use, and limitations
+    component_path: https://example.com/component_0
+    license: CC-BY-SA-3.0
+    license_path: https://example.com/license_0
+  - name: Research paper
+    description: Research paper detailing the development and capabilities of the
+      model
+    component_path: https://example.com/component_6
+    license: CNRI-Jython
+    license_path: https://example.com/license_6
+  - name: Evaluation results
+    description: The results from evaluating the model
+    component_path: https://example.com/component_3
+    license: CC-BY-NC-ND-3.0
+    license_path: https://example.com/license_3
