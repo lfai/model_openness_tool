@@ -2,7 +2,7 @@
 This directory contains dummy model yaml files that have different possible configurations of a model file. In particular the current model files address the following configurations: A full test file with all licenses and components specified, a minimal file with as little information required for a proper model file, model files that exactly meet each class specification, model files with no licenses, model files with only global licenses, model files with only component licenses (includes valid, invalid, and missing licenses), and random test files that have any possible configuration.
 
 ## File Naming
-The model files are named to match their expected evaluation from the model openness tool. This information includes the class evaluation, the number of componenets, the number of licenses (global and component), the number of invalid licenses, and the number of type-appropriate licenses. Here is the scheme of a model file name:
+The model files are named to match their expected evaluation from the model openness tool. This information includes the class evaluation, the number of components, the number of licenses (global and component), the number of invalid licenses, and the number of type-appropriate licenses. Here is the scheme of a model file name:
 
 `{User Input Name}_C1_{Class 1 Progress Percentage}_C2_{Class 2 Progress Percentage}_{C3}_{Class 3 Progress Percentage}_{Number of Components}C_{Number of Global Licenses}G_{Number of Component Licenses}L_{Number of Valid Licenses}V_{Number of Invalid Licenses}I_{Number of Type-Appropriate Licenses}T.yml`
 
