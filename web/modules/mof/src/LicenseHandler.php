@@ -44,6 +44,12 @@ final class LicenseHandler implements LicenseHandlerInterface {
     'OGL-UK-3.0',
   ];
 
+  // These license IDs are considered open.
+  const OPEN_LICENSES = [
+    'OpenMDW-1.0',
+  ];
+
+
   // All licenses.
   public readonly array $licenses;
 
@@ -155,7 +161,8 @@ final class LicenseHandler implements LicenseHandlerInterface {
   public function isOpenSourceLicense(string $license): bool {
     return $this->isFsfApproved($license)
       || $this->isOpenData($license)
-      || $this->isOsiApproved($license);
+      || $this->isOsiApproved($license)
+      || in_array($license, self::OPEN_LICENSES);
   }
 
   /**

@@ -432,7 +432,7 @@
          "seeAlso":[
             "https://openmdw.ai"
          ],
-         "isOsiApproved":true,
+         "isOsiApproved":false,
          "isFsfLibre":false,
          "ContentType":["document","data","code"]
       }
