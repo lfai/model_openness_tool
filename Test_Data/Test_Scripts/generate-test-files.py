@@ -6,6 +6,143 @@ import subprocess
 import json
 import random
 from collections import OrderedDict
+import argparse
+
+def parse_args():
+    generate_test_file_parser = argparse.ArgumentParser(description="Generate test files for the Model Openness Tool.")
+    num_components = generate_test_file_parser.add_argument('-c', "--num_components", 
+                                                            type=int, 
+                                                            required = True, 
+                                                            dest = "num_components",
+                                                            help='Number of components in the test file.')
+    num_global_licenses = generate_test_file_parser.add_argument("-g", '--num_global_licenses',
+                                                                type=int, 
+                                                                required = True, 
+                                                                dest = "num_global_licenses",
+                                                                help='Number of global licenses in the test file.')
+    num_component_licenses = generate_test_file_parser.add_argument('-l','--num_component_licenses',
+                                                                    type=int, 
+                                                                    required = True, 
+                                                                    dest = "num_component_licenses",
+                                                                    help='Number of component licenses in the test file.')
+    num_valid_licenses = generate_test_file_parser.add_argument('-v', '--num_valid_licenses',
+                                                                type=int, 
+                                                                required = True, 
+                                                                dest = "num_valid_licenses",
+                                                                help='Number of valid licenses in the test file.')
+    num_invalid_licenses = generate_test_file_parser.add_argument("-i", '--num_invalid_licenses',
+                                                                type=int, 
+                                                                required = True, 
+                                                                dest = "num_invalid_licenses",
+                                                                help='Number of invalid licenses in the test file.')
+    num_type_appropriate_licenses = generate_test_file_parser.add_argument("-t", '--num_type_appropriate_licenses',
+                                                                        type=int, 
+                                                                        required = True, 
+                                                                        dest = "num_type_appropriate_licenses",
+                                                                        help='Number of type appropriate licenses in the test file.')
+    component_ids = generate_test_file_parser.add_argument('-ci', '--component_ids',
+                                                            type=int, 
+                                                            nargs='*', 
+                                                            default=[], 
+                                                            dest = "component_ids",
+                                                            help='List of component IDs to include in the test file.')
+    license_ids = generate_test_file_parser.add_argument('-li', '--license_ids',
+                                                        type=str, 
+                                                        nargs='*', 
+                                                        default=[], 
+                                                        dest = "license_ids",
+                                                        help='List of license IDs to include in the test file.')
+    global_license_types = generate_test_file_parser.add_argument('-glt', '--global_license_types',
+                                                                type=str, 
+                                                                nargs='*', 
+                                                                default=[], 
+                                                                dest = "global_license_types",
+                                                                help='List of global license types to include in the test file.')
+    global_license_ids = generate_test_file_parser.add_argument('-gli', '--global_license_ids',
+                                                                type=str, 
+                                                                nargs='*', 
+                                                                default=[], 
+                                                                dest = "global_license_ids",
+                                                                help='List of global license IDs to include in the test file.')
+    component_paths = generate_test_file_parser.add_argument('-cp', '--component_paths',
+                                                            type=str, 
+                                                            nargs='*', 
+                                                            default=[], 
+                                                            dest = "component_paths",
+                                                            help='List of component paths to include in the test file.')
+    global_license_paths = generate_test_file_parser.add_argument('-glp', '--global_license_paths',
+                                                                type=str, 
+                                                                nargs='*', 
+                                                                default=[], 
+                                                                dest = "global_license_paths",
+                                                                help='List of global license paths to include in the test file.')
+    license_paths = generate_test_file_parser.add_argument('-lp', '--license_paths',
+                                                            type=str, 
+                                                            nargs='*', 
+                                                            default=[], 
+                                                            dest = "license_paths",
+                                                            help='List of license paths to include in the test file.')
+    name = generate_test_file_parser.add_argument('-n', '--name',
+                                                type=str, 
+                                                default="RandomTestFile", 
+                                                dest = "name",
+                                                help='Name of the test file.')
+    version = generate_test_file_parser.add_argument('-vn', '--version',
+                                                    type=str, 
+                                                    default="1.0", 
+                                                    dest = "version",
+                                                    help='Version of the test file.')
+    date = generate_test_file_parser.add_argument('-d', '--date',
+                                                type=str, 
+                                                default="2025-06-17", 
+                                                dest = "date",
+                                                help='Date of the test file.')
+    model_type = generate_test_file_parser.add_argument('-ty', '--type',
+                                                        type=str, 
+                                                        default="multimodal", 
+                                                        dest = "type",
+                                                        help='Type of the model (e.g., multimodal, text, image, etc.).')
+    architecture = generate_test_file_parser.add_argument('-a', '--architecture',
+                                                        type=str, 
+                                                        default="RNN", 
+                                                        dest = "architecture",
+                                                        help='Architecture of the model (e.g., RNN, CNN, etc.).')
+    origin = generate_test_file_parser.add_argument('-o', '--origin',
+                                                    type=str, 
+                                                    default="Pre-Test", 
+                                                    dest = "origin",
+                                                    help='Origin of the model')
+    producer = generate_test_file_parser.add_argument('-p', '--producer',
+                                                    type=str, 
+                                                    default="Test", 
+                                                    dest = "producer",
+                                                    help='Producer of the model')
+    contact = generate_test_file_parser.add_argument('-co', '--contact',
+                                                    type=str, 
+                                                    default="", 
+                                                    dest = "contact",
+                                                    help='Contact information for the model producer.')
+    repository = generate_test_file_parser.add_argument('-r', '--repository',
+                                                        type=str, 
+                                                        default="https://github.com", 
+                                                        dest = "repository",
+                                                        help='Repository URL for the model.')
+    huggingface = generate_test_file_parser.add_argument('-hf', '--huggingface',
+                                                        type=str, 
+                                                        default="https://huggingface.co", 
+                                                        dest = "huggingface",
+                                                        help='Hugging Face URL for the model.')
+    save_path = generate_test_file_parser.add_argument('-sp', '--save_path',
+                                                        type=str, 
+                                                        default="./", 
+                                                        dest = "save_path",
+                                                        help='Path to save the generated test file.')
+    example_links = generate_test_file_parser.add_argument('-e', '--example_links',
+                                                            action='store_true', 
+                                                            default=False, 
+                                                            dest = "example_links",
+                                                            help='Generate example links for the test file.')
+    return generate_test_file_parser.parse_args()
 
 OPEN_DATA_LICENSES = [
     'CC0-1.0',
@@ -151,7 +288,7 @@ def calculate_model_classification(component_ids):
      #Since The tech report MAY be omitted if a research paper is provided which
      #means that the number of components in Class 1 may be 13 instead of 14
         if 15 in component_ids:
-            class_1_percentage = (num_class_1_components / len(Class_1) - 1) * 100
+            class_1_percentage = (num_class_1_components / (len(Class_1) - 1)) * 100
         else:
             class_1_percentage = (num_class_1_components / len(Class_1)) * 100
         if class_1_percentage > 100:
@@ -300,10 +437,35 @@ def generate_test_file(num_components, num_global_licenses, num_component_licens
                 
 
 def main():
+    args = parse_args()
+    example_global_license_paths = [f'https://example.com/global_license_{i}' for i in range(4)]
+    example_component_paths = [f'https://example.com/component_{i}' for i in range(17)]
+    example_license_paths = [f'https://example.com/license_{i}' for i in range(17)]
+    if (args.example_links):
+        args.global_license_paths = example_global_license_paths[:args.num_global_licenses]
+        args.component_paths = example_component_paths[:args.num_components]
+        args.license_paths = example_license_paths[:args.num_component_licenses]
+    generate_test_file(args.num_components, args.num_global_licenses, args.num_component_licenses, 
+                       args.num_valid_licenses, args.num_invalid_licenses, args.num_type_appropriate_licenses,
+                          component_ids=args.component_ids, license_ids=args.license_ids, global_license_types=args.global_license_types,
+                            global_license_ids=args.global_license_ids, component_paths=args.component_paths,
+                            global_license_paths=args.global_license_paths, license_paths=args.license_paths,
+                          name=args.name, version=args.version, date=args.date, type=args.type, 
+                          architecture=args.architecture, origin=args.origin, producer=args.producer, contact=args.contact,
+                          repository=args.repository, huggingface=args.huggingface, save_path=args.save_path)                                                     
 
-    global_license_paths = [f'https://example.com/global_license_{i}' for i in range(4)]
-    component_paths = [f'https://example.com/component_{i}' for i in range(17)]
-    license_paths = [f'https://example.com/license_{i}' for i in range(17)]
+
+
+
+main()
+
+
+
+def examples():
+
+        # global_license_paths = [f'https://example.com/global_license_{i}' for i in range(4)]
+    # component_paths = [f'https://example.com/component_{i}' for i in range(17)]
+    # license_paths = [f'https://example.com/license_{i}' for i in range(17)]
 
     ## Minimal Test File
     # generate_test_file(1,0,0,0,0,0, [], [], [], [], [], [], [], 
@@ -394,37 +556,37 @@ def main():
     
     # # Varied Component Number with Random Licenses (Valid and Invalid)
 
-    for i in range(5):
-        num_components = random.randint(1,16)
-        num_global_licenses = random.randint(0, 4)
-        num_component_licenses = num_components
-        num_valid_licenses = random.randint(0, num_component_licenses)
-        num_invalid_licenses = num_component_licenses - num_valid_licenses
-        num_type_appropriate_licenses = random.randint(0, num_valid_licenses)
+    # for i in range(5):
+    #     num_components = random.randint(1,16)
+    #     num_global_licenses = random.randint(0, 4)
+    #     num_component_licenses = num_components
+    #     num_valid_licenses = random.randint(0, num_component_licenses)
+    #     num_invalid_licenses = num_component_licenses - num_valid_licenses
+    #     num_type_appropriate_licenses = random.randint(0, num_valid_licenses)
 
-        example_global_paths = [f'https://example.com/global_license_{i}' for i in range(num_global_licenses)]
-        example_component_paths = [f'https://example.com/component_{i}' for i in range(num_components)]
-        example_license_paths = [f'https://example.com/license_{i}' for i in range(num_component_licenses)]
-        global_license_paths = example_global_paths[:num_global_licenses]
-        component_paths = example_component_paths[:num_components]
-        license_paths = example_license_paths[:num_component_licenses]
+    #     example_global_paths = [f'https://example.com/global_license_{i}' for i in range(num_global_licenses)]
+    #     example_component_paths = [f'https://example.com/component_{i}' for i in range(num_components)]
+    #     example_license_paths = [f'https://example.com/license_{i}' for i in range(num_component_licenses)]
+    #     global_license_paths = example_global_paths[:num_global_licenses]
+    #     component_paths = example_component_paths[:num_components]
+    #     license_paths = example_license_paths[:num_component_licenses]
 
-        component_ids = []
-        license_ids = []
-        global_license_types = []
-        global_license_ids = []
+    #     component_ids = []
+    #     license_ids = []
+    #     global_license_types = []
+    #     global_license_ids = []
 
-        print(f"Generating test file with {num_components} components, {num_global_licenses} global licenses, "
-              f"{num_component_licenses} component licenses, {num_valid_licenses} valid licenses, "
-              f"{num_invalid_licenses} invalid licenses, and {num_type_appropriate_licenses} type appropriate licenses.")
+    #     print(f"Generating test file with {num_components} components, {num_global_licenses} global licenses, "
+    #           f"{num_component_licenses} component licenses, {num_valid_licenses} valid licenses, "
+    #           f"{num_invalid_licenses} invalid licenses, and {num_type_appropriate_licenses} type appropriate licenses.")
         
-        generate_test_file(num_components, num_global_licenses, num_component_licenses,
-                           num_valid_licenses, num_invalid_licenses, num_type_appropriate_licenses,
-                           save_path="./Test_Files/", component_ids=component_ids, license_ids=license_ids,
-                           global_license_types=global_license_types, global_license_ids=global_license_ids,
-                           component_paths=component_paths, global_license_paths=global_license_paths,
-                           license_paths=license_paths,
-                           name=f"RandomTestFile", version=f"{i+1}B")
+    #     generate_test_file(num_components, num_global_licenses, num_component_licenses,
+    #                        num_valid_licenses, num_invalid_licenses, num_type_appropriate_licenses,
+    #                        save_path="./Test_Files/", component_ids=component_ids, license_ids=license_ids,
+    #                        global_license_types=global_license_types, global_license_ids=global_license_ids,
+    #                        component_paths=component_paths, global_license_paths=global_license_paths,
+    #                        license_paths=license_paths,
+    #                        name=f"RandomTestFile", version=f"{i+1}B")
 
     # # Varied Component Number with valid and invalid licenses without global licenses
     # for i in range(5):
@@ -503,5 +665,4 @@ def main():
     #                        global_license_types=global_license_types, global_license_ids=global_license_ids,
     #                        component_paths=component_paths, license_paths=license_paths,
     #                        name=f"RandomTestFile_{i+1}", version=f"{i+1}B")
-
-main()
+    pass
