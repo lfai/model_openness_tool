@@ -15,3 +15,4 @@ permissions:
   - 'access content'
   - 'view model collection'
   - 'view licenses'
+  - 'restful get model_v1'
