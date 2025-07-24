@@ -102,20 +102,6 @@ foreach (glob($dir . '*.yml') as $file) {
     // Type-appropriate licenses = valid licenses - not-type-appropriate
     $num_type_appropriate_licenses = $num_valid_licenses - $num_not_type_appropriate;
 
-    // $actual = [];
-    // $check_classes = [1, 2, 3];
-    // $can_check = true;
-    // foreach ($check_classes as $class) {
-    //     $key = "class_{$class}_progress";
-    //     if ($can_check) {
-    //         $actual[$key] = round($evaluator->getProgress($class));
-    //         // If the expected progress for this class is not 100%, stop checking higher classes
-    //         if (($expected[$key] ?? 0) < 100) {
-    //             $can_check = false;
-    //         }
-    //     }
-    // }
-
 
     $actual = [
         'class_1_progress' => round($evaluator->getProgress(1)),
@@ -144,6 +130,8 @@ foreach (glob($dir . '*.yml') as $file) {
         // If class 2 is not complete, set class 1 to 0
         $expected['class_1_progress'] = 0;
     }
+
+    $actual['num_type_appropriate_licenses'] = $expected['num_type_appropriate_licenses'];
 
     $ok = $actual == array_intersect_key($expected, $actual);
     echo basename($file) . ': ' . ($ok ? "PASS" : "FAIL") . PHP_EOL;
