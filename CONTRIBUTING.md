@@ -57,7 +57,7 @@ instructions on their respective websites:
   Note: make sure you have created a `.env` file, you can use the below command to create an empty `.env` file.
   ```shell
    touch .env
-```
+  ```
 
 ## Contributing to the MOT software
 
@@ -71,6 +71,8 @@ To submit bug fixes and improvements to the MOT software please follow these ste
 Note that all changes to the code should carry a sign-off.
 
 See the [INSTALL.md](INSTALL.md) file for more information on how to setup your environment to run MOT.
+
+Before submitting any PR, please, verify that your changes do not have any unexpected side effects using the [non-regression tests](Test_Data/README.md#non-regression-tests).
 
 ## Legal stuff
 

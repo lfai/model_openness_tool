@@ -19,3 +19,10 @@ Additionally, there is a script called `update_license_yml_files.py` that can be
 
 The script `update_license_yml_files.py` can be run with the following command: `python update_license_yml_files.py <license_json_file> <mof_license_json_file>`
 
+## Non-regression tests
+
+There are two simple non-regression tests you can use to check that changes to the MOT code have not broken any of the existing functionality:
+
+1. `runtest.sh` is a simple bash script which downloads, using the MOT REST API, all the data from a local instance of the MOT, in which the Test data this directory contains was loaded, and verifies that the output is identical to the reference output file `test_setup_results.json`.
+
+2. `nonregression_test_setup.sh` & `nonregression_test_check.sh`. The former is a script that downloads all the data from a local instance of the MOT and generates a reference output file called `test_setup_results.json`. This should be run before any changes to the code are made. Then, the script `nonregression_test_check.sh` can be run to test that the results have not changed since the last time the setup was done.
