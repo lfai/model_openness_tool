@@ -11,7 +11,7 @@ As an example a model file named `RandomTestFile_C1_33%-C2_45%-C3_50%_7C_2G_7L_5
 ## Test File Generation
 This directory additionally contains a script that can be used to generate model files according to user specification or randomly. The script is located in the `Test_Scripts` directory. The `generate-test-files.py` script was used to generate models in this directory that follow the naming scheme above.
 
-Currently there are still a few bugs in the script, so a command line interface has not yet been implemented, however there are example calls in the script in the main function that can be modified to generate the desired test files.
+A command line interface has been implemented, run `./generate-test-files.py -h` to view options to be able to generate files in this manner Additionally, there are example calls in the script in an example function that can be modified to generate the desired test files.
 
 One notable bug is that the type-appropriate license count is not currently being generated correctly, so the files in this directory do not have the correct type-appropriate license counts. This appears to potentially be an issue with how open-data licenses are counted, so it may be an issue with how the model openness tool considers open-data licenses.
 
@@ -19,3 +19,12 @@ Additionally, there is a script called `update_license_yml_files.py` that can be
 
 The script `update_license_yml_files.py` can be run with the following command: `python update_license_yml_files.py <license_json_file> <mof_license_json_file>`
 
+## Non-regression tests
+
+There are two simple non-regression tests you can use to check that changes to the MOT code have not broken any of the existing functionality:
+
+1. `runtest.sh` is a simple bash script which downloads, using the MOT REST API, all the data from a local instance of the MOT, in which the Test data this directory contains was loaded, and verifies that the output is identical to the reference output file `test_setup_results.json`.
+
+2. `nonregression_test_setup.sh` & `nonregression_test_check.sh`. The former is a script that downloads all the data from a local instance of the MOT and generates a reference output file called `test_setup_results.json`. This should be run before any changes to the code are made. Then, the script `nonregression_test_check.sh` can be run to test that the results have not changed since the last time the setup was done.
+
+3. `test-model-files.php` is a PHP script that can be run in a local development environment to test the model files in this directory. It can be run by calling `vendor/bin/drush scr scripts/test-model-files.php` from the root of the project. This script uses the naming for the expected results and uses the evaluation from the model openness tool to ensure the correct evaluation of the files. This script outputs the results to the console and outputs a summary of the error to the console if any tests fail, otherwise it simply outputs "PASS". Currently, the script does not check the type-appropriate license count due to the bug mentioned above, so it will not fail if the type-appropriate license count is incorrect.
