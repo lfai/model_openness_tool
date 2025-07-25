@@ -57,7 +57,7 @@ instructions on their respective websites:
   Note: make sure you have created a `.env` file, you can use the below command to create an empty `.env` file.
   ```shell
    touch .env
-```
+  ```
 
 ## Contributing to the MOT software
 
