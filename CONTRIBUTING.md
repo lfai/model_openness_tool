@@ -72,7 +72,7 @@ Note that all changes to the code should carry a sign-off.
 
 See the [INSTALL.md](INSTALL.md) file for more information on how to setup your environment to run MOT.
 
-Before submitting any PR, please, verify that your changes do not have any unexpected side effects using the [non-regression tests](Test_Scripts/README.md#non-regression-tests).
+Before submitting any PR, please, verify that your changes do not have any unexpected side effects using the [non-regression tests](Test_Data/README.md#non-regression-tests).
 
 ## Legal stuff
 
