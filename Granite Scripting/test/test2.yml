@@ -1,0 +1,56 @@
+```yaml
+framework:
+  name: 'Model Openness Framework'
+  version: '1.0'
+  date: '2024-12-15'
+release:
+  name: 'Mistral-7B-Instruct-v0.2'
+  version: 'v0.2'
+  date: ''
+  license:
+    distribution:
+      name: 'Apache 2.0'
+      path: 'license:apache-2.0'
+    code:
+      name: 'Apache 2.0'
+      path: 'license:apache-2.0'
+  type: 'text-generation'
+  architecture: 'MistralForCausalLM'
+  origin: 'mistralai'
+  producer: 'Mistral AI'
+  contact: ''
+components:
+  - name: 'Model architecture'
+    description: "Well commented code for the model's architecture"
+    license: 'unlicensed'
+    component_path: 'transformersInfo.auto_model: AutoModelForCausalLM'
+
+  - name: 'Supporting libraries and tools'
+    description: "Libraries and tools used in the model's development (transformers, PyTorch)"
+    license: 'Apache 2.0'
+    license_path: 'license:apache-2.0'
+    component_path: 'transformers, pytorch'
+
+  - name: 'Model parameters (Final)'
+    description: 'Trained model parameters, weights and biases; stored in .safetensors files'
+    license: ''
+    license_path: ''
+    component_path: 'model-00001-of-00003.safetensors, model-00002-of-00003.safetensors, model-00003-of-00003.safetensors'
+
+  - name: 'Model metadata'
+    description: 'Training configuration and optimizer states; part of the Hugging Face model card'
+    license: 'Apache 2.0'
+    license_path: 'license:apache-2.0'
+    component_path: 'cardData'
+
+  - name: 'Model card'
+    description: 'Provided in the "cardData" section of the document'
+    license: 'Apache 2.0'
+    license_path: 'license:apache-2.0'
+    component_path: 'cardData'
+
+  - name: 'Research paper'
+      description: 'Research paper detailing the development and capabilities of the model'
+      license: ''
+      license_path: 'arxiv:2310.06825'
+      component_path: 'https://arxiv.org/abs/2310.06825'
