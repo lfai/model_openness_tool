@@ -1,0 +1,37 @@
+framework:
+  name: Model Openness Framework
+  version: '1.0'
+  date: '2024-12-15'
+release:
+  name: NoLicenseFile_C1_0%-C2_0%-C3_0%_6C_0G_0L_0V_0I_0T
+  version: 0B
+  date: '2025-06-17'
+  type: multimodal
+  architecture: RNN
+  origin: Pre-Test
+  producer: Test2
+  contact: ''
+  repository: https://github.com
+  huggingface: https://huggingface.co
+  license: {}
+  components:
+  - name: Evaluation code
+    description: Code used for evaluating the model
+    component_path: https://example.com/component_1
+  - name: Evaluation data
+    description: Data used for evaluating the model
+    component_path: https://example.com/component_2
+  - name: Model metadata
+    description: Any model metadata including training configuration and optimizer
+      states
+    component_path: https://example.com/component_4
+  - name: Model card
+    description: Model details including performance metrics, intended use, and limitations
+    component_path: https://example.com/component_5
+  - name: Research paper
+    description: Research paper detailing the development and capabilities of the
+      model
+    component_path: https://example.com/component_3
+  - name: Evaluation results
+    description: The results from evaluating the model
+    component_path: https://example.com/component_0

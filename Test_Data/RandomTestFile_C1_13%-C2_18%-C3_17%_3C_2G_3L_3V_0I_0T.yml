@@ -1,0 +1,40 @@
+framework:
+  name: Model Openness Framework
+  version: '1.0'
+  date: '2024-12-15'
+release:
+  name: RandomTestFile_C1_13%-C2_18%-C3_17%_3C_2G_3L_3V_0I_0T
+  version: 5B
+  date: '2025-06-17'
+  type: multimodal
+  architecture: RNN
+  origin: Pre-Test
+  producer: Test2
+  contact: ''
+  repository: https://github.com
+  huggingface: https://huggingface.co
+  license:
+    distribution:
+      name: CC-BY-SA-3.0
+      path: https://example.com/global_license_0
+    code:
+      name: AFL-1.1
+      path: https://example.com/global_license_1
+  components:
+  - name: Evaluation code
+    description: Code used for evaluating the model
+    component_path: https://example.com/component_0
+    license: Motosoto
+    license_path: https://example.com/license_0
+  - name: Model metadata
+    description: Any model metadata including training configuration and optimizer
+      states
+    component_path: https://example.com/component_1
+    license: xinetd
+    license_path: https://example.com/license_1
+  - name: Research paper
+    description: Research paper detailing the development and capabilities of the
+      model
+    component_path: https://example.com/component_2
+    license: IPL-1.0
+    license_path: https://example.com/license_2

@@ -1,0 +1,31 @@
+framework:
+  name: Model Openness Framework
+  version: '1.0'
+  date: '2024-12-15'
+release:
+  name: OnlyGlobalLicense_C1_20%-C2_18%-C3_33%_3C_2G_0L_3V_0I_3T
+  version: 1B
+  date: '2025-06-17'
+  type: multimodal
+  architecture: RNN
+  origin: Pre-Test
+  producer: Test2
+  contact: ''
+  repository: https://github.com
+  huggingface: https://huggingface.co
+  license:
+    distribution:
+      name: CC-BY-SA-4.0
+      path: https://example.com/global_license_0
+    data:
+      name: CC0-1.0
+      path: https://example.com/global_license_1
+  components:
+  - name: Datasets
+    description: Training, validation and testing datasets used for the model
+  - name: Data card
+    description: Documentation for datasets including source, characteristics, and
+      preprocessing details
+  - name: Research paper
+    description: Research paper detailing the development and capabilities of the
+      model

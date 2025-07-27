@@ -21,6 +21,15 @@ final class ModelEvaluateForm extends ModelForm {
   /**
    * {@inheritdoc}
    */
+  public function validateForm(array &$form, FormStateInterface $form_state): void {
+    if (preg_match('/\s/', $form_state->getValue('label')[0]['value'])) {
+      $form_state->setErrorByName('label', $this->t('Model name cannot have spaces.'));
+    }
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function form(array $form, FormStateInterface $form_state): array {
     if (!$this->session->isStarted()) {
       $this->session->start();
@@ -48,7 +57,6 @@ final class ModelEvaluateForm extends ModelForm {
 
     $form += parent::form($form, $form_state);
     $form['#attached']['library'][] = 'mof/model-evaluate';
-
     return $form;
   }
 

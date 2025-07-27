@@ -1,0 +1,55 @@
+framework:
+  name: Model Openness Framework
+  version: '1.0'
+  date: '2024-12-15'
+release:
+  name: OnlyComponentLicenese_C1_7%-C2_0%-C3_0%_7C_0G_7L_2V_5I_0T
+  version: 1B
+  date: '2025-06-17'
+  type: multimodal
+  architecture: RNN
+  origin: Pre-Test
+  producer: Test2
+  contact: ''
+  repository: https://github.com
+  huggingface: https://huggingface.co
+  license: {}
+  components:
+  - name: Data preprocessing code
+    description: Code for data cleansing, normalization, and augmentation
+    component_path: https://example.com/component_1
+    license: FSFAP
+    license_path: https://example.com/license_1
+  - name: Model parameters (Final)
+    description: Trained model parameters, weights and biases
+    component_path: https://example.com/component_4
+    license: OLDAP-1.1
+    license_path: https://example.com/license_4
+  - name: Model metadata
+    description: Any model metadata including training configuration and optimizer
+      states
+    component_path: https://example.com/component_0
+    license: CC-BY-4.0
+    license_path: https://example.com/license_0
+  - name: Model card
+    description: Model details including performance metrics, intended use, and limitations
+    component_path: https://example.com/component_6
+    license: SGP4
+    license_path: https://example.com/license_6
+  - name: Data card
+    description: Documentation for datasets including source, characteristics, and
+      preprocessing details
+    component_path: https://example.com/component_3
+    license: HPND-doc-sell
+    license_path: https://example.com/license_3
+  - name: Research paper
+    description: Research paper detailing the development and capabilities of the
+      model
+    component_path: https://example.com/component_2
+    license: NLOD-1.0
+    license_path: https://example.com/license_2
+  - name: Evaluation results
+    description: The results from evaluating the model
+    component_path: https://example.com/component_5
+    license: ssh-keyscan
+    license_path: https://example.com/license_5
