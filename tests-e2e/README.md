@@ -17,6 +17,10 @@ Inside this folder, install the Javascript dependencies for the Playwright tests
 ```
 npm install
 ```
+Then install Playwright browser binaries
+```
+npx playwright install
+```
 These tests run on headless Chromium binaries. To use additional browsers, you can uncomment the relevant sections of `./playwright.config.js`.
 
 ## Running the Tests
