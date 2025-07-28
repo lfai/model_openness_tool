@@ -2,9 +2,13 @@
 
 use Symfony\Component\Yaml\Yaml;
 use Symfony\Component\Yaml\Exception\ParseException;
+use Drush\Drush;
 
+$args = Drush::input()->getArguments();
 $path = \Drupal::root();
-$model_path = $path . '/../models';
+// Get model path from command line argument or use default.
+$model_path = $args['extra'][1] ?? $path . '/../models';
+print 'Loading models from ' . $model_path . PHP_EOL;
 $schema_path = $path . '/../schema';
 
 if (is_dir($model_path)) {

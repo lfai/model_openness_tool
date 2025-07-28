@@ -102,8 +102,14 @@ final class License extends ContentEntityBase implements LicenseInterface {
   /**
    * {@inheritdoc}
    */
-  public function getContentType(): ?string {
-    return $this->get('content_type')->value ?? NULL;
+  public function getContentType(): array {
+    $values = [];
+    foreach ($this->get('content_type') as $item) {
+      if (!empty($item->value)) {
+        $values[] = $item->value;
+      }
+    }
+    return $values;
   }
 
   /**
@@ -231,8 +237,9 @@ final class License extends ContentEntityBase implements LicenseInterface {
         'document' => t('Documentation'),
         'data' => t('Data'),
       ])
+      ->setCardinality(3) // Allow up to 3 values
       ->setDisplayOptions('form', [
-        'type' => 'options_select',
+        'type' => 'options_buttons',
         'weight' => -60,
       ])
       ->setDisplayConfigurable('form', TRUE)
