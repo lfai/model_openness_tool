@@ -65,13 +65,23 @@ final class ModelController extends ControllerBase {
 
   /**
    * Display instructions/ markdown code for embedding badges.
+   * This uses PNG images because HuggingFace doesn't support SVG.
    */
   public function badgePage(ModelInterface $model): array {
     $build = ['#markup' => $this->t('Use the following markdown to embed your model badges.')];
     $badges = $this->badgeGenerator->generate($model);
 
     for ($i = 1; $i <= 3; $i++) {
-      $badge = Url::fromRoute('mof.model_badge', ['model' => $model->id(), 'class' => $i]);
+      $model_status = (string) $badges[$i]['#status'];
+      if ($model_status == "Qualified")
+        $status = 'qualified';
+      elseif ($model_status == "Not met")
+        $status = 'notmet';
+      else
+        $status = 'inprogress';
+      $badge = Url::fromRoute('mof.model_badge_png', ['class' => $i, 'status' => $status]);
+
+      $model_url = $model->toUrl()->setAbsolute(TRUE)->toString();
 
       $build[$i] = [
         '#type' => 'container',
@@ -88,7 +98,7 @@ final class ModelController extends ControllerBase {
       $build[$i]['md'] = [
         '#type' => 'html_tag',
         '#tag' => 'div',
-        '#value' => "![mof-class{$i}]({$badge->setAbsolute(TRUE)->toString()})",
+        '#value' => "[![mof-class{$i}-{$status}]({$badge->setAbsolute(TRUE)->toString()})]($model_url)",
         '#weight' => 10,
       ];
 

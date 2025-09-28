@@ -116,6 +116,20 @@ mof.model_badge:
     _entity_access: model.view
     class: '1|2|3'
 
+mof.model_badge_png:
+  path: '/modules/mof/assets/badge_class{class}_{status}.png'
+  defaults:
+    _controller: \Drupal\mof\Controller\ModelController::badge
+    _title: 'Model Badge'
+  options:
+    parameters:
+      model:
+        type: entity:model
+  requirements:
+    _entity_access: model.view
+    class: '1|2|3'
+    status: 'qualified|notmet|inprogress'
+
 entity.license.collection:
   path: '/licenses'
   defaults:
