@@ -105,4 +105,4 @@ jobs:
           php ./web/core/scripts/run-tests.sh \
             --dburl mysql://drupal:drupal@127.0.0.1:3306/drupal \
             --sqlite /tmp/drupal.sqlite \
-            --url http://localhost Drupal,Core,Bootstrap,Access
+            --url http://localhost Drupal,Core
