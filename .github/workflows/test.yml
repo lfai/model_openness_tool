@@ -99,10 +99,12 @@ jobs:
           cp ./web/sites/default/mot.settings.php ./web/sites/default/settings.php
           cp ./web/sites/default/default.services.yml ./web/sites/default/services.yml
           ./vendor/bin/drush site-install mot_profile --yes
+          mkdir -p ./web/sites/default/files/simpletest ./web/sites/simpletest ./web/vfs\:
+          sudo chown www-data:www-data ./web/sites/default/files ./web/sites/default/files/simpletest ./web/sites/simpletest
+          sudo chmod 0755 /home/runner
 
       - name: Run PHPUnit tests
         run: |
-          php ./web/core/scripts/run-tests.sh \
-            --dburl mysql://drupal:drupal@127.0.0.1:3306/drupal \
+          sudo -u www-data php ./web/core/scripts/run-tests.sh \
             --sqlite /tmp/drupal.sqlite \
-            --url http://localhost Drupal,Core
+            --url http://localhost Drupal,Core,Bootstrap,Access
