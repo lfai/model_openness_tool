@@ -22,7 +22,7 @@ The [Models page](https://mot.isitopen.ai/models) of the MOT provides a list of 
 
 ### Understanding the Model evaluation form
 
-You may want to consult the [Model Evaluation explainer video](videos/ModelEvaluation.mp4) for a demonstration of how to use this form. The following further describes it.
+You may want to consult the [Model Evaluation explainer video](https://drive.google.com/file/d/1D5tWhbh7daM-JlLW0LTHBWWlKhAw-fVd/view) for a demonstration of how to use this form. The following further describes it.
 
 The [Model evaluation form](https://mot.isitopen.ai/model/evaluate) is composed of different sections:
 * Model details - the identification of the model along some metadata including the model producer, model type, etc.
@@ -33,7 +33,7 @@ The [Model evaluation form](https://mot.isitopen.ai/model/evaluate) is composed 
 
 While you are encouraged to provide as much information as possible, very little is actually required to be able to get a first evaluation. After submission the result is displayed for you to consult and you have the possibility to go back to the form, add more data or modify what you previously entered, and try again.This provides with an iterative workflow.
 
-When done, you can download the model YAML file which you can then submit for addition to the MOT. You may want to consult the [Model Upload explainer video](videos/ModelUpload.mp4) if you're not familiar with GitHub Pull Requests.
+When done, you can download the model YAML file which you can then submit for addition to the MOT. You may want to consult the [Model Upload explainer video](https://drive.google.com/file/d/1410_Dp-U2l9FDIH0fK1lHdUVbRfeRk3l/view?usp=sharing) if you're not familiar with GitHub Pull Requests.
 
 ### Understanding the Model evaluation process
 
