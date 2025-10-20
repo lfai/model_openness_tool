@@ -30,7 +30,13 @@ final class ModelEditForm extends ModelForm {
   public function form(array $form, FormStateInterface $form_state): array {
     $form += parent::form($form, $form_state);
     $form['#attributes']['novalidate'] = 'novalidate';
-
+    if (!$this->isAdmin()) {
+      $form['help'] = [
+        '#type' => 'markup',
+        '#weight' => -150,
+        '#markup' => 'For information on how to use this form, please consult the <a href="https://github.com/lfai/model_openness_tool/tree/main?tab=readme-ov-file#editing-a-model">Model editing section of the documentation</a>.',
+      ];
+    }
     // Only admins can approve models.
     $form['status']['#access'] = $this->isAdmin();
 
