@@ -57,6 +57,12 @@ final class ModelEvaluateForm extends ModelForm {
 
     $form += parent::form($form, $form_state);
     $form['#attached']['library'][] = 'mof/model-evaluate';
+    $form['help'] = [
+      '#type' => 'markup',
+      '#weight' => -150,
+      '#markup' => 'For information on how to use this form, please consult the <a href="https://github.com/lfai/model_openness_tool/tree/main?tab=readme-ov-file#evaluating-a-model">Model evaluation section of the documentation</a>.',
+    ];
+
     return $form;
   }
 
