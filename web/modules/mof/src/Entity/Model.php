@@ -226,7 +226,7 @@ final class Model extends RevisionableContentEntityBase implements ModelInterfac
       ],
       'yaml' => [
         'content_type' => 'application/yaml',
-        'extension' => '.yaml',
+        'extension' => '.yml',
         'serialize' => fn() => $serializer->toYaml($this),
       ],
     ];
