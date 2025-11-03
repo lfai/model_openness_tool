@@ -178,6 +178,8 @@ final class ModelListBuilder extends EntityListBuilder {
       ->accessCheck(TRUE)
       ->condition('status', Model::STATUS_APPROVED)
       ->tableSort($header);
+    // sort by model name as a secondary order
+    $query->sort('label', 'asc');
 
     if ($label = $this->request->get('label')) {
       $label = addcslashes($label, '\\%_');
