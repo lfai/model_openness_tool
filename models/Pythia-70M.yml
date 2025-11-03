@@ -1,0 +1,75 @@
+framework:
+  name: 'Model Openness Framework'
+  version: '1.0'
+  date: '2024-12-15'
+release:
+  name: Pythia-70M
+  version: 70M
+  date: '2025-11-03'
+  type: language
+  architecture: transformer
+  origin: ''
+  producer: EleutherAI
+  contact: ''
+  repository: 'https://github.com/EleutherAI/pythia'
+  huggingface: 'https://huggingface.co/EleutherAI/pythia-70m'
+  license:
+    distribution:
+      name: Apache-2.0
+      path: ''
+  components:
+    -
+      name: 'Model architecture'
+      description: "Well commented code for the model's architecture"
+    -
+      name: 'Data preprocessing code'
+      description: 'Code for data cleansing, normalization, and augmentation'
+      component_path: 'https://github.com/EleutherAI/the-pile'
+      license: MIT
+      license_path: 'https://github.com/EleutherAI/the-pile/blob/master/LICENSE'
+    -
+      name: 'Training code'
+      description: 'Code used for training the model'
+      license: MIT
+    -
+      name: 'Inference code'
+      description: 'Code used for running the model to make predictions'
+    -
+      name: 'Evaluation code'
+      description: 'Code used for evaluating the model'
+      component_path: 'https://github.com/EleutherAI/lm-evaluation-harness'
+      license: MIT
+      license_path: 'https://github.com/EleutherAI/lm-evaluation-harness/blob/main/LICENSE.md'
+    -
+      name: 'Supporting libraries and tools'
+      description: "Libraries and tools used in the model's development"
+    -
+      name: 'Model parameters (Final)'
+      description: 'Trained model parameters, weights and biases'
+    -
+      name: 'Model parameters (Intermediate)'
+      description: 'Trained model parameters, weights and biases'
+    -
+      name: Datasets
+      description: 'Training, validation and testing datasets used for the model'
+      component_path: 'https://pile.eleuther.ai/'
+    -
+      name: 'Evaluation data'
+      description: 'Data used for evaluating the model'
+    -
+      name: 'Model metadata'
+      description: 'Any model metadata including training configuration and optimizer states'
+    -
+      name: 'Model card'
+      description: 'Model details including performance metrics, intended use, and limitations'
+    -
+      name: 'Data card'
+      description: 'Documentation for datasets including source, characteristics, and preprocessing details'
+    -
+      name: 'Research paper'
+      description: 'Research paper detailing the development and capabilities of the model'
+      component_path: 'https://arxiv.org/abs/2304.01373'
+      license: CC-BY-SA-4.0
+    -
+      name: 'Evaluation results'
+      description: 'The results from evaluating the model'
