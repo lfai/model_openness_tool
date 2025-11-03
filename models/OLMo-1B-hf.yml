@@ -3,16 +3,16 @@ framework:
   version: '1.0'
   date: '2024-12-15'
 release:
-  name: OLMO-7B
-  version: 7B
-  date: '2025-05-16'
+  name: OLMo-1B-hf
+  version: 1B
+  date: '2025-10-30'
   type: language
   architecture: transformer
-  origin: oLMO
-  producer: 'Allen Institute'
+  origin: OLMo
+  producer: 'Allen Institute for AI'
   contact: ''
   repository: 'https://github.com/allenai/OLMo'
-  huggingface: 'https://huggingface.co/allenai/OLMo-7B'
+  huggingface: 'https://huggingface.co/allenai/OLMo-1B-hf'
   license:
     distribution:
       name: Apache-2.0
@@ -54,6 +54,7 @@ release:
     -
       name: 'Research paper'
       description: 'Research paper detailing the development and capabilities of the model'
+      component_path: 'https://arxiv.org/abs/2402.00838'
       license: CC-BY-4.0
     -
       name: 'Evaluation results'
