@@ -355,10 +355,6 @@ final class Model extends RevisionableContentEntityBase implements ModelInterfac
         'label' => 'above',
         'weight' => -90,
       ])
-      // The description field is not currently saved in the YAML model file so we may as well hide it away
-      // until we decide whether to just get rid of it altogether or add it to the YAML file.
-      ->setDisplayOptions('view', ['region' => 'hidden'])
-      ->setDisplayOptions('form', ['region' => 'hidden'])
       ->setDisplayConfigurable('view', TRUE)
       ->setRequired(FALSE);
 
