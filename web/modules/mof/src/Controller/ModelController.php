@@ -14,6 +14,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 
@@ -61,6 +62,28 @@ final class ModelController extends ControllerBase {
     }
 
     return $this->t('@model_name', $t_args);
+  }
+
+  /**
+   * View model specified by name.
+   */
+  public function namedModelView(string $model): array {
+    $modelStorage = $this->entityTypeManager()->getStorage('model');
+    $ids = $modelStorage
+      ->getQuery()
+      ->accessCheck(TRUE)
+      ->condition('label', $model)
+      ->range(0, 1)
+      ->execute();
+    if (empty($ids))
+      throw new NotFoundHttpException("Model '{$model}' not found.");
+
+    $entity = $modelStorage->load(reset($ids));
+
+    $view = $this->entityTypeManager()->getViewBuilder('model')->view($entity);
+    $view['#title'] = $entity->label();
+
+    return $view;
   }
 
   /**

@@ -78,6 +78,13 @@ entity.model.report:
     _entity_access: model.view
     webform: 'report'
 
+entity.model.named:
+  path: '/model/{model}'
+  defaults:
+    _controller: \Drupal\mof\Controller\ModelController::namedModelView
+  requirements:
+    _access: 'TRUE'
+
 entity.model.badge:
   path: '/model/{model}/badges'
   defaults:
