@@ -22,6 +22,7 @@ final class ModelEvaluateForm extends ModelForm {
    * {@inheritdoc}
    */
   public function validateForm(array &$form, FormStateInterface $form_state): void {
+    parent::validateForm($form, $form_state);
     if (preg_match('/\s/', $form_state->getValue('label')[0]['value'])) {
       $form_state->setErrorByName('label', $this->t('Model name cannot have spaces.'));
     }
