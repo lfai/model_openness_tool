@@ -55,13 +55,17 @@ final class ModelNameConstraintValidator extends ConstraintValidator
         ->execute();
    
       if (!empty($query)) {
+        // Because the query is case insensitive if we are just changing the casing of the name
+        // of an existing model it returns the very same model, in which case we don't raise an error.
+        if (reset($query) == $entity->id() && count($query) == 1)
+          return;
         $this
           ->context
           ->buildViolation($constraint->errorMessage)
           ->setParameter('%value', $value)
           ->atPath('label')
           ->addViolation();
-      } 
+      }
     }
   }
 
