@@ -102,6 +102,7 @@ jobs:
             ./vendor/bin/drush cim --partial --source=modules/mof/config/install -y
             ./vendor/bin/drush scr scripts/sync_licenses.php
             ./vendor/bin/drush cr
+            ./vendor/bin/drush eval "\Drupal::service('router.builder')->rebuild()"
           EOF
 
       - name: Revoke IP address
