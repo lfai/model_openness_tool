@@ -64,27 +64,27 @@ final class ModelEditForm extends ModelForm {
    */
   public function submitForm(array &$form, FormStateInterface $form_state): void {
     parent::submitForm($form, $form_state);
-    if ($this->isAdmin()) {
-      // Redirect admin user to evaluation/ model view page.
-      $form_state->setRedirect('entity.model.canonical', ['model' => $this->entity->id()]);
-    }
-    else {
-      // Build session data for model evaluation.
-      $this->entity->enforceIsNew(TRUE);
+
+    // Build session data for model evaluation.
+    if (!$this->isAdmin()) {
+      $entity = $this->entity;
+      $entity->enforceIsNew(TRUE);
+
       $this
         ->session
         ->set('model_session_evaluation', TRUE);
+
       $this
         ->session
-        ->set('model_session_data', $form_state
-        ->getValues());
-      $form_state
-        ->setRebuild(TRUE);
+        ->set('model_session_data', $form_state->getValues());
+
+      $form_state->setRebuild(TRUE);
+
       $form_state
         ->set('evaluation', $this
         ->entityTypeManager
         ->getViewBuilder('model')
-        ->view($this->entity));
+        ->view($entity));
     }
   }
 
@@ -107,7 +107,8 @@ final class ModelEditForm extends ModelForm {
   public function save(array $form, FormStateInterface $form_state) {
     // Save model entity only if we're an admin.
     if ($this->isAdmin()) {
-      return parent::save($form, $form_state);
+      parent::save($form, $form_state);
+      $form_state->setRedirect('entity.model.canonical', ['model' => $this->entity->id()]);
     }
   }
 
