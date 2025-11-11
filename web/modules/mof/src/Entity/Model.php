@@ -254,6 +254,34 @@ final class Model extends RevisionableContentEntityBase implements ModelInterfac
   /**
    * {@inheritdoc}
    */
+  public function postSave(EntityStorageInterface $storage, $update = TRUE): void {
+    parent::postSave($storage, $update);
+
+    // Generate new or update existing path alias for the model being saved.
+    $path = '/model/' . $this->id();
+    $alias = '/model/' . $this->label();
+    $langcode = $this->language()->getId();
+    $storage = \Drupal::entityTypeManager()->getStorage('path_alias');
+
+    $path_alias = $storage
+      ->loadByProperties(['path' => $path, 'langcode' => $langcode]);
+
+    if (empty($path_alias)) {
+      $storage
+        ->create(['path' => $path, 'alias' => $alias, 'langcode' => $langcode])
+        ->save();
+    }
+    else {
+      $path_alias = reset($path_alias);
+      if ($path_alias->getAlias() !== $alias) {
+        $path_alias->set('alias', $alias)->save();
+      }
+    }
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function preSave(EntityStorageInterface $storage): void {
     parent::preSave($storage);
 
