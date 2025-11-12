@@ -382,6 +382,7 @@ final class Model extends RevisionableContentEntityBase implements ModelInterfac
         'type' => 'text_default',
         'label' => 'above',
         'weight' => -90,
+        'region' => 'hidden',
       ])
       ->setDisplayConfigurable('view', TRUE)
       ->setRequired(FALSE);
@@ -400,6 +401,7 @@ final class Model extends RevisionableContentEntityBase implements ModelInterfac
         'type' => 'text_default',
         'label' => 'inline',
         'weight' => -80,
+        'region' => 'hidden',
       ])
       ->setDisplayConfigurable('view', TRUE)
       ->setRequired(FALSE);
@@ -430,6 +432,7 @@ final class Model extends RevisionableContentEntityBase implements ModelInterfac
         'label' => 'inline',
         'type' => 'string',
         'weight' => -60,
+        'region' => 'hidden',
       ])
       ->setDisplayConfigurable('view', TRUE);
 
@@ -463,6 +466,7 @@ final class Model extends RevisionableContentEntityBase implements ModelInterfac
         'label' => 'inline',
         'type' => 'string',
         'weight' => -50,
+        'region' => 'hidden',
       ])
       ->setDisplayConfigurable('view', TRUE);
 
@@ -486,6 +490,7 @@ final class Model extends RevisionableContentEntityBase implements ModelInterfac
         'label' => 'inline',
         'type' => 'string',
         'weight' => -40,
+        'region' => 'hidden',
       ])
       ->setDisplayConfigurable('view', TRUE);
 
@@ -505,6 +510,7 @@ final class Model extends RevisionableContentEntityBase implements ModelInterfac
         'label' => 'inline',
         'type' => 'string',
         'weight' => -30,
+        'region' => 'hidden',
       ])
       ->setDisplayConfigurable('view', TRUE);
 

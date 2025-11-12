@@ -121,6 +121,12 @@ abstract class ModelForm extends ContentEntityForm {
     // The description field is not currently saved in the YAML model file so we may as well hide it away
     // until we decide whether to just get rid of it altogether or add it to the YAML file.
     $form['details']['description']['#access'] = FALSE;
+    // Hide more fields to keep input to the what's really useful and make the form simpler
+    $form['details']['version']['#access'] = FALSE;
+    $form['details']['type']['#access'] = FALSE;
+    $form['details']['architecture']['#access'] = FALSE;
+    $form['details']['treatment']['#access'] = FALSE;
+    $form['details']['origin']['#access'] = FALSE;
 
     // Model licenses to populate fields with a default value.
     $model_licenses = $this->entity->getLicenses() ?? [];
