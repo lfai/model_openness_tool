@@ -38,13 +38,8 @@ final class ModelSerializer implements ModelSerializerInterface {
       ],
       'release' => [
         'name' => $model->label(),
-        'version' => $model->getVersion() ?? '',
         'date' => date('Y-m-d', $model->getChangedTime()),
-        'type' => $model->getType() ?? '',
-        'architecture' => $model->getArchitecture() ?? '',
-        'origin' => $model->getOrigin() ?? '',
         'producer' => $model->getOrganization() ?? '',
-        'contact' => $owner->id() > 1 ? $owner->getEmail() : '',
         'repository' => $model->getRepository() ?? '',
         'huggingface' => $model->getHuggingface() ?? '',
       ],
