@@ -94,3 +94,18 @@ function mof_query_model_access_alter(AlterableInterface $query) {
 
   return $query;
 }
+
+/**
+ * Implements hook_model_view().
+ * Hide old fields from view
+ */
+ function mof_model_view(array &$build, \Drupal\Core\Entity\EntityInterface $entity, \Drupal\Core\Entity\Display\EntityViewDisplayInterface $display, $view_mode) {
+  $user = \Drupal::currentUser();
+
+  unset($build['description']);
+  unset($build['version']);
+  unset($build['type']);
+  unset($build['architecture']);
+  unset($build['treatment']);
+  unset($build['origin']);
+}
