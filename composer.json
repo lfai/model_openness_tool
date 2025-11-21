@@ -17,7 +17,7 @@
     "require": {
         "composer/installers": "^2.0",
         "cweagans/composer-patches": "^1.7",
-        "drupal/block_exclude_pages": "^2.1",
+        "drupal/block_exclude_pages": "^2.2",
         "drupal/captcha": "^2.0",
         "drupal/cheeseburger_menu": "^5.0@RC",
         "drupal/core-composer-scaffold": "^10.5",
