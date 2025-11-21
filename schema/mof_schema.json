@@ -162,13 +162,8 @@
       },
       "required": [
         "name",
-        "version",
         "license",
-        "date",
-        "architecture",
-        "origin",
         "producer",
-        "contact",
         "components"
       ]
     }

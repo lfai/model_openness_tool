@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "bd77474840e7e3e291081bcec6936dfa",
+    "content-hash": "86a16f9b5a7215d86e4fb47e406774ba",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -1465,17 +1465,17 @@
         },
         {
             "name": "drupal/block_exclude_pages",
-            "version": "2.1.2",
+            "version": "2.2.0",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/block_exclude_pages.git",
-                "reference": "2.1.2"
+                "reference": "2.2.0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/block_exclude_pages-2.1.2.zip",
-                "reference": "2.1.2",
-                "shasum": "c7051b3efd3c3cabad2a313acdad662e0f2168e8"
+                "url": "https://ftp.drupal.org/files/projects/block_exclude_pages-2.2.0.zip",
+                "reference": "2.2.0",
+                "shasum": "47105dff225bbd2e6a4ec5b744a124e18235a5eb"
             },
             "require": {
                 "drupal/core": "^10 || ^11"
@@ -1483,8 +1483,8 @@
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "2.1.2",
-                    "datestamp": "1733763550",
+                    "version": "2.2.0",
+                    "datestamp": "1761149215",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
