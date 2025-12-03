@@ -1,0 +1,33 @@
+framework:
+  name: 'Model Openness Framework'
+  version: '1.0'
+  date: '2024-12-15'
+release:
+  name: Qwen3-14B-Base
+  date: '2025-12-03'
+  producer: Alibaba
+  repository: ''
+  huggingface: 'https://huggingface.co/Qwen/Qwen3-14B-Base'
+  license:
+    distribution:
+      name: Apache-2.0
+      path: 'https://huggingface.co/datasets/choosealicense/licenses/blob/main/markdown/apache-2.0.md'
+  components:
+    -
+      name: 'Model architecture'
+      description: "Well commented code for the model's architecture"
+    -
+      name: 'Model parameters (Final)'
+      description: 'Trained model parameters, weights and biases'
+    -
+      name: 'Model card'
+      description: 'Model details including performance metrics, intended use, and limitations'
+    -
+      name: 'Technical report'
+      description: 'Technical report detailing capabilities and usage instructions for the model'
+      component_path: 'https://arxiv.org/pdf/2505.09388'
+      license: 'arxiv non exclusive'
+      license_path: 'https://arxiv.org/licenses/nonexclusive-distrib/1.0/license.html'
+    -
+      name: 'Evaluation results'
+      description: 'The results from evaluating the model'
