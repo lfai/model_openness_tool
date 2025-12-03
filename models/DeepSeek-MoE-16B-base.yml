@@ -1,0 +1,46 @@
+framework:
+  name: 'Model Openness Framework'
+  version: '1.0'
+  date: '2024-12-15'
+release:
+  name: DeepSeek-MoE-16B-base
+  version: 16.4B
+  date: '2025-05-26'
+  producer: 'DeepSeek AI'
+  repository: 'https://github.com/deepseek-ai/DeepSeek-MoE/tree/main'
+  huggingface: 'https://huggingface.co/deepseek-ai/deepseek-moe-16b-base'
+  license:
+    code:
+      name: MIT
+      path: 'https://github.com/deepseek-ai/DeepSeek-MoE/blob/main/LICENSE-CODE'
+  components:
+    -
+      name: 'Model architecture'
+      description: "Well commented code for the model's architecture"
+    -
+      name: 'Inference code'
+      description: 'Code used for running the model to make predictions'
+    -
+      name: 'Supporting libraries and tools'
+      description: "Libraries and tools used in the model's development"
+    -
+      name: 'Model parameters (Final)'
+      description: 'Trained model parameters, weights and biases'
+    -
+      name: 'Evaluation data'
+      description: 'Data used for evaluating the model'
+      license: unlicensed
+    -
+      name: 'Model card'
+      description: 'Model details including performance metrics, intended use, and limitations'
+      license: unlicensed
+    -
+      name: 'Research paper'
+      description: 'Research paper detailing the development and capabilities of the model'
+      license: 'arXiv.org perpetual, non-exclusive license 1.0'
+      component_path: 'https://arxiv.org/abs/2401.06066'
+    -
+      name: 'Evaluation results'
+      description: 'The results from evaluating the model'
+      license: 'arXiv.org perpetual, non-exclusive license 1.0'
+      component_path: 'https://arxiv.org/abs/2401.06066'

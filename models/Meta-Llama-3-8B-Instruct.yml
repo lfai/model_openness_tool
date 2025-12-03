@@ -1,0 +1,53 @@
+framework:
+  name: 'Model Openness Framework'
+  version: '1.0'
+  date: '2024-12-15'
+release:
+  name: Meta-Llama-3-8B-Instruct
+  version: 8B
+  date: '2024-04-18'
+  producer: Meta
+  repository: 'https://github.com/meta-llama/llama3'
+  huggingface: 'https://huggingface.co/meta-llama/Meta-Llama-3-8B-Instruct'
+  license: {  }
+  components:
+    -
+      name: 'Model architecture'
+      description: "Well commented code for the model's architecture"
+      license: 'Meta Llama 3 Community License Agreement'
+      license_path: 'https://www.llama.com/llama3/license/'
+    -
+      name: 'Inference code'
+      description: 'Code used for running the model to make predictions'
+      license: 'Meta Llama 3 Community License Agreement'
+      license_path: 'https://www.llama.com/llama3/license/'
+    -
+      name: 'Supporting libraries and tools'
+      description: "Libraries and tools used in the model's development"
+      license: 'Meta Llama 3 Community License Agreement'
+      license_path: 'https://www.llama.com/llama3/license/'
+    -
+      name: 'Model parameters (Final)'
+      description: 'Trained model parameters, weights and biases'
+      license: 'Meta Llama 3 Community License Agreement'
+      license_path: 'https://www.llama.com/llama3/license/'
+    -
+      name: 'Evaluation data'
+      description: 'Data used for evaluating the model'
+      license: unlicensed
+    -
+      name: 'Model card'
+      description: 'Model details including performance metrics, intended use, and limitations'
+      license: unlicensed
+    -
+      name: 'Technical report'
+      description: 'Technical report detailing capabilities and usage instructions for the model'
+      license: unlicensed
+    -
+      name: 'Research paper'
+      description: 'Research paper detailing the development and capabilities of the model'
+      license: 'arXiv.org perpetual non-exclusive license 1.0'
+    -
+      name: 'Evaluation results'
+      description: 'The results from evaluating the model'
+      license: unlicensed
