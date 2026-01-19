@@ -1,0 +1,5 @@
+# Python dependencies for Model Openness Tool scraper
+# Install with: pip install -r requirements.txt
+
+requests>=2.31.0
+PyYAML>=6.0.1

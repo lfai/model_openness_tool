@@ -1,5 +1,8 @@
 # Model Openness Tool
 
+> **⚠️ Experimental Feature - Work in Progress**
+> This folder contains experimental features and tools that are currently under active development. These features are subject to change and may be further developed in future releases. Use with caution and expect ongoing improvements.
+
 The [Model Openness Tool (MOT)](https://mot.isitopen.ai) is designed to facilitate the evaluation and classification of machine learning models based on the [Model Openness Framework (MOF) \[PDF\]](https://lfaidata.foundation/wp-content/uploads/sites/3/2025/01/05_White_paper_MOF_Specification.pdf). This tool provides a comprehensive platform for model producers to assess their models against the 16 components of the MOF, ensuring transparency, reproducibility, and usability. MOT not only evaluates the openness of the license for each component but also ranks the models, helping the community identify models that adhere to the principles of open science.
 
 ## Features
