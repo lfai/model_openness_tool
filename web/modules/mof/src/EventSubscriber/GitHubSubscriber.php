@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Drupal\mof\EventSubscriber;
 
+use Drupal\mof\Services\GitHubApiHelper;
 use Drupal\social_auth\Event\UserEvent;
 use Drupal\social_auth\Event\SocialAuthEvents;
-use GuzzleHttp\ClientInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
@@ -16,11 +16,11 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 class GitHubSubscriber implements EventSubscriberInterface {
 
   /**
-   * The HTTP client.
+   * The GitHub API helper.
    *
-   * @var \GuzzleHttp\ClientInterface
+   * @var \Drupal\mof\Services\GitHubApiHelper
    */
-  protected $httpClient;
+  protected $githubApiHelper;
 
   /**
    * The logger.
@@ -32,13 +32,13 @@ class GitHubSubscriber implements EventSubscriberInterface {
   /**
    * Constructs a GitHubSubscriber object.
    *
-   * @param \GuzzleHttp\ClientInterface $http_client
-   *   The HTTP client.
+   * @param \Drupal\mof\Services\GitHubApiHelper $github_api_helper
+   *   The GitHub API helper.
    * @param \Psr\Log\LoggerInterface $logger
    *   The logger.
    */
-  public function __construct(ClientInterface $http_client, LoggerInterface $logger) {
-    $this->httpClient = $http_client;
+  public function __construct(GitHubApiHelper $github_api_helper, LoggerInterface $logger) {
+    $this->githubApiHelper = $github_api_helper;
     $this->logger = $logger;
   }
 
@@ -73,7 +73,7 @@ class GitHubSubscriber implements EventSubscriberInterface {
       $this->logger->info('Email not found in OAuth response, fetching from GitHub API for user @username', [
         '@username' => $user->getAccountName(),
       ]);
-      $email = $this->fetchPrimaryEmail($social_auth_user->getToken());
+      $email = $this->githubApiHelper->fetchPrimaryEmail($social_auth_user->getToken());
     }
     
     // If still no email, use GitHub username as fallback
@@ -92,60 +92,6 @@ class GitHubSubscriber implements EventSubscriberInterface {
       '@email' => $email,
       '@username' => $user->getAccountName(),
     ]);
-  }
-
-  /**
-   * Fetch the user's primary email from GitHub API.
-   *
-   * @param string $token
-   *   The OAuth access token.
-   *
-   * @return string|null
-   *   The primary email address or null if not found.
-   */
-  private function fetchPrimaryEmail(string $token): ?string {
-    try {
-      $response = $this->httpClient->request('GET', 'https://api.github.com/user/emails', [
-        'headers' => [
-          'Authorization' => 'Bearer ' . $token,
-          'Accept' => 'application/vnd.github+json',
-          'X-GitHub-Api-Version' => '2022-11-28',
-        ],
-      ]);
-      
-      $emails = json_decode($response->getBody()->getContents(), TRUE);
-      
-      if (!is_array($emails)) {
-        $this->logger->error('GitHub API returned invalid email data');
-        return NULL;
-      }
-      
-      // Find the primary verified email
-      foreach ($emails as $email_data) {
-        if (isset($email_data['primary']) && $email_data['primary'] && 
-            isset($email_data['verified']) && $email_data['verified']) {
-          $this->logger->info('Found primary verified email from GitHub API');
-          return $email_data['email'];
-        }
-      }
-      
-      // If no primary email, return the first verified email
-      foreach ($emails as $email_data) {
-        if (isset($email_data['verified']) && $email_data['verified']) {
-          $this->logger->info('Found verified email from GitHub API (not primary)');
-          return $email_data['email'];
-        }
-      }
-      
-      $this->logger->warning('No verified email found in GitHub API response');
-    }
-    catch (\Exception $e) {
-      $this->logger->error('Failed to fetch email from GitHub API: @message', [
-        '@message' => $e->getMessage(),
-      ]);
-    }
-    
-    return NULL;
   }
 
 }

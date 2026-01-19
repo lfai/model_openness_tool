@@ -44,6 +44,13 @@ class GitHubPullRequestManager {
   protected $logger;
 
   /**
+   * The GitHub API helper.
+   *
+   * @var \Drupal\mof\Services\GitHubApiHelper
+   */
+  protected $githubApiHelper;
+
+  /**
    * Constructs a GitHubPullRequestManager object.
    *
    * @param \GuzzleHttp\ClientInterface $http_client
@@ -54,17 +61,21 @@ class GitHubPullRequestManager {
    *   The current user.
    * @param \Psr\Log\LoggerInterface $logger
    *   The logger.
+   * @param \Drupal\mof\Services\GitHubApiHelper $github_api_helper
+   *   The GitHub API helper.
    */
   public function __construct(
     ClientInterface $http_client,
     EntityTypeManagerInterface $entity_type_manager,
     AccountProxyInterface $current_user,
-    LoggerInterface $logger
+    LoggerInterface $logger,
+    GitHubApiHelper $github_api_helper
   ) {
     $this->httpClient = $http_client;
     $this->entityTypeManager = $entity_type_manager;
     $this->currentUser = $current_user;
     $this->logger = $logger;
+    $this->githubApiHelper = $github_api_helper;
   }
 
   /**
@@ -338,9 +349,12 @@ class GitHubPullRequestManager {
       }
     }
 
+    // Add Signed-off-by line to commit message
+    $signed_message = $this->addSignedOffBy($message);
+
     // Commit content
     $payload = [
-      'message' => $message,
+      'message' => $signed_message,
       'content' => base64_encode($content),
       'branch' => $branch,
     ];
@@ -352,6 +366,76 @@ class GitHubPullRequestManager {
     return $this->request('PUT', "/repos/$username/$repo/contents/$path", [
       'json' => $payload,
     ]);
+  }
+
+  /**
+   * Get the GitHub user's email address.
+   *
+   * @return string|null
+   *   The user's email or NULL if not available.
+   */
+  protected function getGitHubEmail(): ?string {
+    // First try to get from Drupal user account
+    $user = $this->entityTypeManager->getStorage('user')->load($this->currentUser->id());
+    if ($user && $user->getEmail()) {
+      return $user->getEmail();
+    }
+
+    // Fallback: fetch from GitHub API using the helper
+    $token = $this->getAccessToken();
+    if ($token) {
+      $email = $this->githubApiHelper->fetchPrimaryEmail($token);
+      if ($email) {
+        return $email;
+      }
+    }
+
+    // Last resort: use noreply email
+    $username = $this->getGitHubUsername();
+    return $username ? "{$username}@users.noreply.github.com" : NULL;
+  }
+
+  /**
+   * Get the GitHub user's name.
+   *
+   * @return string|null
+   *   The user's name or NULL if not available.
+   */
+  protected function getGitHubName(): ?string {
+    $token = $this->getAccessToken();
+    if ($token) {
+      $name = $this->githubApiHelper->fetchUserName($token);
+      if ($name) {
+        return $name;
+      }
+    }
+
+    // Fallback to username
+    return $this->getGitHubUsername();
+  }
+
+  /**
+   * Add Signed-off-by line to commit message.
+   *
+   * @param string $message
+   *   The original commit message.
+   *
+   * @return string
+   *   The commit message with Signed-off-by line appended.
+   */
+  protected function addSignedOffBy(string $message): string {
+    $name = $this->getGitHubName();
+    $email = $this->getGitHubEmail();
+
+    if (!$name || !$email) {
+      $this->logger->warning('Unable to add Signed-off-by: missing name or email');
+      return $message;
+    }
+
+    // Add Signed-off-by line
+    $signed_off_by = "\n\nSigned-off-by: {$name} <{$email}>";
+    
+    return $message . $signed_off_by;
   }
 
   /**
