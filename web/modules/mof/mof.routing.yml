@@ -14,6 +14,16 @@ mof.model.evaluate_form.download:
   requirements:
     _access: 'TRUE'
 
+mof.model.evaluate_form.submit_pr:
+  path: '/model/evaluate/submit-pr'
+  defaults:
+    _controller: \Drupal\mof\Controller\ModelController::submitPullRequest
+    _title: 'Submit Pull Request'
+  requirements:
+    _access: 'TRUE'
+  options:
+    no_cache: TRUE
+
 entity.model.admin_submit_form:
   path: '/admin/model/add'
   defaults:

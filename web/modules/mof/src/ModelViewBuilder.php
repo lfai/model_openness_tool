@@ -169,6 +169,38 @@ final class ModelViewBuilder extends EntityViewBuilder {
         ],
       ];
 
+      // Add Submit Pull Request button
+      $current_user = \Drupal::currentUser();
+      if ($current_user->isAuthenticated()) {
+        // User is logged in - show PR submission button
+        $build['submit_pr'] = [
+          '#type' => 'html_tag',
+          '#tag' => 'button',
+          '#value' => $this->t('Submit Pull Request'),
+          '#weight' => -200,
+          '#attributes' => [
+            'class' => ['button', 'button--action', 'button--primary', 'js-submit-pr'],
+            'data-pr-url' => Url::fromRoute('mof.model.evaluate_form.submit_pr')->toString(),
+          ],
+        ];
+      }
+      else {
+        // User is not logged in - show login button
+        $login_url = Url::fromRoute('social_auth.network.redirect', ['network' => 'github'], [
+          'query' => ['destination' => Url::fromRoute('mof.model.evaluate_form')->toString()],
+        ]);
+        
+        $build['submit_pr'] = [
+          '#type' => 'link',
+          '#title' => $this->t('Login with GitHub to Submit PR'),
+          '#url' => $login_url,
+          '#weight' => -200,
+          '#attributes' => [
+            'class' => ['button', 'button--action', 'button--primary'],
+          ],
+        ];
+      }
+
       $this->session->set('model_session_evaluation', FALSE);
     }
 
