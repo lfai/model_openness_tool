@@ -1,0 +1,11 @@
+framework:
+  name: 'Model Openness Framework'
+  version: '1.0'
+  date: '2024-12-15'
+release:
+  name: Test-ALH
+  date: '2026-01-19'
+  producer: myorg
+  repository: ''
+  huggingface: ''
+  license: {  }
