@@ -123,19 +123,56 @@ class GitHubPullRequestManager {
     if ($entity) {
       try {
         $additional_data = $entity->getAdditionalData();
-        // GitHub username is typically stored in 'resource_owner' or 'login'
+        
+        // Try multiple possible locations for the username
+        // Check resource_owner array
         if (isset($additional_data['resource_owner'][0]['login'])) {
           return $additional_data['resource_owner'][0]['login'];
         }
+        
+        // Check direct login field
         if (isset($additional_data['login'])) {
           return $additional_data['login'];
         }
+        
+        // Check if it's in the root of resource_owner (not array)
+        if (isset($additional_data['resource_owner']['login'])) {
+          return $additional_data['resource_owner']['login'];
+        }
+        
+        // If not found in stored data, fetch from GitHub API
+        $this->logger->info('Username not found in stored data, fetching from GitHub API');
+        return $this->fetchGitHubUsername();
       }
       catch (\Exception $e) {
         $this->logger->error('Failed to retrieve GitHub username: @message', [
           '@message' => $e->getMessage(),
         ]);
       }
+    }
+    return NULL;
+  }
+
+  /**
+   * Fetch the GitHub username from the GitHub API.
+   *
+   * @return string|null
+   *   The GitHub username or NULL if not available.
+   */
+  protected function fetchGitHubUsername(): ?string {
+    try {
+      $user_data = $this->request('GET', '/user');
+      if (isset($user_data['login'])) {
+        $this->logger->info('Retrieved GitHub username from API: @username', [
+          '@username' => $user_data['login'],
+        ]);
+        return $user_data['login'];
+      }
+    }
+    catch (\Exception $e) {
+      $this->logger->error('Failed to fetch GitHub username from API: @message', [
+        '@message' => $e->getMessage(),
+      ]);
     }
     return NULL;
   }

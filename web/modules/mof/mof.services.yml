@@ -64,6 +64,9 @@ services:
 
   mof.event_subscriber:
     class: Drupal\mof\EventSubscriber\GitHubSubscriber
+    arguments:
+      - '@http_client'
+      - '@logger.channel.mot'
     tags:
       - { name: 'event_subscriber' }
 
