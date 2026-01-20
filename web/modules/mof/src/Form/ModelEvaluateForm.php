@@ -14,8 +14,41 @@ final class ModelEvaluateForm extends ModelForm {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state): array {
-    // Return evaluation results if available, otherwise display user input form.
-    return $form_state->get('evaluation') ?: parent::buildForm($form, $form_state);
+    // Ensure session is started
+    if (!$this->session->isStarted()) {
+      $this->session->start();
+    }
+    
+    // Check if we have evaluation results in form state
+    $evaluation = $form_state->get('evaluation');
+    
+    // Check if we should show results (e.g., after returning from GitHub login)
+    $request = \Drupal::request();
+    $show_results = $request->query->get('show_results');
+    
+    // If not in form state but we have session data and show_results parameter,
+    // rebuild the evaluation
+    if (!$evaluation && $show_results && $this->session->has('model_session_data')) {
+      $model_data = $this->session->get('model_session_data');
+      if ($model_data) {
+        // Recreate the model entity from session data
+        $model = $this->entityTypeManager->getStorage('model')->create($model_data);
+        
+        // Build the evaluation view
+        $evaluation = $this->entityTypeManager
+          ->getViewBuilder('model')
+          ->view($model);
+        
+        // Store in form state for subsequent rebuilds
+        $form_state->set('evaluation', $evaluation);
+        
+        // Set session flag to indicate evaluation is active
+        $this->session->set('model_session_evaluation', TRUE);
+      }
+    }
+    
+    // Return evaluation results if available, otherwise display user input form
+    return $evaluation ?: parent::buildForm($form, $form_state);
   }
 
   /**

@@ -186,8 +186,9 @@ final class ModelViewBuilder extends EntityViewBuilder {
       }
       else {
         // User is not logged in - show login button
+        // Add show_results parameter to destination so form knows to display results after login
         $login_url = Url::fromRoute('social_auth.network.redirect', ['network' => 'github'], [
-          'query' => ['destination' => Url::fromRoute('mof.model.evaluate_form')->toString()],
+          'query' => ['destination' => Url::fromRoute('mof.model.evaluate_form', [], ['query' => ['show_results' => '1']])->toString()],
         ]);
         
         $build['submit_pr'] = [
