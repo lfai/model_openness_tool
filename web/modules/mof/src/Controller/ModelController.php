@@ -245,10 +245,17 @@ final class ModelController extends ControllerBase {
       $branch_name = 'model-' . strtolower(preg_replace('/[^a-zA-Z0-9-]/', '-', $model_name)) . '-' . time();
 
       // Ensure fork exists
-      $this->githubPrManager->ensureFork($source_owner, $repo);
+      $fork_data = $this->githubPrManager->ensureFork($source_owner, $repo);
 
-      // Wait a moment for fork to be ready (GitHub needs time to create it)
-      sleep(2);
+      // If fork was just created, wait for it to be ready
+      if ($fork_data) {
+        if (!$this->githubPrManager->waitForFork($repo)) {
+          return new JsonResponse([
+            'success' => FALSE,
+            'error' => $this->t('Fork creation timed out. Please try again in a moment.'),
+          ], 500);
+        }
+      }
 
       // Create branch
       $this->githubPrManager->createBranch($repo, $branch_name);

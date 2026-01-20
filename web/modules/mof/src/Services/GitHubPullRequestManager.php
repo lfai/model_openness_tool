@@ -281,6 +281,55 @@ class GitHubPullRequestManager {
   }
 
   /**
+   * Wait for a fork to be ready by polling GitHub API.
+   *
+   * @param string $repo
+   *   The repository name.
+   * @param int $maxAttempts
+   *   Maximum number of polling attempts (default: 10).
+   * @param int $sleepSeconds
+   *   Seconds to wait between attempts (default: 1).
+   *
+   * @return bool
+   *   TRUE if fork is ready, FALSE if timeout.
+   */
+  public function waitForFork(string $repo, int $maxAttempts = 10, int $sleepSeconds = 1): bool {
+    $username = $this->getGitHubUsername();
+    if (!$username) {
+      throw new \RuntimeException('GitHub username not available.');
+    }
+
+    for ($attempt = 1; $attempt <= $maxAttempts; $attempt++) {
+      try {
+        // Try to get the default branch of the fork
+        $fork_data = $this->request('GET', "/repos/$username/$repo");
+        if ($fork_data && isset($fork_data['default_branch'])) {
+          $this->logger->info('Fork is ready after @attempts attempts', [
+            '@attempts' => $attempt,
+          ]);
+          return TRUE;
+        }
+      }
+      catch (RequestException $e) {
+        // Fork not ready yet, continue polling
+        $this->logger->debug('Fork not ready yet, attempt @attempt of @max', [
+          '@attempt' => $attempt,
+          '@max' => $maxAttempts,
+        ]);
+      }
+
+      if ($attempt < $maxAttempts) {
+        sleep($sleepSeconds);
+      }
+    }
+
+    $this->logger->warning('Fork did not become ready after @attempts attempts', [
+      '@attempts' => $maxAttempts,
+    ]);
+    return FALSE;
+  }
+
+  /**
    * Create a new branch in the fork.
    *
    * @param string $repo
