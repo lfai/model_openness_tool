@@ -154,4 +154,4 @@ entity.license.admin_collection:
     _entity_list: 'license'
     _title: 'License Administration'
   requirements:
-    _permission: 'administer licenses'    
+    _permission: 'administer licenses'

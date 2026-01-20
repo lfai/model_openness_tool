@@ -233,26 +233,26 @@ final class ModelController extends ControllerBase {
       // Get model data from session and create model entity
       $model_data = $this->session->get('model_session_data');
       $model = $this->entityTypeManager()->getStorage('model')->create($model_data);
-      
+
       // Generate YAML content
       $yaml_content = $this->modelSerializer->toYaml($model);
       $model_name = $model->label();
       $filename = preg_replace('/[^a-zA-Z0-9-_]/', '-', $model_name) . '.yml';
-      
+
       // GitHub repository details
       $source_owner = 'lfai';
       $repo = 'model_openness_tool';
       $branch_name = 'model-' . strtolower(preg_replace('/[^a-zA-Z0-9-]/', '-', $model_name)) . '-' . time();
-      
+
       // Ensure fork exists
       $this->githubPrManager->ensureFork($source_owner, $repo);
-      
+
       // Wait a moment for fork to be ready (GitHub needs time to create it)
       sleep(2);
-      
+
       // Create branch
       $this->githubPrManager->createBranch($repo, $branch_name);
-      
+
       // Commit file
       $commit_message = "Add model: $model_name";
       $this->githubPrManager->commitFile(
@@ -262,10 +262,10 @@ final class ModelController extends ControllerBase {
         $yaml_content,
         $commit_message
       );
-      
+
       // Generate PR body
       $pr_body = $this->generatePrBody($model);
-      
+
       // Create pull request
       $pr_data = $this->githubPrManager->createPullRequest(
         $source_owner,
@@ -274,7 +274,7 @@ final class ModelController extends ControllerBase {
         "Add model: $model_name",
         $pr_body
       );
-      
+
       return new JsonResponse([
         'success' => TRUE,
         'message' => $this->t('Pull request created successfully!'),
@@ -286,7 +286,7 @@ final class ModelController extends ControllerBase {
       $this->getLogger('mof')->error('Failed to create pull request: @message', [
         '@message' => $e->getMessage(),
       ]);
-      
+
       return new JsonResponse([
         'success' => FALSE,
         'error' => $this->t('Failed to create pull request: @message', [
@@ -308,10 +308,10 @@ final class ModelController extends ControllerBase {
   private function generatePrBody(ModelInterface $model): string {
     $this->modelEvaluator->setModel($model);
     $evaluation = $this->modelEvaluator->evaluate();
-    
+
     $body = "## Model Submission\n\n";
     $body .= "This PR adds the model evaluation for **" . $model->label() . "**.\n\n";
-    
+
     $body .= "### Model Details\n";
     if ($model->getOrganization()) {
       $body .= "- **Producer**: " . $model->getOrganization() . "\n";
@@ -322,16 +322,16 @@ final class ModelController extends ControllerBase {
     if ($model->getHuggingface()) {
       $body .= "- **HuggingFace**: " . $model->getHuggingface() . "\n";
     }
-    
+
     $body .= "\n### MOF Classification\n";
     for ($class = 1; $class <= 3; $class++) {
       $status = $evaluation[$class]['qualified'] ? '✅ Qualified' : '❌ Not met';
       $body .= "- **Class $class**: $status\n";
     }
-    
+
     $body .= "\n---\n";
     $body .= "*Submitted via [Model Openness Tool](https://mot.isitopen.ai) evaluation form.*\n";
-    
+
     return $body;
   }
 

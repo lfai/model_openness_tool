@@ -60,14 +60,14 @@ class GitHubApiHelper {
           'X-GitHub-Api-Version' => '2022-11-28',
         ],
       ]);
-      
+
       $emails = json_decode($response->getBody()->getContents(), TRUE);
-      
+
       if (!is_array($emails)) {
         $this->logger->error('GitHub API returned invalid email data');
         return NULL;
       }
-      
+
       // Find the primary verified email
       foreach ($emails as $email_data) {
         if (isset($email_data['primary']) && $email_data['primary'] &&
@@ -76,7 +76,7 @@ class GitHubApiHelper {
           return $email_data['email'];
         }
       }
-      
+
       // If no primary email, return the first verified email
       foreach ($emails as $email_data) {
         if (isset($email_data['verified']) && $email_data['verified']) {
@@ -84,7 +84,7 @@ class GitHubApiHelper {
           return $email_data['email'];
         }
       }
-      
+
       $this->logger->warning('No verified email found in GitHub API response');
     }
     catch (\Exception $e) {
@@ -92,7 +92,7 @@ class GitHubApiHelper {
         '@message' => $e->getMessage(),
       ]);
     }
-    
+
     return NULL;
   }
 
@@ -114,20 +114,20 @@ class GitHubApiHelper {
           'X-GitHub-Api-Version' => '2022-11-28',
         ],
       ]);
-      
+
       $user_data = json_decode($response->getBody()->getContents(), TRUE);
-      
+
       if (!is_array($user_data)) {
         $this->logger->error('GitHub API returned invalid user data');
         return NULL;
       }
-      
+
       // Return the name if available
       if (!empty($user_data['name'])) {
         $this->logger->info('Found user name from GitHub API');
         return $user_data['name'];
       }
-      
+
       $this->logger->warning('No name found in GitHub API response');
     }
     catch (\Exception $e) {
@@ -135,7 +135,7 @@ class GitHubApiHelper {
         '@message' => $e->getMessage(),
       ]);
     }
-    
+
     return NULL;
   }
 

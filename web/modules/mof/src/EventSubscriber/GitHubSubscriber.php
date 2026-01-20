@@ -64,10 +64,10 @@ class GitHubSubscriber implements EventSubscriberInterface {
     $user = $event->getUser();
     $social_auth_user = $event->getSocialAuthUser();
     $user_data = $social_auth_user->getAdditionalData();
-    
+
     // Try to get email from resource_owner first
     $email = $user_data['resource_owner'][0]['email'] ?? null;
-    
+
     // If email is null or empty, fetch from GitHub API
     if (empty($email)) {
       $this->logger->info('Email not found in OAuth response, fetching from GitHub API for user @username', [
@@ -75,7 +75,7 @@ class GitHubSubscriber implements EventSubscriberInterface {
       ]);
       $email = $this->githubApiHelper->fetchPrimaryEmail($social_auth_user->getToken());
     }
-    
+
     // If still no email, use GitHub username as fallback
     if (empty($email)) {
       $username = $user_data['resource_owner'][0]['login'] ?? $user->getAccountName();
@@ -84,10 +84,10 @@ class GitHubSubscriber implements EventSubscriberInterface {
         '@email' => $email,
       ]);
     }
-    
+
     // Set email and save user
     $user->setEmail($email)->save();
-    
+
     $this->logger->info('Set email @email for GitHub user @username', [
       '@email' => $email,
       '@username' => $user->getAccountName(),

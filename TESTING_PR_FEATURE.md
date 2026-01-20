@@ -44,7 +44,7 @@ This document provides instructions for testing the new GitHub Pull Request subm
 4. Click "Evaluate"
 5. On the results page, verify you see a "Submit Pull Request" button
 6. Click the "Submit Pull Request" button
-7. **Expected**: 
+7. **Expected**:
    - Button text changes to "Submitting..."
    - After a few seconds, a success message appears
    - A link to the created PR is displayed
@@ -84,7 +84,7 @@ This document provides instructions for testing the new GitHub Pull Request subm
 1. Use a GitHub account that has NOT forked `lfai/model_openness_tool`
 2. Login and evaluate a model
 3. Click "Submit Pull Request"
-4. **Expected**: 
+4. **Expected**:
    - System creates a fork automatically
    - PR is created from your fork to the upstream repository
 5. Check your GitHub account
@@ -98,7 +98,7 @@ This document provides instructions for testing the new GitHub Pull Request subm
 1. Use a GitHub account that already has a fork of `lfai/model_openness_tool`
 2. Login and evaluate a model
 3. Click "Submit Pull Request"
-4. **Expected**: 
+4. **Expected**:
    - System uses your existing fork
    - Creates a new branch with timestamp
    - PR is created successfully

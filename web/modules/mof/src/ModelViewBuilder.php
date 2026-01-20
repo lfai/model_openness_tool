@@ -190,7 +190,7 @@ final class ModelViewBuilder extends EntityViewBuilder {
         $login_url = Url::fromRoute('social_auth.network.redirect', ['network' => 'github'], [
           'query' => ['destination' => Url::fromRoute('mof.model.evaluate_form', [], ['query' => ['show_results' => '1']])->toString()],
         ]);
-        
+
         $build['submit_pr'] = [
           '#type' => 'link',
           '#title' => $this->t('Login with GitHub to Submit PR'),

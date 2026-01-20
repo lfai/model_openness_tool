@@ -134,7 +134,7 @@ If you prefer to configure via configuration files:
 
 **Cause**: The callback URL in GitHub doesn't match your Drupal site URL.
 
-**Solution**: 
+**Solution**:
 - Verify the callback URL in GitHub matches: `https://YOUR_DOMAIN/user/login/github/callback`
 - Check for trailing slashes or http vs https mismatches
 
