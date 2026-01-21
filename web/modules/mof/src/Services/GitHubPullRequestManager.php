@@ -424,13 +424,6 @@ class GitHubPullRequestManager {
    *   The user's email or NULL if not available.
    */
   protected function getGitHubEmail(): ?string {
-    // First try to get from Drupal user account
-    $user = $this->entityTypeManager->getStorage('user')->load($this->currentUser->id());
-    if ($user && $user->getEmail()) {
-      return $user->getEmail();
-    }
-
-    // Fallback: fetch from GitHub API using the helper
     $token = $this->getAccessToken();
     if ($token) {
       $email = $this->githubApiHelper->fetchPrimaryEmail($token);
