@@ -1,0 +1,11 @@
+framework:
+  name: 'Model Openness Framework'
+  version: '1.0'
+  date: '2024-12-15'
+release:
+  name: lehors-test
+  date: '2026-01-23'
+  producer: ''
+  repository: ''
+  huggingface: ''
+  license: {  }
