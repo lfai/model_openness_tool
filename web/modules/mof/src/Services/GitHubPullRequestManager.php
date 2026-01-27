@@ -81,12 +81,21 @@ class GitHubPullRequestManager {
   /**
    * Get the social_auth entity for the current user and GitHub provider.
    *
+   * @param bool $reset_cache
+   *   Whether to reset the entity cache before loading.
+   *
    * @return \Drupal\social_auth\Entity\SocialAuth|null
    *   The social auth entity or NULL if not found.
    */
-  protected function getSocialAuthEntity(): ?object {
+  protected function getSocialAuthEntity(bool $reset_cache = FALSE): ?object {
     try {
       $storage = $this->entityTypeManager->getStorage('social_auth');
+
+      // Reset cache if requested to ensure we get fresh data
+      if ($reset_cache) {
+        $storage->resetCache();
+      }
+
       $entities = $storage->loadByProperties([
         'user_id' => $this->currentUser->id(),
         'plugin_id' => 'social_auth_github',
@@ -103,16 +112,52 @@ class GitHubPullRequestManager {
   }
 
   /**
+   * Delete the social_auth entity for the current user.
+   *
+   * This forces the user to re-authenticate and get a fresh token with updated scopes.
+   *
+   * @return bool
+   *   TRUE if deleted successfully, FALSE otherwise.
+   */
+  public function deleteSocialAuthEntity(): bool {
+    try {
+      $entity = $this->getSocialAuthEntity(TRUE);
+      if ($entity) {
+        $entity->delete();
+        $this->logger->info('Deleted social_auth entity for user @uid to force re-authentication', [
+          '@uid' => $this->currentUser->id(),
+        ]);
+        return TRUE;
+      }
+      return FALSE;
+    }
+    catch (\Exception $e) {
+      $this->logger->error('Failed to delete social_auth entity: @message', [
+        '@message' => $e->getMessage(),
+      ]);
+      return FALSE;
+    }
+  }
+
+  /**
    * Get the GitHub access token for the current user.
+   *
+   * @param bool $reset_cache
+   *   Whether to reset the entity cache before loading.
    *
    * @return string|null
    *   The access token or NULL if not available.
    */
-  protected function getAccessToken(): ?string {
-    $entity = $this->getSocialAuthEntity();
+  protected function getAccessToken(bool $reset_cache = TRUE): ?string {
+    // Always reset cache by default to ensure we get the latest token
+    $entity = $this->getSocialAuthEntity($reset_cache);
     if ($entity) {
       try {
-        return $entity->getToken();
+        $token = $entity->getToken();
+        $this->logger->info('Retrieved GitHub token (first 10 chars): @token', [
+          '@token' => substr($token, 0, 10) . '...',
+        ]);
+        return $token;
       }
       catch (\Exception $e) {
         $this->logger->error('Failed to retrieve GitHub access token: @message', [
@@ -196,6 +241,75 @@ class GitHubPullRequestManager {
    */
   public function isAuthenticated(): bool {
     return $this->getAccessToken() !== NULL;
+  }
+
+  /**
+   * Check if the current token has the required scopes.
+   *
+   * @param array $requiredScopes
+   *   Array of required scope names (e.g., ['repo', 'user:email']).
+   *
+   * @return array
+   *   Array with 'valid' (bool) and 'missing' (array of missing scopes).
+   */
+  public function checkTokenScopes(array $requiredScopes = ['repo']): array {
+    $token = $this->getAccessToken();
+    if (!$token) {
+      return ['valid' => FALSE, 'missing' => $requiredScopes, 'error' => 'No token available'];
+    }
+
+    try {
+      // GitHub API endpoint to check token scopes
+      $response = $this->httpClient->request('GET', 'https://api.github.com/user', [
+        'headers' => [
+          'Authorization' => 'Bearer ' . $token,
+          'Accept' => 'application/vnd.github+json',
+          'X-GitHub-Api-Version' => '2022-11-28',
+        ],
+      ]);
+
+      // Get scopes from response headers
+      $scopes = [];
+      if ($response->hasHeader('X-OAuth-Scopes')) {
+        $scopeHeader = $response->getHeader('X-OAuth-Scopes')[0] ?? '';
+        $scopes = array_map('trim', explode(',', $scopeHeader));
+      }
+
+      // Check for missing scopes
+      // Note: 'repo' scope includes 'public_repo', so if checking for 'public_repo'
+      // and user has 'repo', that's also valid
+      $missing = [];
+      foreach ($requiredScopes as $requiredScope) {
+        $hasScope = in_array($requiredScope, $scopes);
+
+        // Special case: 'repo' includes 'public_repo'
+        if (!$hasScope && $requiredScope === 'public_repo') {
+          $hasScope = in_array('repo', $scopes);
+        }
+
+        if (!$hasScope) {
+          $missing[] = $requiredScope;
+        }
+      }
+
+      $this->logger->info('Token scopes check: has @has, needs @needs, missing @missing', [
+        '@has' => implode(', ', $scopes),
+        '@needs' => implode(', ', $requiredScopes),
+        '@missing' => implode(', ', $missing),
+      ]);
+
+      return [
+        'valid' => empty($missing),
+        'missing' => array_values($missing),
+        'current' => $scopes,
+      ];
+    }
+    catch (\Exception $e) {
+      $this->logger->error('Failed to check token scopes: @message', [
+        '@message' => $e->getMessage(),
+      ]);
+      return ['valid' => FALSE, 'missing' => $requiredScopes, 'error' => $e->getMessage()];
+    }
   }
 
   /**

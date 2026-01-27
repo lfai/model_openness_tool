@@ -221,6 +221,29 @@ final class ModelController extends ControllerBase {
       ], 401);
     }
 
+    // Check if token has required scopes (either 'repo' or 'public_repo' is sufficient)
+    $scopeCheck = $this->githubPrManager->checkTokenScopes(['public_repo']);
+    if (!$scopeCheck['valid']) {
+      // Check if they have 'repo' instead (which includes public_repo)
+      $repoCheck = $this->githubPrManager->checkTokenScopes(['repo']);
+      if (!$repoCheck['valid']) {
+        // Delete the old social_auth record so user gets fresh token on next login
+        $this->githubPrManager->deleteSocialAuthEntity();
+
+        // Redirect to GitHub login to get new token with correct scopes
+        $loginUrl = Url::fromRoute('social_auth.network.redirect', ['network' => 'github'], [
+          'query' => ['destination' => Url::fromRoute('mof.model.evaluate_form', [], ['query' => ['show_results' => '1']])->toString()],
+        ])->toString();
+
+        return new JsonResponse([
+          'success' => FALSE,
+          'error' => $this->t('Your GitHub authorization needs to be updated with additional permissions. You will be redirected to re-authenticate.'),
+          'reauth_required' => TRUE,
+          'reauth_url' => $loginUrl,
+        ], 403);
+      }
+    }
+
     // Check if we have model session data
     if (!$this->session->has('model_session_data')) {
       return new JsonResponse([
@@ -328,12 +351,6 @@ final class ModelController extends ControllerBase {
     }
     if ($model->getHuggingface()) {
       $body .= "- **HuggingFace**: " . $model->getHuggingface() . "\n";
-    }
-
-    $body .= "\n### MOF Classification\n";
-    for ($class = 1; $class <= 3; $class++) {
-      $status = $evaluation[$class]['qualified'] ? '✅ Qualified' : '❌ Not met';
-      $body .= "- **Class $class**: $status\n";
     }
 
     $body .= "\n---\n";

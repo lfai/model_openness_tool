@@ -40,6 +40,15 @@
             button.parentNode.insertBefore(statusContainer, button.nextSibling);
           }
 
+          // Show progress message with spinner
+          statusContainer.className = 'pr-status-message messages messages--status';
+          statusContainer.innerHTML = '<h2 class="visually-hidden">Status message</h2>' +
+            '<div class="messages__content">' +
+            '<div class="pr-spinner"></div>' +
+            '<strong>Submitting Pull Request...</strong><br>' +
+            'This may take some time. Please wait...' +
+            '</div>';
+
           // Make AJAX request to submit PR
           fetch(prUrl, {
             method: 'POST',
@@ -50,6 +59,22 @@
           })
           .then(response => response.json())
           .then(data => {
+            // Check if re-authentication is required
+            if (data.reauth_required && data.reauth_url) {
+              // Show message and redirect
+              statusContainer.className = 'pr-status-message messages messages--warning';
+              statusContainer.innerHTML = '<h2 class="visually-hidden">Warning message</h2>' +
+                '<div class="messages__content">' +
+                '<strong>Re-authentication Required:</strong> ' + data.error +
+                '<br>Redirecting to GitHub login...</div>';
+
+              // Redirect after a short delay
+              setTimeout(function() {
+                window.location.href = data.reauth_url;
+              }, 2000);
+              return;
+            }
+
             // Re-enable button
             button.disabled = false;
             button.textContent = originalText;
@@ -97,6 +122,7 @@
             statusContainer.innerHTML = '<h2 class="visually-hidden">Error message</h2>' +
               '<div class="messages__content">' +
               '<strong>Error:</strong> Failed to submit pull request. Please try again or submit manually.' +
+              '<br>Note: You may need to log out and log back in.' +
               '</div>';
 
             console.error('PR submission error:', error);
