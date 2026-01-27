@@ -19,6 +19,12 @@ model-evaluation:
       css/layout/model_evaluation.css: {}
     theme:
       css/theme/model_evaluation.css: {}
+      css/theme/model_submit.css: {}
+  js:
+    js/submit_pr.js: {}
+  dependencies:
+    - core/drupal
+    - core/drupalSettings
 
 model-list:
   version: VERSION

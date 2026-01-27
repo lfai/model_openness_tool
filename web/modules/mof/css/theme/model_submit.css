@@ -34,3 +34,30 @@
 #details-wrap .form-select {
   width: 160px;
 }
+
+/* Pull Request submission progress styles */
+.pr-status-message {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.pr-spinner {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 3px solid rgba(0, 116, 189, 0.3);
+  border-top-color: #0074bd;
+  border-radius: 50%;
+  animation: pr-spin 1s linear infinite;
+  margin-right: 10px;
+  vertical-align: middle;
+}
+
+@keyframes pr-spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

@@ -21,7 +21,9 @@ The [Models page](https://mot.isitopen.ai/models) of the MOT provides a list of 
 * Prepare your model's artifacts according to the guidelines specified in the MOF.
 * Evaluate your model through the [Evaluate Model](https://mot.isitopen.ai/model/evaluate) function of the MOT interface, providing details and licenses for your model and its components.
 * Receive feedback on the classification and suggestions for achieving higher openness levels.
-* At the end of the evaluation you have the option to download the model YAML file for addition to the list of models displayed on the MOT by submitting the file for addition via a Pull Request against [the MOT GitHub repository](https://github.com/lfai/model_openness_tool/).
+* At the end of the evaluation you have two options to add your model to the MOT:
+  * **Submit Pull Request (Recommended)**: Click the "Submit Pull Request" button to automatically create a PR to the MOT repository. You must be logged in with your GitHub account to use this feature. If not logged in, you'll be prompted to authenticate with GitHub first.
+  * **Manual Download**: Download the model YAML file and manually submit it via a Pull Request against [the MOT GitHub repository](https://github.com/lfai/model_openness_tool/).
 
 ### Understanding the Model evaluation form
 
@@ -34,9 +36,29 @@ The [Model evaluation form](https://mot.isitopen.ai/model/evaluate) is composed 
 * Data components - this allows you to specify which data components are included in the model distribution and for each of them, its license if it is different from the global one with the license file location, along with the component location.
 * Document components - this allows you to specify which document components are included in the model distribution and for each of them, its license if it is different from the global one with the license file location, along with the component location.
 
-While you are encouraged to provide as much information as possible, very little is actually required to be able to get a first evaluation. After submission the result is displayed for you to consult and you have the possibility to go back to the form, add more data or modify what you previously entered, and try again.This provides with an iterative workflow.
+While you are encouraged to provide as much information as possible, very little is actually required to be able to get a first evaluation. After submission the result is displayed for you to consult and you have the possibility to go back to the form, add more data or modify what you previously entered, and try again. This provides with an iterative workflow.
 
-When done, you can download the model YAML file which you can then submit for addition to the MOT. You may want to consult the [Model Upload explainer video](https://drive.google.com/file/d/1410_Dp-U2l9FDIH0fK1lHdUVbRfeRk3l/view?usp=sharing) if you're not familiar with GitHub Pull Requests.
+When done, you can submit your model directly via the "Submit Pull Request" button (requires GitHub login), or download the model YAML file to submit manually. You may want to consult the [Model Upload explainer video](https://drive.google.com/file/d/1410_Dp-U2l9FDIH0fK1lHdUVbRfeRk3l/view?usp=sharing) if you're not familiar with GitHub Pull Requests.
+
+### Submitting Your Model via Pull Request
+
+After evaluating your model, you can submit it directly to the MOT repository:
+
+1. **Automatic Submission (Recommended)**:
+   - Click the "Submit Pull Request" button on the evaluation results page
+   - If not logged in, you'll be redirected to authenticate with GitHub
+   - After authentication, you'll return to the evaluation page
+   - Click "Submit Pull Request" again to create the PR automatically
+   - The system will fork the repository (if needed), create a branch, commit your model file, and create a pull request
+   - You'll receive a link to view your pull request on GitHub
+
+2. **Manual Submission**:
+   - Click "Download YAML" to save the model file
+   - Fork the [MOT repository](https://github.com/lfai/model_openness_tool/)
+   - Add your model file to the `models/` directory
+   - Create a pull request with your changes
+
+**Note**: The automatic PR submission requires you to be logged in with GitHub. The MOT uses your GitHub OAuth token to create the pull request on your behalf. Your token is securely stored and only used for GitHub API operations.
 
 ### Understanding the Model evaluation process
 

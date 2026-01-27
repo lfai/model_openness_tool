@@ -4,13 +4,16 @@ namespace Drupal\mof\Controller;
 
 use Drupal\mof\ModelInterface;
 use Drupal\mof\ModelEvaluatorInterface;
+use Drupal\mof\ModelSerializerInterface;
 use Drupal\mof\BadgeGeneratorInterface;
+use Drupal\mof\Services\GitHubPullRequestManager;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\StringTranslation\TranslatableMarkup;
 use Drupal\Core\Url;
 use Drupal\Core\Access\AccessResult;
 use Drupal\Core\Render\RendererInterface;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Session\Session;
@@ -25,11 +28,17 @@ final class ModelController extends ControllerBase {
   /** @var \Drupal\mof\BadgeGeneratorInterface. */
   private readonly BadgeGeneratorInterface $badgeGenerator;
 
-  /** @var \Drupal\Core\Render\RendererInterfce. */
+  /** @var \Drupal\Core\Render\RendererInterface. */
   private readonly RendererInterface $renderer;
 
   /** @var \Symfony\Component\HttpFoundation\Session\Session. */
   private readonly Session $session;
+
+  /** @var \Drupal\mof\ModelSerializerInterface. */
+  private readonly ModelSerializerInterface $modelSerializer;
+
+  /** @var \Drupal\mof\Services\GitHubPullRequestManager. */
+  private readonly GitHubPullRequestManager $githubPrManager;
 
   /**
    * {@inheritdoc}
@@ -40,6 +49,8 @@ final class ModelController extends ControllerBase {
     $instance->badgeGenerator = $container->get('badge_generator');
     $instance->renderer = $container->get('renderer');
     $instance->session = $container->get('session');
+    $instance->modelSerializer = $container->get('model_serializer');
+    $instance->githubPrManager = $container->get('github_pr_manager');
     return $instance;
   }
 
@@ -155,8 +166,10 @@ final class ModelController extends ControllerBase {
       return $model->download('yaml');
     }
     catch (\InvalidArgumentException $e) {
+      $response = new Response();
       $response->setContent($e->getMessage());
       $response->setStatusCode(Response::HTTP_UNPROCESSABLE_ENTITY);
+      return $response;
     }
   }
 
@@ -168,8 +181,10 @@ final class ModelController extends ControllerBase {
       return $model->download('json');
     }
     catch (\InvalidArgumentException $e) {
+      $response = new Response();
       $response->setContent($e->getMessage());
       $response->setStatusCode(Response::HTTP_UNPROCESSABLE_ENTITY);
+      return $response;
     }
   }
 
@@ -188,5 +203,160 @@ final class ModelController extends ControllerBase {
     return $this->redirect('entity.model.admin_collection');
   }
 
-}
+  /**
+   * Submit a pull request to GitHub with the evaluated model YAML.
+   *
+   * @return \Symfony\Component\HttpFoundation\JsonResponse
+   *   JSON response with success or error message.
+   */
+  public function submitPullRequest(): JsonResponse {
+    // Check if user is authenticated with GitHub
+    if (!$this->githubPrManager->isAuthenticated()) {
+      return new JsonResponse([
+        'success' => FALSE,
+        'error' => $this->t('You must be logged in with GitHub to submit a pull request.'),
+        'login_url' => Url::fromRoute('social_auth.network.redirect', ['network' => 'github'], [
+          'query' => ['destination' => Url::fromRoute('mof.model.evaluate_form')->toString()],
+        ])->toString(),
+      ], 401);
+    }
 
+    // Check if token has required scopes (either 'repo' or 'public_repo' is sufficient)
+    $scopeCheck = $this->githubPrManager->checkTokenScopes(['public_repo']);
+    if (!$scopeCheck['valid']) {
+      // Check if they have 'repo' instead (which includes public_repo)
+      $repoCheck = $this->githubPrManager->checkTokenScopes(['repo']);
+      if (!$repoCheck['valid']) {
+        // Delete the old social_auth record so user gets fresh token on next login
+        $this->githubPrManager->deleteSocialAuthEntity();
+
+        // Redirect to GitHub login to get new token with correct scopes
+        $loginUrl = Url::fromRoute('social_auth.network.redirect', ['network' => 'github'], [
+          'query' => ['destination' => Url::fromRoute('mof.model.evaluate_form', [], ['query' => ['show_results' => '1']])->toString()],
+        ])->toString();
+
+        return new JsonResponse([
+          'success' => FALSE,
+          'error' => $this->t('Your GitHub authorization needs to be updated with additional permissions. You will be redirected to re-authenticate.'),
+          'reauth_required' => TRUE,
+          'reauth_url' => $loginUrl,
+        ], 403);
+      }
+    }
+
+    // Check if we have model session data
+    if (!$this->session->has('model_session_data')) {
+      return new JsonResponse([
+        'success' => FALSE,
+        'error' => $this->t('No model data found. Please evaluate a model first.'),
+      ], 400);
+    }
+
+    try {
+      // Get model data from session and create model entity
+      $model_data = $this->session->get('model_session_data');
+      $model = $this->entityTypeManager()->getStorage('model')->create($model_data);
+
+      // Generate YAML content
+      $yaml_content = $this->modelSerializer->toYaml($model);
+      $model_name = $model->label();
+      $filename = preg_replace('/[^a-zA-Z0-9-_]/', '-', $model_name) . '.yml';
+
+      // GitHub repository details
+      $source_owner = 'lfai';
+      $repo = 'model_openness_tool';
+      $branch_name = 'model-' . strtolower(preg_replace('/[^a-zA-Z0-9-]/', '-', $model_name)) . '-' . time();
+
+      // Ensure fork exists
+      $fork_data = $this->githubPrManager->ensureFork($source_owner, $repo);
+
+      // If fork was just created, wait for it to be ready
+      if ($fork_data) {
+        if (!$this->githubPrManager->waitForFork($repo)) {
+          return new JsonResponse([
+            'success' => FALSE,
+            'error' => $this->t('Fork creation timed out. Please try again in a moment.'),
+          ], 500);
+        }
+      }
+
+      // Create branch
+      $this->githubPrManager->createBranch($repo, $branch_name);
+
+      // Commit file
+      $commit_message = "Add model: $model_name";
+      $this->githubPrManager->commitFile(
+        $repo,
+        $branch_name,
+        "models/$filename",
+        $yaml_content,
+        $commit_message
+      );
+
+      // Generate PR body
+      $pr_body = $this->generatePrBody($model);
+
+      // Create pull request
+      $pr_data = $this->githubPrManager->createPullRequest(
+        $source_owner,
+        $repo,
+        $branch_name,
+        "Add model: $model_name",
+        $pr_body
+      );
+
+      return new JsonResponse([
+        'success' => TRUE,
+        'message' => $this->t('Pull request created successfully!'),
+        'pr_url' => $pr_data['html_url'] ?? NULL,
+        'pr_number' => $pr_data['number'] ?? NULL,
+      ]);
+    }
+    catch (\Exception $e) {
+      $this->getLogger('mof')->error('Failed to create pull request: @message', [
+        '@message' => $e->getMessage(),
+      ]);
+
+      return new JsonResponse([
+        'success' => FALSE,
+        'error' => $this->t('Failed to create pull request: @message', [
+          '@message' => $e->getMessage(),
+        ]),
+      ], 500);
+    }
+  }
+
+  /**
+   * Generate the pull request body with model details.
+   *
+   * @param \Drupal\mof\ModelInterface $model
+   *   The model entity.
+   *
+   * @return string
+   *   The PR body text.
+   */
+  private function generatePrBody(ModelInterface $model): string {
+    $this->modelEvaluator->setModel($model);
+    $evaluation = $this->modelEvaluator->evaluate();
+
+    $body = "## Model Submission\n\n";
+    $body .= "This PR adds the model evaluation for **" . $model->label() . "**.\n\n";
+
+    $body .= "### Model Details\n";
+    if ($model->getOrganization()) {
+      $body .= "- **Producer**: " . $model->getOrganization() . "\n";
+    }
+    if ($model->getRepository()) {
+      $body .= "- **Repository**: " . $model->getRepository() . "\n";
+    }
+    if ($model->getHuggingface()) {
+      $body .= "- **HuggingFace**: " . $model->getHuggingface() . "\n";
+    }
+
+    $body .= "\n---\n";
+    $body .= "*Submitted via [Model Openness Tool](https://mot.isitopen.ai) evaluation form.*\n";
+
+    return $body;
+  }
+
+}

@@ -62,7 +62,25 @@ services:
     arguments:
       - '@model_evaluator'
 
+  github_api_helper:
+    class: Drupal\mof\Services\GitHubApiHelper
+    arguments:
+      - '@http_client'
+      - '@logger.channel.mot'
+
   mof.event_subscriber:
     class: Drupal\mof\EventSubscriber\GitHubSubscriber
+    arguments:
+      - '@github_api_helper'
+      - '@logger.channel.mot'
     tags:
       - { name: 'event_subscriber' }
+
+  github_pr_manager:
+    class: Drupal\mof\Services\GitHubPullRequestManager
+    arguments:
+      - '@http_client'
+      - '@entity_type.manager'
+      - '@current_user'
+      - '@logger.channel.mot'
+      - '@github_api_helper'
