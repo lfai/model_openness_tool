@@ -76,6 +76,31 @@ class ModelScraper:
         if hf_token:
             self.session.headers.update({'Authorization': f'Bearer {hf_token}'})
     
+    def normalize_model_input(self, model_input: str) -> str:
+        """Normalize model input to extract model ID.
+        
+        Accepts either:
+        - Full URL: https://huggingface.co/EleutherAI/polyglot-ko-12.8b
+        - Model ID: EleutherAI/polyglot-ko-12.8b
+        
+        Args:
+            model_input: HuggingFace URL or model ID
+            
+        Returns:
+            Normalized model ID (org/model)
+        """
+        # If it's a URL, extract the model ID
+        if model_input.startswith('http://') or model_input.startswith('https://'):
+            parsed = urlparse(model_input)
+            # Remove leading slash and extract path
+            path = parsed.path.lstrip('/')
+            # Remove any trailing slashes or fragments
+            model_id = path.rstrip('/')
+            return model_id
+        
+        # Otherwise, assume it's already a model ID
+        return model_input.strip()
+    
     def scrape_huggingface_model(self, model_id: str) -> Dict:
         """Scrape model information from HuggingFace.
         
@@ -143,12 +168,15 @@ class ModelScraper:
         model_card = scraped_data.get('model_card', '').lower()
         model_info = scraped_data.get('model_info', {})
         
+        # Get the global license (applies to all components by default)
+        global_license = self._detect_license(scraped_data)
+        
         # Detect Model parameters (Final)
         if any(f.endswith(('.bin', '.safetensors', '.pt', '.pth', '.ckpt')) for f in repo_files):
             components.append({
                 'name': 'Model parameters (Final)',
                 'description': 'Trained model parameters, weights and biases',
-                'license': self._detect_license(scraped_data),
+                'license': global_license,
                 'confidence': 0.95,
                 'location': 'HuggingFace repository'
             })
@@ -158,7 +186,7 @@ class ModelScraper:
             components.append({
                 'name': 'Model metadata',
                 'description': 'Any model metadata including training configuration and optimizer states',
-                'license': self._detect_license(scraped_data),
+                'license': global_license,
                 'confidence': 0.90,
                 'location': 'HuggingFace repository'
             })
@@ -168,7 +196,7 @@ class ModelScraper:
             components.append({
                 'name': 'Model architecture',
                 'description': "Well commented code for the model's architecture",
-                'license': self._detect_license(scraped_data),
+                'license': global_license,
                 'confidence': 0.85,
                 'location': 'HuggingFace repository'
             })
@@ -178,7 +206,7 @@ class ModelScraper:
             components.append({
                 'name': 'Inference code',
                 'description': 'Code used for running the model to make predictions',
-                'license': self._detect_license(scraped_data),
+                'license': global_license,
                 'confidence': 0.80,
                 'location': 'HuggingFace repository'
             })
@@ -188,7 +216,7 @@ class ModelScraper:
             components.append({
                 'name': 'Model card',
                 'description': 'Model details including performance metrics, intended use, and limitations',
-                'license': self._detect_license(scraped_data),
+                'license': global_license,
                 'confidence': 0.95,
                 'location': 'HuggingFace repository'
             })
@@ -198,7 +226,7 @@ class ModelScraper:
             components.append({
                 'name': 'Technical report',
                 'description': 'Technical report detailing capabilities and usage instructions for the model',
-                'license': 'unlicensed',
+                'license': global_license,
                 'confidence': 0.60,
                 'location': 'Referenced in model card'
             })
@@ -208,7 +236,7 @@ class ModelScraper:
             components.append({
                 'name': 'Research paper',
                 'description': 'Research paper detailing the development and capabilities of the model',
-                'license': 'unlicensed',
+                'license': global_license,
                 'confidence': 0.70,
                 'location': 'Referenced in model card'
             })
@@ -218,7 +246,7 @@ class ModelScraper:
             components.append({
                 'name': 'Evaluation results',
                 'description': 'The results from evaluating the model',
-                'license': 'unlicensed',
+                'license': global_license,
                 'confidence': 0.75,
                 'location': 'Model card'
             })
@@ -228,7 +256,7 @@ class ModelScraper:
             components.append({
                 'name': 'Training dataset',
                 'description': 'The dataset used to train the model',
-                'license': 'unlicensed',
+                'license': global_license,
                 'confidence': 0.50,
                 'location': 'Referenced in model card'
             })
@@ -323,6 +351,54 @@ class ModelScraper:
         except:
             return False
     
+    def _extract_model_name_from_card(self, scraped_data: Dict) -> Optional[str]:
+        """Extract model name from model card metadata.
+        
+        Args:
+            scraped_data: Dictionary containing scraped model information
+            
+        Returns:
+            Model name from card or None if not found
+        """
+        model_info = scraped_data.get('model_info', {})
+        
+        # Try to get model name from cardData
+        if 'cardData' in model_info:
+            card_data = model_info['cardData']
+            # Check for model_name field
+            if 'model_name' in card_data:
+                return card_data['model_name']
+            # Check for title field
+            if 'title' in card_data:
+                return card_data['title']
+        
+        # Try to extract from model card YAML frontmatter
+        model_card = scraped_data.get('model_card', '')
+        if model_card:
+            # Look for YAML frontmatter (between --- markers)
+            yaml_match = re.search(r'^---\s*\n(.*?)\n---', model_card, re.DOTALL | re.MULTILINE)
+            if yaml_match:
+                try:
+                    frontmatter = yaml.safe_load(yaml_match.group(1))
+                    if isinstance(frontmatter, dict):
+                        if 'model_name' in frontmatter:
+                            return frontmatter['model_name']
+                        if 'title' in frontmatter:
+                            return frontmatter['title']
+                except:
+                    pass
+            
+            # Try to extract from first heading
+            heading_match = re.search(r'^#\s+(.+)$', model_card, re.MULTILINE)
+            if heading_match:
+                heading = heading_match.group(1).strip()
+                # Clean up common prefixes
+                heading = re.sub(r'^(Model Card for|Model:|Model\s+)', '', heading, flags=re.IGNORECASE).strip()
+                if heading and len(heading) < 100:  # Reasonable length for a model name
+                    return heading
+        
+        return None
+    
     def _extract_model_metadata(self, scraped_data: Dict) -> Dict:
         """Extract model metadata from scraped data.
         
@@ -339,8 +415,12 @@ class ModelScraper:
         producer = model_id.split('/')[0] if '/' in model_id else 'Unknown'
         producer = producer.replace('-', ' ').replace('_', ' ').title()
         
-        # Extract model name
-        model_name = model_id.split('/')[-1] if '/' in model_id else model_id
+        # Try to extract model name from model card first
+        model_name = self._extract_model_name_from_card(scraped_data)
+        
+        # Fall back to model_id if not found in card
+        if not model_name:
+            model_name = model_id.split('/')[-1] if '/' in model_id else model_id
         
         # Detect model type from tags
         tags = model_info.get('tags', [])
@@ -498,7 +578,7 @@ def main():
     )
     parser.add_argument(
         'model_id',
-        help='HuggingFace model ID (e.g., meta-llama/Llama-3-8B)'
+        help='HuggingFace model ID or URL (e.g., meta-llama/Llama-3-8B or https://huggingface.co/meta-llama/Llama-3-8B)'
     )
     parser.add_argument(
         '--output-dir',
@@ -515,19 +595,25 @@ def main():
     # Initialize scraper
     scraper = ModelScraper(hf_token=args.hf_token)
     
+    # Normalize model input (handle URLs)
+    model_id = scraper.normalize_model_input(args.model_id)
+    
     # Scrape model data
     print(f"\n{'='*60}")
-    print(f"Scraping model: {args.model_id}")
+    print(f"Scraping model: {model_id}")
     print(f"{'='*60}\n")
     
-    scraped_data = scraper.scrape_huggingface_model(args.model_id)
+    scraped_data = scraper.scrape_huggingface_model(model_id)
     
     if not scraped_data:
         print("Failed to scrape model data")
         sys.exit(1)
     
-    # Generate output filename
-    model_name = args.model_id.split('/')[-1]
+    # Extract metadata to get the proper model name
+    metadata = scraper._extract_model_metadata(scraped_data)
+    model_name = metadata.get('name', model_id.split('/')[-1])
+    
+    # Generate output filename using the extracted model name
     output_path = Path(args.output_dir) / f"{model_name}.yml"
     output_path.parent.mkdir(parents=True, exist_ok=True)
     

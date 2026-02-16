@@ -5,7 +5,7 @@ Automated tools for working with the Model Openness Framework (MOF), including s
 ## Tools Included
 
 ### 1. Model Scraper (`model_scraper.py`)
-Generates draft YAML files for individual models by scraping HuggingFace.
+Generates draft YAML files for individual models by scraping HuggingFace. Accepts both model IDs and full URLs.
 
 ### 2. Missing Models Finder (`find_missing_models.py`)
 Identifies popular HuggingFace models that are not yet in the MOT database.
@@ -46,26 +46,30 @@ pip install -r requirements.txt
 
 #### Basic Usage
 
-Scrape a model from HuggingFace:
+Scrape a model from HuggingFace using either a model ID or full URL:
 ```bash
-python model_scraper.py <model_id>
+python model_scraper.py <model_id_or_url>
 ```
 
-Example:
+Examples:
 ```bash
+# Using model ID
 python model_scraper.py meta-llama/Llama-3-8B
+
+# Using full URL (copy-paste from browser)
+python model_scraper.py https://huggingface.co/meta-llama/Llama-3-8B
 ```
 
 #### Advanced Options
 
 Specify output directory:
 ```bash
-python model_scraper.py meta-llama/Llama-3-8B --output-dir ../models
+python model_scraper.py https://huggingface.co/meta-llama/Llama-3-8B --output-dir ../models
 ```
 
 Use HuggingFace token for gated models:
 ```bash
-python model_scraper.py meta-llama/Llama-3-8B --hf-token YOUR_TOKEN
+python model_scraper.py https://huggingface.co/meta-llama/Llama-3-8B --hf-token YOUR_TOKEN
 ```
 
 ### Tool 2: Missing Models Finder
@@ -188,7 +192,9 @@ python model_scraper.py meta-llama/Llama-3-8B --hf-token YOUR_TOKEN
 
 ### Command-Line Arguments
 
-- `model_id` (required): HuggingFace model ID (e.g., `meta-llama/Llama-3-8B`)
+- `model_id` (required): HuggingFace model ID or full URL
+  - Model ID format: `meta-llama/Llama-3-8B`
+  - Full URL format: `https://huggingface.co/meta-llama/Llama-3-8B`
 - `--output-dir`: Output directory for YAML files (default: `../models`)
 - `--hf-token`: HuggingFace API token for accessing gated models
 
@@ -221,10 +227,17 @@ The scraper automatically detects the following MOF components:
 
 ### 3. License Detection
 - Extracts license from HuggingFace model metadata
+- **Uses the main model license as the global default for all components**
 - Checks for LICENSE files in repository
 - Defaults to "unlicensed" when uncertain (requires manual review)
 
-### 4. Repository Detection
+### 4. Model Name Extraction
+- **Extracts the actual model name from the model card** (YAML frontmatter, title, or first heading)
+- Falls back to the model ID if name not found in card
+- Ensures proper capitalization (e.g., "Polyglot-Ko-12.8B" instead of "polyglot-ko-12.8b")
+- Uses extracted name for the YAML filename
+
+### 5. Repository Detection
 
 The scraper automatically detects GitHub repositories using multiple strategies with confidence scoring:
 
@@ -263,7 +276,7 @@ release:
 - Check if repository contains actual model code/weights
 - Some models may have multiple repositories (training vs. inference)
 
-### 5. Confidence Scoring
+### 6. Confidence Scoring
 
 Each detected component includes a confidence score:
 - **95%**: High confidence (e.g., model parameters detected via file extensions)
