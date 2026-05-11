@@ -20,7 +20,7 @@ jobs:
     environment: ${{ inputs.environment || 'Stage' }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Check environment variables
         uses: ./.github/actions/setup-check
@@ -48,7 +48,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Configure AWS credentials
         if: ${{ env.AWS_ENABLED == 'true' }}
