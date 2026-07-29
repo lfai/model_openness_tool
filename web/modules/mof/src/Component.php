@@ -24,10 +24,14 @@ final class Component implements ComponentInterface {
    * Construct a component instance.
    */
   public function __construct(array $component) {
-    foreach ($component as $k => $v) {
-      $k = lcfirst(implode('', array_map('ucfirst', explode('_', $k))));
-      if (property_exists($this, $k)) $this->$k = $v;
-    }
+    $this->id = (int) $component['id'];
+    $this->name = (string) $component['name'];
+    $this->description = (string) ($component['description'] ?? '');
+    $this->tooltip = (string) ($component['tooltip'] ?? '');
+    $this->contentType = (string) $component['content_type'];
+    $this->class = (int) $component['class'];
+    $this->weight = (int) ($component['weight'] ?? 0);
+    $this->required = (bool) ($component['required'] ?? false);
   }
 
   /**

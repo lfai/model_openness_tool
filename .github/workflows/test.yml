@@ -45,7 +45,7 @@ jobs:
       - name: PHP setup
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.3'
+          php-version: '8.5'
           extensions: mbstring, pdo, mysql, gd, zip, intl, opcache, dom, sqlite3
           coverage: none
 
@@ -64,14 +64,14 @@ jobs:
               DirectoryIndex index.php
             </Directory>
             <FilesMatch \".+\.ph(?:ar|p|tml)$\">
-              SetHandler \"proxy:unix:/run/php/php8.3-fpm.sock|fcgi://localhost\"
+              SetHandler \"proxy:unix:/run/php/php8.5-fpm.sock|fcgi://localhost\"
             </FilesMatch>
           </VirtualHost>" | sudo tee /etc/apache2/sites-available/000-default.conf
           sudo a2enmod proxy_fcgi rewrite
           sudo service apache2 stop
-          sudo service php8.3-fpm stop
+          sudo service php8.5-fpm stop
           sudo service apache2 start
-          sudo service php8.3-fpm start
+          sudo service php8.5-fpm start
 
       - name: Install composer
         run: |

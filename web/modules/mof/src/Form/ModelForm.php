@@ -6,7 +6,7 @@ use Drupal\Core\Entity\EntityRepositoryInterface;
 use Drupal\Core\Entity\EntityTypeBundleInfoInterface;
 use Drupal\Core\Entity\ContentEntityForm;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\component\Datetime\TimeInterface;
+use Drupal\Component\Datetime\TimeInterface;
 use Drupal\mof\LicenseHandlerInterface;
 use Drupal\mof\ModelEvaluatorInterface;
 use Drupal\mof\ComponentManagerInterface;

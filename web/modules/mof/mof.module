@@ -8,6 +8,7 @@
 use Drupal\Core\Render\Element;
 use Drupal\Core\Entity\FieldableEntityInterface;
 use Drupal\Core\Entity\ContentEntityInterface;
+use Drupal\Core\Entity\RevisionableStorageInterface;
 use Drupal\Core\Field\FieldStorageDefinitionInterface;
 use Drupal\Core\Database\Query\AlterableInterface;
 use Drupal\user\UserInterface;
@@ -73,8 +74,10 @@ function mof_user_predelete(UserInterface $account): void {
     ->condition('uid', $account->id())
     ->accessCheck(FALSE)
     ->execute();
-  foreach (array_keys($model_ids) as $revision_id) {
-    $storage->deleteRevision($revision_id);
+  if ($storage instanceof RevisionableStorageInterface) {
+    foreach (array_keys($model_ids) as $revision_id) {
+      $storage->deleteRevision($revision_id);
+    }
   }
 }
 

@@ -59,7 +59,7 @@ class ModelAccessHandler extends EntityAccessControlHandler {
     array $context,
     $entity_bundle = NULL
   ) {
-    return AccessResult::allowedIfHasPermission('administer model');
+    return AccessResult::allowedIfHasPermission($account, 'administer model');
   }
 
 }

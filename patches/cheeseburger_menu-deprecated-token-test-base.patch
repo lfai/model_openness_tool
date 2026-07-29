@@ -1,0 +1,30 @@
+diff --git a/tests/src/Kernel/BasicCheeseburgerMenuTest.php b/tests/src/Kernel/BasicCheeseburgerMenuTest.php
+index c2abb6e..f49ab9c 100644
+--- a/tests/src/Kernel/BasicCheeseburgerMenuTest.php
++++ b/tests/src/Kernel/BasicCheeseburgerMenuTest.php
+@@ -3,14 +3,14 @@
+ namespace Drupal\Tests\cheeseburger_menu\Kernel;
+ 
+ use Drupal\cheeseburger_menu\CheeseburgerMenuItem;
+-use Drupal\Tests\token\Kernel\KernelTestBase;
++use Drupal\Tests\token\Kernel\TokenKernelTestBase;
+ 
+ /**
+  * Test description.
+  *
+  * @group cheeseburger_menu
+  */
+-class BasicCheeseburgerMenuTest extends KernelTestBase {
++class BasicCheeseburgerMenuTest extends TokenKernelTestBase {
+ 
+   const TEST_MENU_ID = 'cheese_test_menu';
+ 
+@@ -41,7 +41,7 @@ class BasicCheeseburgerMenuTest extends KernelTestBase {
+   /**
+    * {@inheritDoc}
+    */
+-  protected function setUp() {
++  protected function setUp(): void {
+     parent::setUp();
+     $this->installEntitySchema('menu_link_content');
+     $this->installEntitySchema('taxonomy_term');

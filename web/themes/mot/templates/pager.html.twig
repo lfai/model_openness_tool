@@ -49,7 +49,8 @@
   <h4 id="{{ heading_id }}" class="visually-hidden">{{ 'Pagination'|t }}</h4>
   <ul class="pager__items js-pager__items">
     {# Print first item if we are not on the first page. #}
-    {% if items.first %} {% apply spaceless %} <li class="pager__item pager__item--action pager__item--first">
+    {% if items.first %}
+      <li class="pager__item pager__item--action pager__item--first">
         <a href="{{ items.first.href }}" title="{{ 'Go to first page'|t }}"{{ items.first.attributes|without('href', 'title').addClass('pager__link', 'pager__link--action-link') }}>
           <span class="visually-hidden">{{ 'First page'|t }}</span>
           <span class="pager__item-title pager__item-title--backwards" aria-hidden="true">
@@ -57,12 +58,10 @@
           </span>
         </a>
       </li>
-      {% endapply %}
     {% endif %}
 
     {# Print previous item if we are not on the first page. #}
     {% if items.previous %}
-      {% apply spaceless %}
       <li class="pager__item pager__item--action pager__item--previous">
         <a href="{{ items.previous.href }}" title="{{ 'Go to previous page'|t }}" rel="prev"{{ items.previous.attributes|without('href', 'title', 'rel').addClass('pager__link', 'pager__link--action-link') }}>
           <span class="visually-hidden">{{ 'Previous page'|t }}</span>
@@ -71,7 +70,6 @@
           </span>
         </a>
       </li>
-      {% endapply %}
     {% endif %}
 
     {# Add an ellipsis if there are further previous pages. #}
@@ -81,7 +79,6 @@
 
     {# Now generate the actual pager piece. #}
     {% for key, item in items.pages %}
-      {% apply spaceless %}
       <li class="pager__item{{ current == key ? ' pager__item--active' : '' }} pager__item--number">
         {% if current == key %}
           {% set title = 'Current page'|t %}
@@ -95,7 +92,6 @@
           {{ key }}
         </a>
       </li>
-      {% endapply %}
     {% endfor %}
 
     {# Add an ellipsis if there are further next pages. #}
@@ -105,7 +101,6 @@
 
     {# Print next item if we are not on the last page. #}
     {% if items.next %}
-      {% apply spaceless %}
       <li class="pager__item pager__item--action pager__item--next">
         <a href="{{ items.next.href }}" title="{{ 'Go to next page'|t }}" rel="next"{{ items.next.attributes|without('href', 'title', 'rel').addClass('pager__link', 'pager__link--action-link') }}>
           <span class="visually-hidden">{{ 'Next page'|t }}</span>
@@ -114,12 +109,10 @@
           </span>
         </a>
       </li>
-      {% endapply %}
     {% endif %}
 
     {# Print last item if we are not on the last page. #}
     {% if items.last %}
-      {% apply spaceless %}
       <li class="pager__item pager__item--action pager__item--last">
         <a href="{{ items.last.href }}" title="{{ 'Go to last page'|t }}"{{ items.last.attributes|without('href', 'title').addClass('pager__link', 'pager__link--action-link') }}>
           <span class="visually-hidden">{{ 'Last page'|t }}</span>
@@ -128,7 +121,6 @@
           </span>
         </a>
       </li>
-      {% endapply %}
     {% endif %}
   </ul>
 </nav>

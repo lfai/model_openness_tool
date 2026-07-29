@@ -1,7 +1,7 @@
 name: Model Openness Tool
 description: Model Openness Tool theme
 type: theme
-core_version_requirement: ^10
+core_version_requirement: ^10 || ^11
 base theme: claro
 logo: mof-horizontal-black.png
 

@@ -9,15 +9,20 @@ use Symfony\Component\HttpFoundation\Request;
 
 final class ModelSearchForm extends FormBase {
 
-  private readonly Request $request;
+  /**
+   * Constructs a ModelSearchForm instance.
+   */
+  public function __construct(
+    private readonly Request $request,
+  ) {}
 
   /**
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container) {
-    $form = new static();
-    $form->request = $container->get('request_stack')->getCurrentRequest();
-    return $form;
+    return new static(
+      $container->get('request_stack')->getCurrentRequest(),
+    );
   }
 
   /**

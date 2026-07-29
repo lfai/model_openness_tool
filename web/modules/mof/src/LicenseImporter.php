@@ -49,7 +49,7 @@ final class LicenseImporter {
         ->save();
     }
     catch (EntityStorageException $e) {
-      $message = snprintf(
+      $message = sprintf(
         'Failed to save license entity "%s" with ID "%s": %s',
         $data['name'], $data['licenseId'], $e->getMessage()
       );

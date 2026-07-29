@@ -12,16 +12,22 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 
 final class ModelImportForm extends FormBase {
 
-  private readonly EntityStorageInterface $modelStorage;
+  /**
+   * Constructs a ModelImportForm instance.
+   */
+  public function __construct(
+    private readonly EntityStorageInterface $modelStorage,
+  ) {}
 
   /**
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container) {
-    $form = new static();
-    $form->modelStorage = $container->get('entity_type.manager')->getStorage('model');
-    $form->setMessenger($container->get('messenger'));
-    return $form;
+    $instance = new static(
+      $container->get('entity_type.manager')->getStorage('model'),
+    );
+    $instance->setMessenger($container->get('messenger'));
+    return $instance;
   }
 
   /**

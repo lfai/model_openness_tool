@@ -19,19 +19,19 @@
         "cweagans/composer-patches": "^1.7",
         "drupal/block_exclude_pages": "^2.2",
         "drupal/captcha": "^2.0",
-        "drupal/cheeseburger_menu": "^5.0@RC",
-        "drupal/core-composer-scaffold": "10.6.8",
-        "drupal/core-project-message": "10.6.8",
-        "drupal/core-recommended": "10.6.8",
+        "drupal/cheeseburger_menu": "5.1.x-dev@dev",
+        "drupal/core-composer-scaffold": "11.3.13",
+        "drupal/core-project-message": "11.3.13",
+        "drupal/core-recommended": "11.3.13",
         "drupal/devel": "^5.1",
-        "drupal/devel_entity_updates": "^4.2",
-        "drupal/fontawesome": "^2.26",
+        "drupal/fontawesome": "^3.0",
         "drupal/matomo": "^1.26",
         "drupal/recaptcha_v3": "^2.0",
         "drupal/social_auth_github": "^4.0",
         "drupal/token": "^1.15",
-        "drupal/webform": "^6.2.10",
-        "drush/drush": "^13",
+        "drupal/upgrade_status": "^4.3",
+        "drupal/webform": "^6.3@RC",
+        "drush/drush": "^13.7",
         "kint-php/kint": "^5.1",
         "opis/json-schema": "^2.3",
         "symfony/dotenv": "^7.0"
@@ -69,6 +69,9 @@
           },
           "drupal/social_auth_github": {
             "Github cancel login fix": "patches/social_auth_github.patch"
+          },
+          "drupal/cheeseburger_menu": {
+            "Fix deprecated token test base class": "patches/cheeseburger_menu-deprecated-token-test-base.patch"
           }
         },
         "drupal-scaffold": {
@@ -129,7 +132,7 @@
     },
     "require-dev": {
         "drupal/coder": "^8.3",
-        "drupal/core-dev": "^10.3",
-        "phpunit/phpunit": "^9.6"
+        "drupal/core-dev": "^11.3",
+        "phpunit/phpunit": "^11.5"
     }
 }

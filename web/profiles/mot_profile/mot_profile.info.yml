@@ -1,7 +1,7 @@
 name: 'Model Openness Tool'
 type: profile
 description: 'Installation profile for model openness tool'
-core_version_requirement: ^10
+core_version_requirement: ^10 || ^11
 
 distribution:
   name: 'Model Openness Tool'

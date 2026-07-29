@@ -2,7 +2,7 @@ name: 'Model Openness Framework'
 type: module
 description: 'Implements the model openness framework in Drupal'
 package: 'Model Openness Tool'
-core_version_requirement: ^10
+core_version_requirement: ^10 || ^11
 dependencies:
   - drupal:options
   - drupal:rest

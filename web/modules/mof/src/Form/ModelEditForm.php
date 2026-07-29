@@ -104,12 +104,14 @@ final class ModelEditForm extends ModelForm {
   /**
    * {@inheritdoc}
    */
-  public function save(array $form, FormStateInterface $form_state) {
+  public function save(array $form, FormStateInterface $form_state): int {
     // Save model entity only if we're an admin.
     if ($this->isAdmin()) {
-      parent::save($form, $form_state);
+      $result = parent::save($form, $form_state);
       $form_state->setRedirect('entity.model.canonical', ['model' => $this->entity->id()]);
+      return $result;
     }
+    return SAVED_NEW;
   }
 
   /**

@@ -22,36 +22,30 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 
 final class ModelController extends ControllerBase {
 
-  /** @var \Drupal\mof\ModelEvaluatorInterface. */
-  private readonly ModelEvaluatorInterface $modelEvaluator;
-
-  /** @var \Drupal\mof\BadgeGeneratorInterface. */
-  private readonly BadgeGeneratorInterface $badgeGenerator;
-
-  /** @var \Drupal\Core\Render\RendererInterface. */
-  private readonly RendererInterface $renderer;
-
-  /** @var \Symfony\Component\HttpFoundation\Session\Session. */
-  private readonly Session $session;
-
-  /** @var \Drupal\mof\ModelSerializerInterface. */
-  private readonly ModelSerializerInterface $modelSerializer;
-
-  /** @var \Drupal\mof\Services\GitHubPullRequestManager. */
-  private readonly GitHubPullRequestManager $githubPrManager;
+  /**
+   * Constructs a ModelController instance.
+   */
+  public function __construct(
+    private readonly ModelEvaluatorInterface $modelEvaluator,
+    private readonly BadgeGeneratorInterface $badgeGenerator,
+    private readonly RendererInterface $renderer,
+    private readonly Session $session,
+    private readonly ModelSerializerInterface $modelSerializer,
+    private readonly GitHubPullRequestManager $githubPrManager,
+  ) {}
 
   /**
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container) {
-    $instance = parent::create($container);
-    $instance->modelEvaluator = $container->get('model_evaluator');
-    $instance->badgeGenerator = $container->get('badge_generator');
-    $instance->renderer = $container->get('renderer');
-    $instance->session = $container->get('session');
-    $instance->modelSerializer = $container->get('model_serializer');
-    $instance->githubPrManager = $container->get('github_pr_manager');
-    return $instance;
+    return new static(
+      $container->get('model_evaluator'),
+      $container->get('badge_generator'),
+      $container->get('renderer'),
+      $container->get('session'),
+      $container->get('model_serializer'),
+      $container->get('github_pr_manager'),
+    );
   }
 
   /**
