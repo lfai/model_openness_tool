@@ -17,12 +17,13 @@
     "require": {
         "composer/installers": "^2.0",
         "cweagans/composer-patches": "^1.7",
+        "doctrine/instantiator": "^2.0",
         "drupal/block_exclude_pages": "^2.2",
         "drupal/captcha": "^2.0",
         "drupal/cheeseburger_menu": "^5.0@RC",
-        "drupal/core-composer-scaffold": "10.6.8",
-        "drupal/core-project-message": "10.6.8",
-        "drupal/core-recommended": "10.6.8",
+        "drupal/core-composer-scaffold": "10.6.20",
+        "drupal/core-project-message": "10.6.20",
+        "drupal/core-recommended": "10.6.20",
         "drupal/devel": "^5.1",
         "drupal/devel_entity_updates": "^4.2",
         "drupal/fontawesome": "^2.26",
@@ -30,10 +31,11 @@
         "drupal/recaptcha_v3": "^2.0",
         "drupal/social_auth_github": "^4.0",
         "drupal/token": "^1.15",
-        "drupal/webform": "^6.2.10",
+        "drupal/webform": "^6.3",
         "drush/drush": "^13",
         "kint-php/kint": "^5.1",
         "opis/json-schema": "^2.3",
+        "phpunit/phpunit": "^9.6",
         "symfony/dotenv": "^7.0"
     },
     "conflict": {
@@ -44,12 +46,13 @@
     "config": {
         "allow-plugins": {
             "composer/installers": true,
+            "cweagans/composer-patches": true,
+            "dealerdirect/phpcodesniffer-composer-installer": true,
             "drupal/core-composer-scaffold": true,
             "drupal/core-project-message": true,
-            "phpstan/extension-installer": true,
-            "dealerdirect/phpcodesniffer-composer-installer": true,
             "php-http/discovery": true,
-            "cweagans/composer-patches": true,
+            "phpstan/extension-installer": true,
+            "symfony/runtime": true,
             "tbachert/spi": true
         },
         "sort-packages": true
@@ -129,7 +132,6 @@
     },
     "require-dev": {
         "drupal/coder": "^8.3",
-        "drupal/core-dev": "^10.3",
-        "phpunit/phpunit": "^9.6"
+        "drupal/core-dev": "^10.3"
     }
 }
